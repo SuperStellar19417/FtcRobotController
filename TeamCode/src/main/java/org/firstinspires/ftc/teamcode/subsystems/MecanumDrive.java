@@ -18,10 +18,10 @@ public class MecanumDrive {
     public void init(HardwareMap hardwareMap) {
 
         // Get the motors from the hardware map
-        frontLeftMotor = hardwareMap.get(DcMotorEx.class, "frontLeftMotor");
-        frontRightMotor = hardwareMap.get(DcMotorEx.class, "frontRightMotor");
-        backLeftMotor = hardwareMap.get(DcMotorEx.class, "backLeftMotor");
-        backRightMotor = hardwareMap.get(DcMotorEx.class, "backRightMotor");
+        frontLeftMotor = hardwareMap.get(DcMotorEx.class, HardwareConstant.LeftFrontMotor);
+        frontRightMotor = hardwareMap.get(DcMotorEx.class, HardwareConstant.RightFrontMotor);
+        backLeftMotor = hardwareMap.get(DcMotorEx.class, HardwareConstant.LeftBackMotor);
+        backRightMotor = hardwareMap.get(DcMotorEx.class, HardwareConstant.RightBackMotor);
 
         // Set the motor directions
         // Motors should make a cross
