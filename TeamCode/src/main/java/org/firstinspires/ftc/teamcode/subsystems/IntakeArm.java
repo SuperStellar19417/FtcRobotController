@@ -12,7 +12,7 @@ public class IntakeArm {
 
     public IntakeArm(HardwareMap hardwareMap, Telemetry telemetry){
         this.telemetry = telemetry;
-        servoIntakeArm = hardwareMap.get(Servo.class,"servoIntakeArm");
+        servoIntakeArm = hardwareMap.get(Servo.class,HardwareConstant.ServoIntakeArm);
 
         initIntakeArm();
     }
