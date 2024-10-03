@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.drive.MecanumDrive;
 
 @TeleOp(name="Field Centric Drive OpMode", group="Tests")
 public class FieldCentricDriveOpMode extends LinearOpMode {
