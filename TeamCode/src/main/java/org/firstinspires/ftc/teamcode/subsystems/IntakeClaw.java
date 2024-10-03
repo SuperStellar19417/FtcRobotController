@@ -20,8 +20,43 @@ public class IntakeClaw {
 
         wristIntakeServo = hardwareMap.get(Servo.class, HardwareConstant.WristIntakeServo);
     }
-    public void intakeClawOpen(){
+    public enum INTAKE_CLAW_SERVO_STATE{
+        INTAKE_CLAW_OPEN,
 
+        INTAKE_CLAW_CLOSE,
+    }
+
+    public INTAKE_CLAW_SERVO_STATE intakeClawServoState = INTAKE_CLAW_SERVO_STATE.INTAKE_CLAW_OPEN;
+
+    public enum INTAKE_CLAW_WRIST_STATE {
+        INTAKE_WRIST_DOWN,
+
+        INTAKE_WRIST_UP,
+    }
+
+    public INTAKE_CLAW_WRIST_STATE intakeClawWristState = INTAKE_CLAW_WRIST_STATE.INTAKE_WRIST_DOWN;
+
+
+
+    public void intakeClawOpen(){
+        rightIntakeServo.setPosition(0.00);
+        leftIntakeServo.setPosition(0.00);
+        intakeClawServoState = INTAKE_CLAW_SERVO_STATE.INTAKE_CLAW_OPEN;
+    }
+
+    public void intakeClawClose(){
+        rightIntakeServo.setPosition(0.00);
+        leftIntakeServo.setPosition(0.00);
+        intakeClawServoState = INTAKE_CLAW_SERVO_STATE.INTAKE_CLAW_CLOSE;
+    }
+
+    public void intakeClawUp(){
+        wristIntakeServo.setPosition(0.00);
+        intakeClawWristState = INTAKE_CLAW_WRIST_STATE.INTAKE_WRIST_UP;
+    }
+    public void intakeClawDown() {
+        wristIntakeServo.setPosition(0.00);
+        intakeClawWristState = INTAKE_CLAW_WRIST_STATE.INTAKE_WRIST_DOWN;
     }
 }
 
