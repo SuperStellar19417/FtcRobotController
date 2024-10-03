@@ -18,9 +18,14 @@ public class FieldCentricDriveOpMode extends LinearOpMode {
         mecanumDrive.init(hardwareMap);
         imu = hardwareMap.get(IMU.class, "imu");
 
+        /*RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot (
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);*/
+
+        // For Test Bot, Control Hub is mounted differently
         RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot (
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
+                RevHubOrientationOnRobot.UsbFacingDirection.LEFT);
 
         imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
 
