@@ -15,9 +15,9 @@ public class OuttakeClaw {
 
     public OuttakeClaw(HardwareMap hardwareMap, Telemetry telemetry){
         this.telemetry = telemetry;
-        rightOuttakeClaw = hardwareMap.get(Servo.class, "rightOuttakeClaw");
-        leftOuttakeClaw = hardwareMap.get(Servo.class, "leftOuttakeClaw");
-        wristOuttakeClaw = hardwareMap.get(Servo.class, "wristOuttakeClaw");
+        rightOuttakeClaw = hardwareMap.get(Servo.class, HardwareConstant.RightOuttakeServo);
+        leftOuttakeClaw = hardwareMap.get(Servo.class, HardwareConstant.LeftOuttakeServo);
+        wristOuttakeClaw = hardwareMap.get(Servo.class, HardwareConstant.WristOuttakeServo);
 
 
     }

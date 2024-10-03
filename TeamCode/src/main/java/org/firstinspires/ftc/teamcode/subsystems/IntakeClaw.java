@@ -14,11 +14,11 @@ public class IntakeClaw {
 
     public IntakeClaw(HardwareMap hardwareMap, Telemetry telemetry){
         this.telemetry = telemetry;
-        rightIntakeServo = hardwareMap.get(Servo.class, "rightIntakeServo");
+        rightIntakeServo = hardwareMap.get(Servo.class, HardwareConstant.RightIntakeServo);
 
-        leftIntakeServo = hardwareMap.get(Servo.class, "leftIntakeServo");
+        leftIntakeServo = hardwareMap.get(Servo.class, HardwareConstant.LeftIntakeServo);
 
-        wristIntakeServo = hardwareMap.get(Servo.class, "wristIntakeServo");
+        wristIntakeServo = hardwareMap.get(Servo.class, HardwareConstant.WristIntakeServo);
     }
     public void intakeClawOpen(){
 
