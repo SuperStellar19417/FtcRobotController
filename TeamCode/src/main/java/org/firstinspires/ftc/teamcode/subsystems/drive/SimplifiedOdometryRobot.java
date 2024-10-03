@@ -4,10 +4,9 @@
     See the readme for a link to a video tutorial explaining the operation and limitations of the code.
  */
 
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.subsystems.drive;
 
-import android.util.Log;
-
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,17 +15,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-import java.util.Locale;
+import java.util.List;
 
-public class PinpointOdometryRobot {
+public class SimplifiedOdometryRobot {
     // Adjust these numbers to suit your robot.
-  //  private final double ODOM_INCHES_PER_COUNT   = 0.002969;   //  GoBilda Odometry Pod (1/226.8)
-    private final boolean INVERT_DRIVE_ODOMETRY  = false;       //  When driving FORWARD, the odometry value MUST increase.  If it does not, flip the value of this constant.
-    private final boolean INVERT_STRAFE_ODOMETRY = false;       //  When strafing to the LEFT, the odometry value MUST increase.  If it does not, flip the value of this constant.
+    private final double ODOM_INCHES_PER_COUNT   = 0.002969;   //  GoBilda Odometry Pod (1/226.8)
+    private final boolean INVERT_DRIVE_ODOMETRY  = true;       //  When driving FORWARD, the odometry value MUST increase.  If it does not, flip the value of this constant.
+    private final boolean INVERT_STRAFE_ODOMETRY = true;       //  When strafing to the LEFT, the odometry value MUST increase.  If it does not, flip the value of this constant.
 
     private static final double DRIVE_GAIN          = 0.03;    // Strength of axial position control
     private static final double DRIVE_ACCEL         = 2.0;     // Acceleration limit.  Percent Power change per second.  1.0 = 0-100% power in 1 sec.
@@ -64,19 +61,17 @@ public class PinpointOdometryRobot {
     private DcMotor leftBackDrive;      //  control the left back drive wheel
     private DcMotor rightBackDrive;     //  control the right back drive wheel
 
-   // private DcMotor driveEncoder;       //  the Axial (front/back) Odometry Module (may overlap with motor, or may not)
-    //private DcMotor strafeEncoder;      //  the Lateral (left/right) Odometry Module (may overlap with motor, or may not)
+    private DcMotor driveEncoder;       //  the Axial (front/back) Odometry Module (may overlap with motor, or may not)
+    private DcMotor strafeEncoder;      //  the Lateral (left/right) Odometry Module (may overlap with motor, or may not)
 
     private LinearOpMode myOpMode;
-
-    GoBildaPinpointDriver pinpointOdo; // Declare OpMode member for the Odometry Computer
     private IMU imu;
     private ElapsedTime holdTimer = new ElapsedTime();  // User for any motion requiring a hold time or timeout.
 
-    private double rawDriveOdometer    = 0; // Unmodified axial odometer count
-    private double driveOdometerOffset = 0; // Used to offset axial odometer
-    private double rawStrafeOdometer   = 0; // Unmodified lateral odometer count
-    private double strafeOdometerOffset= 0; // Used to offset lateral odometer
+    private int rawDriveOdometer    = 0; // Unmodified axial odometer count
+    private int driveOdometerOffset = 0; // Used to offset axial odometer
+    private int rawStrafeOdometer   = 0; // Unmodified lateral odometer count
+    private int strafeOdometerOffset= 0; // Used to offset lateral odometer
     private double rawHeading       = 0; // Unmodified heading (degrees)
     private double headingOffset    = 0; // Used to offset heading
 
@@ -84,7 +79,7 @@ public class PinpointOdometryRobot {
     private boolean showTelemetry     = false;
 
     // Robot Constructor
-    public PinpointOdometryRobot(LinearOpMode opmode) {
+    public SimplifiedOdometryRobot(LinearOpMode opmode) {
         myOpMode = opmode;
     }
 
@@ -104,24 +99,22 @@ public class PinpointOdometryRobot {
         rightFrontDrive = setupDriveMotor("frontRightMotor", DcMotor.Direction.FORWARD);
         leftBackDrive  = setupDriveMotor( "backLeftMotor", DcMotor.Direction.REVERSE);
         rightBackDrive = setupDriveMotor( "backRightMotor",DcMotor.Direction.FORWARD);
-
-        initializePinpoint();
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
 
         //  Connect to the encoder channels using the name of that channel.
-        //driveEncoder = myOpMode.hardwareMap.get(DcMotor.class, "axial");
-        //strafeEncoder = myOpMode.hardwareMap.get(DcMotor.class, "lateral");
+        driveEncoder = myOpMode.hardwareMap.get(DcMotor.class, "axial");
+        strafeEncoder = myOpMode.hardwareMap.get(DcMotor.class, "lateral");
 
         // Set all hubs to use the AUTO Bulk Caching mode for faster encoder reads
-//        List<LynxModule> allHubs = myOpMode.hardwareMap.getAll(LynxModule.class);
-//        for (LynxModule module : allHubs) {
-//            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-//        }
+        List<LynxModule> allHubs = myOpMode.hardwareMap.getAll(LynxModule.class);
+        for (LynxModule module : allHubs) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
 
         // Tell the software how the Control Hub is mounted on the robot to align the IMU XYZ axes correctly
         RevHubOrientationOnRobot orientationOnRobot =
                 new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD);
+                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
         // zero out all the odometry readings.
@@ -131,50 +124,6 @@ public class PinpointOdometryRobot {
         this.showTelemetry = showTelemetry;
     }
 
-    private void initializePinpoint()
-    {
-        pinpointOdo = myOpMode.hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-
-         /*
-        Set the odometry pod positions relative to the point that the odometry computer tracks around.
-        The X pod offset refers to how far sideways from the tracking point the
-        X (forward) odometry pod is. Left of the center is a positive number,
-        right of center is a negative number. the Y pod offset refers to how far forwards from
-        the tracking point the Y (strafe) odometry pod is. forward of center is a positive number,
-        backwards is a negative number.
-         */
-        pinpointOdo.setOffsets(-84.0, -168.0); //these are tuned for 3110-0002-0001 Product Insight #1
-
-        /*
-        Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
-        the goBILDA_SWINGARM_POD, or the goBILDA_4_BAR_POD.
-        If you're using another kind of odometry pod, uncomment setEncoderResolution and input the
-        number of ticks per mm of your odometry pod.
-         */
-        pinpointOdo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        //odo.setEncoderResolution(13.26291192);
-
-
-        /*
-        Set the direction that each of the two odometry pods count. The X (forward) pod should
-        increase when you move the robot forward. And the Y (strafe) pod should increase when
-        you move the robot to the left.
-         */
-        pinpointOdo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
-
-
-        /*
-        Before running the robot, recalibrate the IMU. This needs to happen when the robot is stationary
-        The IMU will automatically calibrate when first powered on, but recalibrating before running
-        the robot is a good idea to ensure that the calibration is "good".
-        resetPosAndIMU will reset the position to 0,0,0 and also recalibrate the IMU.
-        This is recommended before you run your autonomous, as a bad initial calibration can cause
-        an incorrect starting value for x, y, and heading.
-         */
-        //pinpointOdo.recalibrateIMU();
-
-        pinpointOdo.resetPosAndIMU();
-    }
     /**
      *   Setup a drive motor with passed parameters.  Ensure encoder is reset.
      * @param deviceName  Text name associated with motor in Robot Configuration
@@ -196,35 +145,10 @@ public class PinpointOdometryRobot {
      * @return true
      */
     public boolean readSensors() {
-        /*
-            Request a bulk update from the Pinpoint odometry computer. This checks almost all outputs
-            from the device in a single I2C read.
-        */
-        pinpointOdo.update();
-
-        Pose2D pos = pinpointOdo.getPosition();
-
-        String data = String.format(Locale.US, "[P] Pinpoint X: %.3f, Y: %.3f, H: %.3f",
-                pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
-        Log.println(Log.INFO, "Turn Telemetry", data);
-
-        // These values are in MM
-        rawDriveOdometer = pos.getX(DistanceUnit.INCH);
-        rawStrafeOdometer = pos.getY(DistanceUnit.INCH);
-
-        // Adjust in case the odometry wheels are inverted.
-        rawDriveOdometer = rawDriveOdometer * (INVERT_DRIVE_ODOMETRY ? -1 : 1);
-        rawStrafeOdometer = rawStrafeOdometer * (INVERT_STRAFE_ODOMETRY ? -1 : 1);
-
-        // Calculate the distance traveled since the last reset.
-        driveDistance = (rawDriveOdometer - driveOdometerOffset);
-        strafeDistance = (rawStrafeOdometer - strafeOdometerOffset);
-
-        // Convert heading from radians to degrees
-        //rawHeading  = pos.getHeading(AngleUnit.DEGREES);
-
-        //heading     = rawHeading - headingOffset;
-        //turnRate    = pinpointOdo.getHeadingVelocity();
+        rawDriveOdometer = driveEncoder.getCurrentPosition() * (INVERT_DRIVE_ODOMETRY ? -1 : 1);
+        rawStrafeOdometer = strafeEncoder.getCurrentPosition() * (INVERT_STRAFE_ODOMETRY ? -1 : 1);
+        driveDistance = (rawDriveOdometer - driveOdometerOffset) * ODOM_INCHES_PER_COUNT;
+        strafeDistance = (rawStrafeOdometer - strafeOdometerOffset) * ODOM_INCHES_PER_COUNT;
 
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         AngularVelocity angularVelocity = imu.getRobotAngularVelocity(AngleUnit.DEGREES);
@@ -233,16 +157,11 @@ public class PinpointOdometryRobot {
         heading     = rawHeading - headingOffset;
         turnRate    = angularVelocity.zRotationRate;
 
-        data = String.format(Locale.US, "[I] Imu heading: %.3f, turn rate: %.3f", heading, turnRate);
-        Log.println(Log.INFO, "Turn Telemetry", data);
-
-
         if (showTelemetry) {
-            myOpMode.telemetry.addData("Odom Ax / Lat", "%6.2f / %6.2f", rawDriveOdometer - driveOdometerOffset, rawStrafeOdometer - strafeOdometerOffset);
-            myOpMode.telemetry.addData("Dist Ax / Lat", "%5.2f / %5.2f", driveDistance, strafeDistance);
-            myOpMode.telemetry.addData("Head Deg / Rate", "%5.2f / %5.2f", heading, turnRate);
+            myOpMode.telemetry.addData("Odom Ax:Lat", "%6d %6d", rawDriveOdometer - driveOdometerOffset, rawStrafeOdometer - strafeOdometerOffset);
+            myOpMode.telemetry.addData("Dist Ax:Lat", "%5.2f %5.2f", driveDistance, strafeDistance);
+            myOpMode.telemetry.addData("Head Deg:Rate", "%5.2f %5.2f", heading, turnRate);
         }
-
         return true;  // do this so this function can be included in the condition for a while loop to keep values fresh.
     }
 
@@ -255,7 +174,6 @@ public class PinpointOdometryRobot {
      * @param holdTime Minimum time (sec) required to hold the final position.  0 = no hold.
      */
     public void drive(double distanceInches, double power, double holdTime) {
-
         resetOdometry();
 
         driveController.reset(distanceInches, power);   // achieve desired drive distance
@@ -295,7 +213,7 @@ public class PinpointOdometryRobot {
         yawController.reset();                          // Maintain last turn angle
         holdTimer.reset();
 
-        while (myOpMode.opModeIsActive() && readSensors()) {
+        while (myOpMode.opModeIsActive() && readSensors()){
 
             // implement desired axis powers
             moveRobot(driveController.getOutput(driveDistance), strafeController.getOutput(strafeDistance), yawController.getOutput(heading));
@@ -315,22 +233,17 @@ public class PinpointOdometryRobot {
 
     /**
      * Rotate to an absolute heading/direction
-     * @param targetHeadingDeg  Heading to obtain.  +ve = CCW, -ve = CW.
+     * @param headingDeg  Heading to obtain.  +ve = CCW, -ve = CW.
      * @param power Maximum power to apply.  This number should always be positive.
      * @param holdTime Minimum time (sec) required to hold the final position.  0 = no hold.
      */
-    public void turnTo(double targetHeadingDeg, double power, double holdTime) {
-        pinpointOdo.resetPosAndIMU();
-        resetOdometry();
+    public void turnTo(double headingDeg, double power, double holdTime) {
 
-        yawController.reset(targetHeadingDeg, power);
+        yawController.reset(headingDeg, power);
         while (myOpMode.opModeIsActive() && readSensors()) {
 
-            double output = yawController.getOutput(heading);
-            Log.println(Log.INFO, "Turn Telemetry", "Heading: " + heading + "  Output: " + output + "  Target: " + targetHeadingDeg);
-
             // implement desired axis powers
-            moveRobot(0, 0, output);
+            moveRobot(0, 0, yawController.getOutput(heading));
 
             // Time to exit?
             if (yawController.inPosition()) {
@@ -397,9 +310,7 @@ public class PinpointOdometryRobot {
      * Set odometry counts and distances to zero.
      */
     public void resetOdometry() {
-        pinpointOdo.resetPosAndIMU(); //resets the position to 0 and recalibrates the IMU
         readSensors();
-
         driveOdometerOffset = rawDriveOdometer;
         driveDistance = 0.0;
         driveController.reset(0);
@@ -413,9 +324,8 @@ public class PinpointOdometryRobot {
      * Reset the robot heading to zero degrees, and also lock that heading into heading controller.
      */
     public void resetHeading() {
-        pinpointOdo.recalibrateIMU(); //recalibrates the IMU without resetting position
         readSensors();
-        // headingOffset = rawHeading;
+        headingOffset = rawHeading;
         yawController.reset(0);
         heading = 0;
     }
