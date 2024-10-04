@@ -32,21 +32,28 @@ public class IntakeArm {
         servoIntakeArm.setPosition(0.00);
         intakeArmServoState = INTAKE_ARM_SERVO_STATE.INTAKE_ARM_INTAKE;
     }
+    // Starting position
 
     public void setIntakeArmIntakePosition() {
         servoIntakeArm.setPosition(0.00);
         intakeArmServoState = INTAKE_ARM_SERVO_STATE.INTAKE_ARM_INTAKE;
     }
+    // Sets the intake arm to a position that allows for intake
+
 
     public void setIntakeArmCarryPosition() {
         servoIntakeArm.setPosition(0.00);
         intakeArmServoState = INTAKE_ARM_SERVO_STATE.INTAKE_ARM_CARRY;
     }
+    // Sets the intake arm to a position that holds the specimen/sample
+
 
     public void setIntakeArmTransferPosition() {
         servoIntakeArm.setPosition(0.00);
         intakeArmServoState = INTAKE_ARM_SERVO_STATE.INTAKE_ARM_TRANSFER;
+        // Sets the intake arm to a position
     }
+    // Sets the intake arm to be able to drop the specimen to the other claw
 
 
 }
