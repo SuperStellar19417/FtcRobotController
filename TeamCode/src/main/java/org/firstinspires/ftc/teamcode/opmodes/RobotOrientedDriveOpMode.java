@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.subsystems.drive.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.drive.SSMecanumDrive;
 
 /**
  * SimpleRobotOrientedDriveOpMode - A simple teleop opmode for a mecanum drive train
@@ -11,13 +11,13 @@ import org.firstinspires.ftc.teamcode.subsystems.drive.MecanumDrive;
  */
 @TeleOp(name="Robot Oriented Drive OpMode", group="Tests")
 public class RobotOrientedDriveOpMode extends LinearOpMode {
-    private final MecanumDrive mecanumDrive = new MecanumDrive();
+    private final SSMecanumDrive SSMecanumDrive = new SSMecanumDrive();
 
     @Override
     public void runOpMode() {
 
         // Initialize the mecanum drive train
-        mecanumDrive.init(hardwareMap);
+        SSMecanumDrive.init(hardwareMap);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -33,7 +33,7 @@ public class RobotOrientedDriveOpMode extends LinearOpMode {
             double rotate = gamepad1.right_stick_x;
 
             // Set the powers for the mecanum drive train
-            mecanumDrive.drive(forward, strafe, rotate);
+            SSMecanumDrive.drive(forward, strafe, rotate);
 
             telemetry.addData("Status", "Running");
             telemetry.update();

@@ -1,21 +1,23 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.subsystems.drive.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.drive.SSMecanumDrive;
 
 @TeleOp(name="Field Centric Drive OpMode", group="Tests")
+@Disabled
 public class FieldCentricDriveOpMode extends LinearOpMode {
-    private final MecanumDrive mecanumDrive = new MecanumDrive();
+    private final SSMecanumDrive SSMecanumDrive = new SSMecanumDrive();
     private IMU imu;
 
     public void runOpMode() {
         // Initialize the mecanum drive train
-        mecanumDrive.init(hardwareMap);
+        SSMecanumDrive.init(hardwareMap);
         imu = hardwareMap.get(IMU.class, "imu");
 
         /*RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot (
@@ -64,6 +66,6 @@ public class FieldCentricDriveOpMode extends LinearOpMode {
         double newForward = r * Math.sin(theta);
         double newStrafe = r * Math.cos(theta);
 
-        mecanumDrive.drive(newForward, newStrafe, rotate);
+        SSMecanumDrive.drive(newForward, newStrafe, rotate);
     }
 }
