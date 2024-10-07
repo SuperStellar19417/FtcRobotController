@@ -25,7 +25,9 @@ public class SimplePathTestAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/ for more information on how to create a path
+        // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
+        // for more information on how to create a path
+
         // Initialization code here
         initSubsystems();
 
@@ -40,9 +42,9 @@ public class SimplePathTestAuto extends LinearOpMode {
 
         // Create a simple path here
         TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
-                .lineToX(14) // Move forward 14 inches
-                .turn(Math.toRadians(90))// Turn 90 degrees
-                .lineToY(6); // Move6 inches another
+                .lineToX(14) // Move forward 14 inches, +ve X is forward.
+                .turn(Math.toRadians(90))// Turn 90 degrees. +ve is counter clockwise
+                .lineToY(6); // Move6 inches in Y direction. +ve Y is left
 
         Action followPathAction = tab1.build();
 
