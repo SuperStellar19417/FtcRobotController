@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -19,9 +18,9 @@ public class SimplePathTestAuto extends LinearOpMode {
     private GamepadController gamepadController;
     private DriveTrain driveTrain;
 
-    // We can tranfer this from last autonoumous opmode if needed,
+    // We can transfer this from last autonomous op mode if needed,
     // but most the time we don't need to.
-    private Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
+    private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
 
     @Override
     public void runOpMode() {
@@ -77,7 +76,7 @@ public class SimplePathTestAuto extends LinearOpMode {
         telemetry.addLine("==================");
         telemetry.update();
 
-        // Intialize drive train
+        // Initialize drive train
         driveTrain = new DriveTrain(hardwareMap, startPose, this);
         driveTrain.driveType = DriveTrain.DriveType.ROBOT_CENTRIC;
         telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
@@ -105,9 +104,9 @@ public class SimplePathTestAuto extends LinearOpMode {
     public void outputTelemetry(){
 
         telemetry.setAutoClear(true);
-        telemetry.addLine("Running Normal TeleOpMode");
+        telemetry.addLine("Running Normal TeleOp Mode");
 
-        // Output telemetry messages for susbsystems here
+        // Output telemetry messages for subsystems here
         driveTrain.outputTelemetry();
 
         telemetry.update();
