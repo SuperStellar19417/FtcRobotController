@@ -19,6 +19,8 @@ public class IntakeClaw {
         leftIntakeServo = hardwareMap.get(Servo.class, HardwareConstant.LeftIntakeServo);
 
         wristIntakeServo = hardwareMap.get(Servo.class, HardwareConstant.WristIntakeServo);
+
+        initIntakeClaw();
     }
 
     // creates two states in which the claw opens and closes
@@ -38,7 +40,7 @@ public class IntakeClaw {
     }
 
     public INTAKE_CLAW_WRIST_STATE intakeClawWristState = INTAKE_CLAW_WRIST_STATE.INTAKE_WRIST_DOWN;
-
+    // Sa
     public void initIntakeClaw() {
         rightIntakeServo.setPosition(0.00);
         leftIntakeServo.setPosition(0.00);
