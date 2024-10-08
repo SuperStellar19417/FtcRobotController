@@ -28,7 +28,7 @@ public class IntakeClaw {
         INTAKE_CLAW_CLOSE,
     }
 
-    public INTAKE_CLAW_SERVO_STATE intakeClawServoState = INTAKE_CLAW_SERVO_STATE.INTAKE_CLAW_OPEN;
+    public INTAKE_CLAW_SERVO_STATE intakeClawServoState = INTAKE_CLAW_SERVO_STATE.INTAKE_CLAW_CLOSE;
 
     // creates two states in which the claw moves up and down
     public enum INTAKE_CLAW_WRIST_STATE {
@@ -39,7 +39,14 @@ public class IntakeClaw {
 
     public INTAKE_CLAW_WRIST_STATE intakeClawWristState = INTAKE_CLAW_WRIST_STATE.INTAKE_WRIST_DOWN;
 
+    public void initIntakeClaw() {
+        rightIntakeServo.setPosition(0.00);
+        leftIntakeServo.setPosition(0.00);
+        intakeClawServoState = INTAKE_CLAW_SERVO_STATE.INTAKE_CLAW_CLOSE;
 
+        wristIntakeServo.setPosition(0.00);
+        intakeClawWristState = INTAKE_CLAW_WRIST_STATE.INTAKE_WRIST_DOWN;
+    }
     // Starting positions of the servos for the opened claw
     public void intakeClawOpen(){
         rightIntakeServo.setPosition(0.00);
