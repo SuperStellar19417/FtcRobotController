@@ -12,9 +12,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 
-@Autonomous(name = "Simple Path Test Auto", group = "01-Test")
-public class SimplePathTestAuto extends LinearOpMode {
-
+@Autonomous(name = "park only", group = "01-Test")
+public class ParkOnlyTestAuto extends LinearOpMode{
     private GamepadController gamepadController;
     private DriveTrain driveTrain;
 
@@ -42,28 +41,24 @@ public class SimplePathTestAuto extends LinearOpMode {
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
-                .lineToX(14) // Move forward 14 inches, +ve X is forward.
-                .turn(Math.toRadians(90))// Turn 90 degrees. +ve is counter clockwise
-                .lineToY(6) // Move6 inches in Y direction. +ve Y is left
-                .lineToX(14) // Move forward 14 inches, +ve X is forward.
-                .turn(Math.toRadians(90))// Turn 90 degrees. +ve is counter clockwise
-                .lineToY(6); // Move6 inches in Y direction. +ve Y is left
+                .setTangent(Math.toRadians(90))
+                .lineToY(-16); // Move6 inches in Y direction. +ve Y is left
 
         // Create an action that will be run
         Action followPathAction = tab1.build();
 
         // Run the action (s)
         // You can run multiple actions to execute a complex auto. For example :
-        /*
-            Actions.runBlocking(
-            new SequentialAction(
-                    trajectoryActionChosen,
-                    lift.liftUp(),
-                    claw.openClaw(),
-                    lift.liftDown(),
-                    trajectoryActionCloseOut
-            ));
-        */
+    /*
+        Actions.runBlocking(
+        new SequentialAction(
+                trajectoryActionChosen,
+                lift.liftUp(),
+                claw.openClaw(),
+                lift.liftDown(),
+                trajectoryActionCloseOut
+        ));
+    */
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
         Actions.runBlocking( new SequentialAction(followPathAction));
@@ -114,4 +109,5 @@ public class SimplePathTestAuto extends LinearOpMode {
 
         telemetry.update();
     }
+
 }
