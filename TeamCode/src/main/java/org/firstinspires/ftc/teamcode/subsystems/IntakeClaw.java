@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -9,6 +11,8 @@ public class IntakeClaw {
     public Servo rightIntakeServo;
     public Servo leftIntakeServo;
     public Servo wristIntakeServo;
+    public NormalizedColorSensor colorSensor;
+    public String allianceColor;
 
     public Telemetry telemetry;
 
@@ -51,27 +55,41 @@ public class IntakeClaw {
     }
     // Starting positions of the servos for the opened claw
     public void intakeClawOpen(){
-        rightIntakeServo.setPosition(0.00);
-        leftIntakeServo.setPosition(0.00);
+        rightIntakeServo.setPosition(0.5);
+        leftIntakeServo.setPosition(0.5);
         intakeClawServoState = INTAKE_CLAW_SERVO_STATE.INTAKE_CLAW_OPEN;
     }
 
     // Starting positions of the servos for the closed claw
-    public void intakeClawClose(){
-        rightIntakeServo.setPosition(0.00);
-        leftIntakeServo.setPosition(0.00);
-        intakeClawServoState = INTAKE_CLAW_SERVO_STATE.INTAKE_CLAW_CLOSE;
+
+    public void intakeClawClose() {
+        if(allianceColor.equals("BLUE")) {
+            if (colorSensor.getNormalizedColors().blue > 0.5){
+                rightIntakeServo.setPosition(0.00);
+                leftIntakeServo.setPosition(0.00);
+                intakeClawServoState = INTAKE_CLAW_SERVO_STATE.INTAKE_CLAW_CLOSE;
+            }
+        } else {
+            if(colorSensor.getNormalizedColors().red > 0.5){
+                rightIntakeServo.setPosition(0.00);
+                leftIntakeServo.setPosition(0.00);
+                intakeClawServoState = INTAKE_CLAW_SERVO_STATE.INTAKE_CLAW_CLOSE;
+            }
+        }
+
     }
+
+    //TODO: move wrist somewhere else
 
     // Starting positions of the servos for a wrist that is up
     public void intakeClawUp(){
-        wristIntakeServo.setPosition(0.00);
+        wristIntakeServo.setPosition(0.7);
         intakeClawWristState = INTAKE_CLAW_WRIST_STATE.INTAKE_WRIST_UP;
     }
 
     // Starting positions of the servos for a wrist that is down
     public void intakeClawDown() {
-        wristIntakeServo.setPosition(0.00);
+        wristIntakeServo.setPosition(0.3);
         intakeClawWristState = INTAKE_CLAW_WRIST_STATE.INTAKE_WRIST_DOWN;
     }
 }
