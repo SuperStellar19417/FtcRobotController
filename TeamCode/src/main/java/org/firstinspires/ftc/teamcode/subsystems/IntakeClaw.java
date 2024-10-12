@@ -24,8 +24,7 @@ public class IntakeClaw {
 
         wristIntakeServo = hardwareMap.get(Servo.class, HardwareConstant.WristIntakeServo);
 
-        initIntakeClaw();
-    }
+        initIntakeClaw();    }
 
     // creates two states in which the claw opens and closes
     public enum INTAKE_CLAW_SERVO_STATE{
