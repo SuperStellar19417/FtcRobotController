@@ -33,13 +33,14 @@ public class Climber {
 
     public static double POWER_LEVEL_RUN = 0;
 
+
     public double motorPowerToRun = POWER_LEVEL_RUN;
 
     public boolean climberNeedsToGoDown = false;
 
     //public boolean isClimberInLowPosition() {
-       // return touchSensor.isPressed();
-  //  }
+    // return touchSensor.isPressed();
+    //  }
 
     private void runMotors(double power) {
         climberMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
@@ -79,12 +80,18 @@ public class Climber {
         runMotors(power);
 
     }
-    public void moveClimberSlightlyDown(){
 
-
+    public void moveClimberSlightlyDown() {
+        turnClimberBrakeModeOn();
+        climberMotorStateCount = climberMotorStateCount - CLIMBER_DELTA_SLIGHTLY_DOWN_DELTA_COUNT;
+        if (climberMotorStateCount < 0) {
+            climberMotorStateCount = 0;
+        }
 
 
     }
 
-
+    private void turnClimberBrakeModeOn() {
+        climberMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+    }
 }
