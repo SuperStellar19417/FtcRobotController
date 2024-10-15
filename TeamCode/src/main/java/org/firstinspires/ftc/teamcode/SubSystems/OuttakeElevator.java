@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -9,7 +10,8 @@ public class OuttakeElevator {
 
     public DcMotorEx outtakeMotorRight;
     public DcMotorEx outtakeMotorLeft;
-
+    public VoltageSensor voltageSensor;
+    public double voltageThreshold = 9.0;
     public static int ELEVATOR_POSITION_INTAKE_COUNT = 0;
     public static int ELEVATOR_POSITION_LOW_BUCKET_COUNT = 1150;
     public static int ELEVATOR_POSITION_HIGH_BUCKET_COUNT = 1450;
@@ -37,6 +39,7 @@ public class OuttakeElevator {
         this.telemetry = telemetry;
         outtakeMotorLeft = hardwareMap.get(DcMotorEx.class, "leftOuttake");
         outtakeMotorRight = hardwareMap.get(DcMotorEx.class, "rightOuttake");
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
         initElevator();
     }
 

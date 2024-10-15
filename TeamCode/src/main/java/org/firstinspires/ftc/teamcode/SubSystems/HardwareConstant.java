@@ -17,4 +17,5 @@ public class HardwareConstant {
     public static String RightOuttakeServo = "rightOuttakeServo";
     public static String LeftOuttakeServo = "leftOuttakeServo";
     public static String WristOuttakeServo = "wristOuttakeServo";
+    public static String ClawColorSensor = "clawColorSensor";
 }

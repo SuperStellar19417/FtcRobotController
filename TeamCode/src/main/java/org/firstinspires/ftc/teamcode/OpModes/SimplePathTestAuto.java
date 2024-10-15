@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
+import org.firstinspires.ftc.teamcode.SubSystems.IntakeClaw;
 
 @Autonomous(name = "Simple Path Test Auto", group = "01-Test")
 public class SimplePathTestAuto extends LinearOpMode {
@@ -22,6 +23,7 @@ public class SimplePathTestAuto extends LinearOpMode {
     // but most the time we don't need to.
     private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
 
+    private IntakeClaw claw;
     @Override
     public void runOpMode() {
         // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
@@ -82,7 +84,7 @@ public class SimplePathTestAuto extends LinearOpMode {
         telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
         telemetry.update();
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
