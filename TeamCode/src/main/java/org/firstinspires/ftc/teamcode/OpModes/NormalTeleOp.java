@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
-import org.firstinspires.ftc.teamcode.SubSystems.IntakeClaw;
 
 @TeleOp(name = "Normal TeleOp", group = "00-Teleop")
 public class NormalTeleOp extends LinearOpMode {
@@ -25,7 +25,7 @@ public class NormalTeleOp extends LinearOpMode {
     // We can tranfer this from last autonoumous opmode if needed,
     // but most the time we don't need to.
     private Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
-    private IntakeClaw claw;
+    private Claw claw;
 
 
     @Override
@@ -87,7 +87,7 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
         telemetry.update();
 
-        claw = new IntakeClaw(hardwareMap, telemetry);
+        claw = new Claw(hardwareMap, telemetry);
         if(allianceSelection == ALLIANCE.RED) {
             claw.allianceColor = "RED";
         } else {
@@ -126,7 +126,7 @@ public class NormalTeleOp extends LinearOpMode {
     }
 
     public void clawState() {
-        telemetry.addData("claw state: ", claw.intakeClawServoState);
+        telemetry.addData("claw state: ", claw.clawServoState);
         telemetry.addLine(claw.allianceColor);
         telemetry.addData("red detected: ", claw.colorSensor.getNormalizedColors().red);
         telemetry.addData("blue detected: ", claw.colorSensor.getNormalizedColors().blue);

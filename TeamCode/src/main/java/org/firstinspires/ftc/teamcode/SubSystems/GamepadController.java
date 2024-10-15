@@ -15,7 +15,7 @@ public class GamepadController {
     private Gamepad gamepad1, gamepad2;
     private DriveTrain driveTrain;
     private LinearOpMode opMode;
-    private IntakeClaw claw;
+    private Claw claw;
 
     /**
      * Constructor for GamepadController
@@ -28,7 +28,7 @@ public class GamepadController {
                              Gamepad gamepad2,
                              DriveTrain driveTrain,
                              LinearOpMode opMode,
-                             IntakeClaw claw
+                             Claw claw
     ) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
@@ -122,7 +122,7 @@ public class GamepadController {
 
     public void runClaw() {
         if(gp1GetLeftBumper()) {
-            if(claw.intakeClawServoState == IntakeClaw.INTAKE_CLAW_SERVO_STATE.INTAKE_CLAW_OPEN) {
+            if(claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_OPEN) {
                 claw.intakeClawClose();
             } else {
                 claw.intakeClawOpen();
