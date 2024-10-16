@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 
@@ -16,6 +17,7 @@ public class GamepadController {
     private DriveTrain driveTrain;
     private LinearOpMode opMode;
     private Claw claw;
+    private Arm arm;
 
     /**
      * Constructor for GamepadController
@@ -28,19 +30,30 @@ public class GamepadController {
                              Gamepad gamepad2,
                              DriveTrain driveTrain,
                              LinearOpMode opMode,
-                             Claw claw
+                             Claw claw,
+                             Arm arm
     ) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
         this.driveTrain = driveTrain;
         this.opMode = opMode;
         this.claw = claw;
+        this.arm = arm;
     }
 
     public void runSubSystems(){
         runDriveTrain();
         runClaw();
+        runArm();
     }
+
+    public void runArm() {
+        if(gp1GetA()) {
+            arm.moveArmLowBucketPosition();
+        }
+    }
+
+
     /**
      *runByGamepad is the main controller function that runs each subsystem controller based on states
      */

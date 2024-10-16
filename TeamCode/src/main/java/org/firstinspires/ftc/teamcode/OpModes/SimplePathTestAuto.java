@@ -9,6 +9,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
@@ -24,6 +25,7 @@ public class SimplePathTestAuto extends LinearOpMode {
     private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
 
     private Claw claw;
+    private Arm arm;
     @Override
     public void runOpMode() {
         // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
@@ -84,7 +86,7 @@ public class SimplePathTestAuto extends LinearOpMode {
         telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
         telemetry.update();
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 

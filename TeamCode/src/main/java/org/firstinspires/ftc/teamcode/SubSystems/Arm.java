@@ -36,7 +36,7 @@ public class Arm {
 
     public Arm(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
-        armMotor = hardwareMap.get(DcMotorEx.class, "leftOuttake");
+        armMotor = hardwareMap.get(DcMotorEx.class, "rightBack");
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
         initArm();
     }
