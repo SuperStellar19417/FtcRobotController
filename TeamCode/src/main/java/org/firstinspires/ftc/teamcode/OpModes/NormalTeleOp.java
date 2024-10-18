@@ -62,7 +62,7 @@ public class NormalTeleOp extends LinearOpMode {
             while (opModeIsActive()) {
                 // TeleOp code here
                 gamepadController.runSubSystems();
-                clawState();
+          //      clawState();
                 outputTelemetry();
                 telemetry.update();
             }
@@ -87,11 +87,11 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
         telemetry.update();
 
-        claw = new Claw(hardwareMap, telemetry);
+     //   claw = new Claw(hardwareMap, telemetry);
         if(allianceSelection == ALLIANCE.RED) {
-            claw.allianceColor = "RED";
+     //       claw.allianceColor = "RED";
         } else {
-            claw.allianceColor = "BLUE";
+     //       claw.allianceColor = "BLUE";
         }
         gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw);
         telemetry.addLine("Gamepad Initialized");
@@ -127,7 +127,7 @@ public class NormalTeleOp extends LinearOpMode {
 
     public void clawState() {
         telemetry.addData("claw state: ", claw.clawServoState);
-        telemetry.addLine(claw.allianceColor);
+     //   telemetry.addLine(claw.allianceColor);
         telemetry.addData("red detected: ", claw.colorSensor.getNormalizedColors().red);
         telemetry.addData("blue detected: ", claw.colorSensor.getNormalizedColors().blue);
     }
