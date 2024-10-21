@@ -14,8 +14,8 @@ public class GamepadController {
     // References to hardware components and subsystems
     private Gamepad gamepad1, gamepad2;
     private DriveTrain driveTrain;
-
     private LinearOpMode opMode;
+    private Claw claw;
 
     /**
      * Constructor for GamepadController
@@ -27,20 +27,23 @@ public class GamepadController {
     public GamepadController(Gamepad gamepad1,
                              Gamepad gamepad2,
                              DriveTrain driveTrain,
-                             LinearOpMode opMode
+                             LinearOpMode opMode,
+                             Claw claw
     ) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
         this.driveTrain = driveTrain;
         this.opMode = opMode;
+        this.claw = claw;
     }
 
+    public void runSubSystems(){
+        runDriveTrain();
+        runClaw();
+    }
     /**
      *runByGamepad is the main controller function that runs each subsystem controller based on states
      */
-    public void runSubSystems(){
-        runDriveTrain();
-    }
 
     /**
      * runByGamepadRRDriveModes sets modes for Road Runner such as ROBOT and FIELD Centric Modes. <BR>
@@ -114,6 +117,21 @@ public class GamepadController {
     boolean gp2Dpad_rightLast = false;
     boolean gp2LeftTriggerLast = false;
     boolean gp2RightTriggerLast = false;
+
+
+
+    public void runClaw() {
+        if(gp1GetLeftBumper()) {
+            if(claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_OPEN) {
+                claw.intakeClawClose();
+            } else {
+                claw.intakeClawOpen();
+            }
+        }
+    }
+
+
+
 
     /**
      * Method to convert linear map from gamepad1 and gamepad2 stick input to a cubic map
