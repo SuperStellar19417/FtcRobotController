@@ -8,14 +8,17 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
+import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 
-@Autonomous(name = "Observation Park Only", group = "01-Test")
-public class SimplePathTestAuto extends LinearOpMode {
+
+
+@Autonomous(name = "Park with Ascent", group = "01-Test")
+public class ParkOnlyAscent extends LinearOpMode {
 
     private GamepadController gamepadController;
     private DriveTrain driveTrain;
@@ -26,6 +29,7 @@ public class SimplePathTestAuto extends LinearOpMode {
 
     private Claw claw;
     private Arm arm;
+
     @Override
     public void runOpMode() {
         // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
@@ -46,8 +50,13 @@ public class SimplePathTestAuto extends LinearOpMode {
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
+                .lineToX(14)
                 .turn(Math.toRadians(90))
-                .lineToX(10);
+                .lineToX(5);
+                arm.runArmToLevel(5); //go forward and touch rung with arm
+
+
+
 
         // Create an action that will be run
         Action followPathAction = tab1.build();
@@ -74,6 +83,7 @@ public class SimplePathTestAuto extends LinearOpMode {
         // Initialize all subsystems here
         telemetry.setAutoClear(false);
 
+
         // Init Pressed
         telemetry.addLine("Robot Init Pressed");
         telemetry.addLine("==================");
@@ -85,7 +95,12 @@ public class SimplePathTestAuto extends LinearOpMode {
         telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
         telemetry.update();
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null);
+        //Aarushi-initialize claw and arm
+        arm = new Arm(hardwareMap, telemetry);
+        telemetry.addLine("Arm initialized");
+        claw = new Claw(hardwareMap, telemetry);
+
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
@@ -115,3 +130,4 @@ public class SimplePathTestAuto extends LinearOpMode {
         telemetry.update();
     }
 }
+

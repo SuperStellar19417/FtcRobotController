@@ -87,11 +87,19 @@ public class Climber {
         if (climberMotorStateCount < 0) {
             climberMotorStateCount = 0;
         }
-
-
     }
+
+        public void moveClimberSlightlyUp() {
+            turnClimberBrakeModeOn();
+            climberMotorStateCount = climberMotorStateCount + CLIMBER_DELTA_SLIGHTLY_UP_DELTA_COUNT;
+            if (climberMotorStateCount > 0) {
+                climberMotorStateCount = 1000;
+            }
+    }
+
+
 
     private void turnClimberBrakeModeOn() {
         climberMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
     }
-}
+    }
