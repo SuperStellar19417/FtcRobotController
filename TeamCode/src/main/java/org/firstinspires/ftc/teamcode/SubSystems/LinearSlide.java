@@ -29,6 +29,9 @@ public class LinearSlide {
     // Starting position
     public void initLinearSlide() {
         slideMotor.setTargetPosition(0);
+        slideMotor.setPositionPIDFCoefficients(4.0);
+        slideMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        slideMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         intakeArmServoState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
     }
 

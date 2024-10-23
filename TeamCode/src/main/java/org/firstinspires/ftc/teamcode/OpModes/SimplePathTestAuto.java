@@ -86,7 +86,7 @@ public class SimplePathTestAuto extends LinearOpMode {
         telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
         telemetry.update();
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 

@@ -18,6 +18,7 @@ public class GamepadController {
     private LinearOpMode opMode;
     private Claw claw;
     private Arm arm;
+    private LinearSlide slide;
 
     /**
      * Constructor for GamepadController
@@ -31,7 +32,8 @@ public class GamepadController {
                              DriveTrain driveTrain,
                              LinearOpMode opMode,
                              Claw claw,
-                             Arm arm
+                             Arm arm,
+                             LinearSlide slide
     ) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
@@ -39,17 +41,26 @@ public class GamepadController {
         this.opMode = opMode;
         this.claw = claw;
         this.arm = arm;
+        this.slide = slide;
     }
 
     public void runSubSystems(){
         runDriveTrain();
-        runClaw();
+       // runClaw();
         runArm();
+        runSlides();
+
     }
 
     public void runArm() {
-        if(gp1GetA()) {
+        if(gp1GetButtonAPress()) {
             arm.moveArmLowBucketPosition();
+        } else if(gp1GetButtonBPress()) {
+            arm.moveArmHighBucketPosition();
+        } else if(gp1GetButtonXPress()) {
+            arm.moveArmLowRungPosition();
+        } else if(gp1GetButtonYPress()) {
+            arm.moveArmHighRungPosition();
         }
     }
 
@@ -143,7 +154,13 @@ public class GamepadController {
         }
     }
 
-
+    public void runSlides() {
+        if(gp2GetDpad_downPress()) {
+            slide.setSlidePositionHold();
+        } else if (gp2GetDpad_upPress()) {
+            slide.setSlidePositionExtend();
+        }
+    }
 
 
     /**
