@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -35,7 +36,7 @@ public class Arm {
     public int armPositionCount = ARM_POSITION_INTAKE_COUNT;
     public Telemetry telemetry;
 
-    public Arm(HardwareMap hardwareMap, Telemetry telemetry) {
+    public Arm(HardwareMap hardwareMap, Telemetry telemetry, OpMode opMode) {
         this.telemetry = telemetry;
         armMotor = hardwareMap.get(DcMotorEx.class, HardwareConstant.ArmMotor);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();

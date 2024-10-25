@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -14,7 +15,7 @@ public class Claw {
 
     public Telemetry telemetry;
 
-    public Claw(HardwareMap hardwareMap, Telemetry telemetry){
+    public Claw(HardwareMap hardwareMap, Telemetry telemetry, OpMode opMode){
         this.telemetry = telemetry;
         clawServo = hardwareMap.get(Servo.class, HardwareConstant.ClawServo); // 4 control hub
      //   wristServo = hardwareMap.get(Servo.class, HardwareConstant.WristServo);
