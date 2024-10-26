@@ -8,17 +8,17 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 
-public class MoveArmHighBucket implements Action {
+public class MoveArmHighRung implements Action {
     public OpMode opMode;
 
     Arm arm = new Arm(opMode);
 
-    public MoveArmHighBucket(OpMode opMode){
+    public MoveArmHighRung(OpMode opMode){
         this.opMode = opMode;
     }
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        arm.moveArmHighBucketPosition();
+        arm.moveArmHighRungPosition();
         return true;
     }
 }

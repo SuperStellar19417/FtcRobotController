@@ -47,7 +47,8 @@ public class SimplePathTestAuto extends LinearOpMode {
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
                 .turn(Math.toRadians(90))
-                .lineToX(10);
+                .lineToX(10)
+                .;
 
         // Create an action that will be run
         Action followPathAction = tab1.build();
