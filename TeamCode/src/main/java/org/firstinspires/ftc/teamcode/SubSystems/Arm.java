@@ -10,15 +10,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Arm {
 
     public DcMotorEx armMotor;
-    public VoltageSensor voltageSensor;
-    public double voltageThreshold = 9.0;
     public static int ARM_POSITION_INTAKE_COUNT = 0;
     public static int ARM_POSITION_LOW_BUCKET_COUNT = 1150;
     public static int ARM_POSITION_HIGH_BUCKET_COUNT = 2050;
     public static int ARM_POSITION_LOW_RUNG_COUNT = 1000;
     public static int ARM_POSITION_HIGH_RUNG_COUNT = 1900;
     public static double currentPID = 3.00;
-    public static int ARM_DELTA_SLIGHTLY_DOWN_DELTA_COUNT = 150;
+    public static int ARM_DELTA_COUNT = 150;
     public static double POWER_LEVEL_RUN = .25;
     public double motorPowerToRun = POWER_LEVEL_RUN;
     public boolean runArmToLevelState = false;
@@ -81,11 +79,9 @@ public class Arm {
     /**
      * Initialize arm to low position
      */
-    public void moveElevatorIntakePosition() {
+    public void moveArmIntakePosition() {
         armPositionCount = ARM_POSITION_INTAKE_COUNT;
-        armMotor.setTargetPosition(armPositionCount);
-        motorPowerToRun = POWER_LEVEL_RUN;
-        runArmToLevelState = true;
+        runArmSetup();
         armPosition = ARM_POSITION.ARM_POSITION_INTAKE;
         if (runArmToLevelState) {
             runArmToLevel(motorPowerToRun);
@@ -94,9 +90,7 @@ public class Arm {
 
     public void moveArmLowBucketPosition() {
         armPositionCount = ARM_POSITION_LOW_BUCKET_COUNT;
-        armMotor.setTargetPosition(armPositionCount);
-        motorPowerToRun = POWER_LEVEL_RUN;
-        runArmToLevelState = true;
+        runArmSetup();
         armPosition = ARM_POSITION.ARM_POSITION_LOW_BUCKET;
         if (runArmToLevelState) {
             runArmToLevel(motorPowerToRun);
@@ -105,9 +99,7 @@ public class Arm {
 
     public void moveArmHighBucketPosition() {
         armPositionCount = ARM_POSITION_HIGH_BUCKET_COUNT;
-        armMotor.setTargetPosition(armPositionCount);
-        motorPowerToRun = POWER_LEVEL_RUN;
-        runArmToLevelState = true;
+        runArmSetup();
         armPosition = ARM_POSITION.ARM_POSITION_HIGH_BUCKET;
         if (runArmToLevelState) {
             runArmToLevel(motorPowerToRun);
@@ -116,9 +108,7 @@ public class Arm {
 
     public void moveArmLowRungPosition() {
         armPositionCount = ARM_POSITION_LOW_RUNG_COUNT;
-        armMotor.setTargetPosition(armPositionCount);
-        motorPowerToRun = POWER_LEVEL_RUN;
-        runArmToLevelState = true;
+        runArmSetup();
         armPosition = ARM_POSITION.ARM_POSITION_LOW_RUNG;
         if (runArmToLevelState) {
             runArmToLevel(motorPowerToRun);
@@ -127,16 +117,36 @@ public class Arm {
 
     public void moveArmHighRungPosition() {
         armPositionCount = ARM_POSITION_HIGH_RUNG_COUNT;
-        armMotor.setTargetPosition(armPositionCount);
-        motorPowerToRun = POWER_LEVEL_RUN;
-        runArmToLevelState = true;
+        runArmSetup();
         armPosition = ARM_POSITION.ARM_POSITION_HIGH_RUNG;
         if (runArmToLevelState) {
             runArmToLevel(motorPowerToRun);
         }
     }
 
-    public ARM_POSITION getElevatorPosition() {
+    public void moveArmSlightlyUp() {
+        armPositionCount = armPositionCount + ARM_DELTA_COUNT;
+        runArmSetup();
+        if (runArmToLevelState) {
+            runArmToLevel(motorPowerToRun);
+        }
+    }
+
+    public void moveArmSlightlyDown() {
+        armPositionCount = armPositionCount - ARM_DELTA_COUNT;
+        runArmSetup();
+        if (runArmToLevelState) {
+            runArmToLevel(motorPowerToRun);
+        }
+    }
+
+    public void runArmSetup() {
+        armMotor.setTargetPosition(armPositionCount);
+        motorPowerToRun = POWER_LEVEL_RUN;
+        runArmToLevelState = true;
+    }
+
+    public ARM_POSITION getArmPosition() {
         return armPosition;
     }
 
@@ -151,7 +161,7 @@ public class Arm {
 
     public void printDebugMessages(){
         //******  debug ******
-        telemetry.addData("arm level", getElevatorPosition().toString());
+        telemetry.addData("arm level", getArmPosition().toString());
         telemetry.addData("arm_motor_encoder_right",currentArmEncoderValue());
         telemetry.addData("arm_motor_encoder val ", armPositionCount);
     }

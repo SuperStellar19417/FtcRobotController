@@ -14,15 +14,13 @@ import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 public class CloseClaw implements Action {
     public OpMode opMode;
 
-    Claw claw = new Claw(opMode);
-
     public CloseClaw(OpMode opMode) {
         this.opMode = opMode;
     }
 
+    Claw claw = new Claw(opMode);
 
     @Override
-
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
         claw.intakeClawClose();
         return true;
