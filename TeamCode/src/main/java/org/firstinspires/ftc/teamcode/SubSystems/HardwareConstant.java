@@ -15,4 +15,5 @@ public class HardwareConstant {
     public static String WristServo = "wristServo";
     public static String ClawColorSensor = "clawColorSensor";
     public static String ArmMotor = "armMotor";
+    public static String LimitSwitch = "limitSwitch";
 }

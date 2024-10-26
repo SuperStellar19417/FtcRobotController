@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -16,11 +17,13 @@ public class Arm {
     public static int ARM_POSITION_LOW_RUNG_COUNT = 1000;
     public static int ARM_POSITION_HIGH_RUNG_COUNT = 1900;
     public static double currentPID = 3.00;
-    public static int ARM_DELTA_COUNT = 150;
+    public static int ARM_DELTA_COUNT = 700;
     public static double POWER_LEVEL_RUN = .25;
     public double motorPowerToRun = POWER_LEVEL_RUN;
     public boolean runArmToLevelState = false;
     public boolean armNeedsToGoDown = false;
+    public TouchSensor limitSwitch;
+    public int prevPosition = 0;
 
     public enum ARM_POSITION {
         ARM_POSITION_INTAKE,
@@ -36,6 +39,7 @@ public class Arm {
 
     public Arm(OpMode opMode) {
         armMotor = opMode.hardwareMap.get(DcMotorEx.class, HardwareConstant.ArmMotor);
+        limitSwitch = opMode.hardwareMap.get(TouchSensor.class, HardwareConstant.LimitSwitch);
         initArm();
     }
 
@@ -70,7 +74,17 @@ public class Arm {
 
     private void runMotors(double power) {
         armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(power);
+        int delta = Math.abs(armPositionCount - prevPosition);
+        int checkCount = (delta - (delta%200))/200;
+        for (int i = 0; i < checkCount; i++) {
+            if(!limitSwitch.isPressed()) {
+                prevPosition = prevPosition + delta;
+                armMotor.setTargetPosition(prevPosition);
+                armMotor.setPower(power);
+            } else {
+                return;
+            }
+        }
     }
 
     private void stopMotors() {
@@ -80,6 +94,7 @@ public class Arm {
      * Initialize arm to low position
      */
     public void moveArmIntakePosition() {
+        prevPosition = armPositionCount;
         armPositionCount = ARM_POSITION_INTAKE_COUNT;
         runArmSetup();
         armPosition = ARM_POSITION.ARM_POSITION_INTAKE;
@@ -89,6 +104,7 @@ public class Arm {
     }
 
     public void moveArmLowBucketPosition() {
+        prevPosition = armPositionCount;
         armPositionCount = ARM_POSITION_LOW_BUCKET_COUNT;
         runArmSetup();
         armPosition = ARM_POSITION.ARM_POSITION_LOW_BUCKET;
@@ -98,6 +114,7 @@ public class Arm {
     }
 
     public void moveArmHighBucketPosition() {
+        prevPosition = armPositionCount;
         armPositionCount = ARM_POSITION_HIGH_BUCKET_COUNT;
         runArmSetup();
         armPosition = ARM_POSITION.ARM_POSITION_HIGH_BUCKET;
@@ -107,6 +124,7 @@ public class Arm {
     }
 
     public void moveArmLowRungPosition() {
+        prevPosition = armPositionCount;
         armPositionCount = ARM_POSITION_LOW_RUNG_COUNT;
         runArmSetup();
         armPosition = ARM_POSITION.ARM_POSITION_LOW_RUNG;
@@ -116,6 +134,7 @@ public class Arm {
     }
 
     public void moveArmHighRungPosition() {
+        prevPosition = armPositionCount;
         armPositionCount = ARM_POSITION_HIGH_RUNG_COUNT;
         runArmSetup();
         armPosition = ARM_POSITION.ARM_POSITION_HIGH_RUNG;
@@ -125,6 +144,7 @@ public class Arm {
     }
 
     public void moveArmSlightlyUp() {
+        prevPosition = armPositionCount;
         armPositionCount = armPositionCount + ARM_DELTA_COUNT;
         runArmSetup();
         if (runArmToLevelState) {
