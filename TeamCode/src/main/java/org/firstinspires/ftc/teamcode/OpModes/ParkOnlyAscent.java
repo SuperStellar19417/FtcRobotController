@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
-
+import org.firstinspires.ftc.teamcode.SubSystems.LinearSlide;
 
 
 @Autonomous(name = "Park with Ascent", group = "01-Test")
@@ -29,6 +29,7 @@ public class ParkOnlyAscent extends LinearOpMode {
 
     private Claw claw;
     private Arm arm;
+    private LinearSlide slides;
 
     @Override
     public void runOpMode() {
@@ -96,11 +97,12 @@ public class ParkOnlyAscent extends LinearOpMode {
         telemetry.update();
 
         //Aarushi-initialize claw and arm
-        arm = new Arm(hardwareMap, telemetry);
+        arm = new Arm(hardwareMap, telemetry, this);
         telemetry.addLine("Arm initialized");
-        claw = new Claw(hardwareMap, telemetry);
+        claw = new Claw(hardwareMap, telemetry, this);
+        slides = new LinearSlide(hardwareMap, telemetry, this);
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slides);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 

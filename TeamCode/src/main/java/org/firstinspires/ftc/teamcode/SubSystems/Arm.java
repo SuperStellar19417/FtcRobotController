@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -13,11 +14,12 @@ public class Arm {
     public double voltageThreshold = 9.0;
     public static int ARM_POSITION_INTAKE_COUNT = 0;
     public static int ARM_POSITION_LOW_BUCKET_COUNT = 1150;
-    public static int ARM_POSITION_HIGH_BUCKET_COUNT = 1450;
-    public static int ARM_POSITION_LOW_RUNG_COUNT = 2050;
-    public static int ARM_POSITION_HIGH_RUNG_COUNT = 2050;
+    public static int ARM_POSITION_HIGH_BUCKET_COUNT = 2050;
+    public static int ARM_POSITION_LOW_RUNG_COUNT = 1000;
+    public static int ARM_POSITION_HIGH_RUNG_COUNT = 1900;
+    public static double currentPID = 3.00;
     public static int ARM_DELTA_SLIGHTLY_DOWN_DELTA_COUNT = 150;
-    public static double POWER_LEVEL_RUN = .8;
+    public static double POWER_LEVEL_RUN = .25;
     public double motorPowerToRun = POWER_LEVEL_RUN;
     public boolean runArmToLevelState = false;
     public boolean armNeedsToGoDown = false;
@@ -34,15 +36,15 @@ public class Arm {
     public int armPositionCount = ARM_POSITION_INTAKE_COUNT;
     public Telemetry telemetry;
 
-    public Arm(HardwareMap hardwareMap, Telemetry telemetry) {
+    public Arm(HardwareMap hardwareMap, Telemetry telemetry, OpMode opMode) {
         this.telemetry = telemetry;
-        armMotor = hardwareMap.get(DcMotorEx.class, "leftOuttake");
+        armMotor = hardwareMap.get(DcMotorEx.class, HardwareConstant.ArmMotor);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
         initArm();
     }
 
     public void initArm() {
-        armMotor.setPositionPIDFCoefficients(5.0);
+        armMotor.setPositionPIDFCoefficients(4.0);
         armMotor.setDirection(DcMotorEx.Direction.FORWARD);
         armMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
@@ -57,8 +59,8 @@ public class Arm {
             stopMotors();
             return;
         }
-
         if (runArmToLevelState) {
+
             runMotors(power);
             runArmToLevelState = false;
         } else {
@@ -103,7 +105,7 @@ public class Arm {
         }
     }
 
-    public void moveElevatorHighBucketPosition() {
+    public void moveArmHighBucketPosition() {
         armPositionCount = ARM_POSITION_HIGH_BUCKET_COUNT;
         armMotor.setTargetPosition(armPositionCount);
         motorPowerToRun = POWER_LEVEL_RUN;
@@ -114,7 +116,7 @@ public class Arm {
         }
     }
 
-    public void moveElevatorLowRungPosition() {
+    public void moveArmLowRungPosition() {
         armPositionCount = ARM_POSITION_LOW_RUNG_COUNT;
         armMotor.setTargetPosition(armPositionCount);
         motorPowerToRun = POWER_LEVEL_RUN;
@@ -125,7 +127,7 @@ public class Arm {
         }
     }
 
-    public void moveElevatorHighRungPosition() {
+    public void moveArmHighRungPosition() {
         armPositionCount = ARM_POSITION_HIGH_RUNG_COUNT;
         armMotor.setTargetPosition(armPositionCount);
         motorPowerToRun = POWER_LEVEL_RUN;

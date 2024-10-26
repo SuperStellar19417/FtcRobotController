@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -48,7 +50,7 @@ public class Climber {
     }
 
 
-    public Climber(HardwareMap hardwareMap) {
+    public Climber(HardwareMap hardwareMap, LinearOpMode opMode) {
         climberMotor = hardwareMap.get(DcMotorEx.class, "climberMotor");
 
         initClimber();
