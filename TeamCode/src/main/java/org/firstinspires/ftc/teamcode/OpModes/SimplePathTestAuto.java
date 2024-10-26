@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
+
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -8,6 +10,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
@@ -47,8 +50,7 @@ public class SimplePathTestAuto extends LinearOpMode {
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
                 .turn(Math.toRadians(90))
-                .lineToX(10)
-                .;
+                .lineToX(10);
 
         // Create an action that will be run
         Action followPathAction = tab1.build();
@@ -114,5 +116,13 @@ public class SimplePathTestAuto extends LinearOpMode {
         driveTrain.outputTelemetry();
 
         telemetry.update();
+    }
+
+    public void safeWaitSeconds(double time) {
+        ElapsedTime timer = new ElapsedTime(SECONDS);
+        timer.reset();
+        while (!isStopRequested() && timer.time() < time) {
+            //don't even worry about it
+        }
     }
 }

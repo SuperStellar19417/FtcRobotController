@@ -119,6 +119,7 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.update();
     }
 
+
     /**
      * Output telemetry messages to the driver station
      */
