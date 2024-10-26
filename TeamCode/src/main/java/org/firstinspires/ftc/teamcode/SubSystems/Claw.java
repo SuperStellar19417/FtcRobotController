@@ -15,11 +15,10 @@ public class Claw {
 
     public Telemetry telemetry;
 
-    public Claw(HardwareMap hardwareMap, Telemetry telemetry, OpMode opMode){
-        this.telemetry = telemetry;
-        clawServo = hardwareMap.get(Servo.class, HardwareConstant.ClawServo); // 4 control hub
+    public Claw(OpMode opMode){
+        clawServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.ClawServo); // 4 control hub
      //   wristServo = hardwareMap.get(Servo.class, HardwareConstant.WristServo);
-        colorSensor = hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
+        colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
 
         initIntakeClaw();
     }

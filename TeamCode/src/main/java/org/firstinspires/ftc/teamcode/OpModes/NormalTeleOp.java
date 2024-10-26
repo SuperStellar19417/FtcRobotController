@@ -92,8 +92,8 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.update();
 
        // claw = new Claw(hardwareMap, telemetry);
-        arm = new Arm(hardwareMap, telemetry, this);
-        slide = new LinearSlide(hardwareMap, telemetry, this);
+        arm = new Arm(this);
+        slide = new LinearSlide(this);
         if(allianceSelection == ALLIANCE.RED) {
          //   claw.allianceColor = "RED";
         } else {

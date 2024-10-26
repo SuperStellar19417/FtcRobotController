@@ -10,10 +10,8 @@ public class LinearSlide {
     public DcMotorEx slideMotor;
     public Telemetry telemetry;
 
-    public LinearSlide(HardwareMap hardwareMap, Telemetry telemetry, OpMode opMode){
-        this.telemetry = telemetry;
-        slideMotor = hardwareMap.get(DcMotorEx.class,HardwareConstant.SlideMotor);
-
+    public LinearSlide(OpMode opMode){
+        slideMotor = opMode.hardwareMap.get(DcMotorEx.class,HardwareConstant.SlideMotor);
         initLinearSlide();
     }
 

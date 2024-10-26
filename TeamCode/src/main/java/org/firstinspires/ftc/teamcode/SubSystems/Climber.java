@@ -50,9 +50,8 @@ public class Climber {
     }
 
 
-    public Climber(HardwareMap hardwareMap, LinearOpMode opMode) {
-        climberMotor = hardwareMap.get(DcMotorEx.class, "climberMotor");
-
+    public Climber(LinearOpMode opMode) {
+        climberMotor = opMode.hardwareMap.get(DcMotorEx.class, "climberMotor");
         initClimber();
     }
 

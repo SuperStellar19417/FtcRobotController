@@ -36,10 +36,8 @@ public class Arm {
     public int armPositionCount = ARM_POSITION_INTAKE_COUNT;
     public Telemetry telemetry;
 
-    public Arm(HardwareMap hardwareMap, Telemetry telemetry, OpMode opMode) {
-        this.telemetry = telemetry;
-        armMotor = hardwareMap.get(DcMotorEx.class, HardwareConstant.ArmMotor);
-        voltageSensor = hardwareMap.voltageSensor.iterator().next();
+    public Arm(OpMode opMode) {
+        armMotor = opMode.hardwareMap.get(DcMotorEx.class, HardwareConstant.ArmMotor);
         initArm();
     }
 
