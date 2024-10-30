@@ -32,7 +32,7 @@ public class ParkOnlyAscent extends LinearOpMode {
     private LinearSlide slides;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
         // for more information on how to create a path
 
@@ -97,10 +97,10 @@ public class ParkOnlyAscent extends LinearOpMode {
         telemetry.update();
 
         //Aarushi-initialize claw and arm
-        arm = new Arm(hardwareMap, telemetry, this);
+        arm = new Arm(this);
         telemetry.addLine("Arm initialized");
-        claw = new Claw(hardwareMap, telemetry, this);
-        slides = new LinearSlide(hardwareMap, telemetry, this);
+        claw = new Claw(this);
+        slides = new LinearSlide(this);
 
         gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slides);
         telemetry.addLine("Gamepad Initialized");

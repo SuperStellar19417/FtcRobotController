@@ -33,7 +33,7 @@ public class NormalTeleOp extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         // Initialization code here
         initSubsystems();
 
@@ -73,7 +73,7 @@ public class NormalTeleOp extends LinearOpMode {
         }
     }
 
-    private void initSubsystems() {
+    private void initSubsystems() throws InterruptedException {
         // Initialize all subsystems here
 
         telemetry.setAutoClear(false);
@@ -92,8 +92,8 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.update();
 
        // claw = new Claw(hardwareMap, telemetry);
-        arm = new Arm(hardwareMap, telemetry, this);
-        slide = new LinearSlide(hardwareMap, telemetry, this);
+        arm = new Arm(this);
+        slide = new LinearSlide(this);
         if(allianceSelection == ALLIANCE.RED) {
          //   claw.allianceColor = "RED";
         } else {
@@ -118,6 +118,7 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addLine("====================");
         telemetry.update();
     }
+
 
     /**
      * Output telemetry messages to the driver station

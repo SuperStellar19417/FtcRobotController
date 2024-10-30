@@ -1,28 +1,28 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.SubSystems.Claw;
+import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 
-public class CloseClaw implements Action {
+public class MoveArmLowRung implements Action {
     public OpMode opMode;
 
-    public CloseClaw(OpMode opMode) {
+    Arm arm = new Arm(opMode);
+
+    public MoveArmLowRung(OpMode opMode){
         this.opMode = opMode;
     }
-
-    Claw claw = new Claw(opMode);
-
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        claw.intakeClawClose();
+        try {
+            arm.moveArmLowRungPosition();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 }
