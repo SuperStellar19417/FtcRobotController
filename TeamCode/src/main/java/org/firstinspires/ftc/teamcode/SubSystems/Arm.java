@@ -87,14 +87,16 @@ public class Arm {
             }
             catch (Exception ex) {
             }
-            opmode.telemetry.addData("limit switch" , limitSwitch.isPressed());
+        /*    opmode.telemetry.addData("limit switch" , limitSwitch.isPressed());
             opmode.telemetry.addData("limit switch" , limitSwitch.getValue());
-            opmode.telemetry.update();
+            opmode.telemetry.update(); */
+            boolean pressed = limitSwitch.isPressed();
             if(!limitSwitch.isPressed()) {
                 prevPosition = prevPosition + 200;
                 armMotor.setTargetPosition(prevPosition);
                 armMotor.setPower(power);
             } else {
+                stopMotors();
                 return;
             }
         }
