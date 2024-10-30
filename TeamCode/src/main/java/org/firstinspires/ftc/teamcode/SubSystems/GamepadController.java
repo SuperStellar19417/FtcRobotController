@@ -44,7 +44,7 @@ public class GamepadController {
         this.slide = slide;
     }
 
-    public void runSubSystems(){
+    public void runSubSystems() throws InterruptedException {
         runDriveTrain();
        // runClaw();
         runArm();
@@ -52,7 +52,7 @@ public class GamepadController {
 
     }
 
-    public void runArm() {
+    public void runArm() throws InterruptedException {
         if(gp1GetButtonAPress()) {
             arm.moveArmLowBucketPosition();
         } else if(gp1GetButtonBPress()) {

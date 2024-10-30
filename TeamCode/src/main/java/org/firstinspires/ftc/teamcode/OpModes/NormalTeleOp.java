@@ -33,7 +33,7 @@ public class NormalTeleOp extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         // Initialization code here
         initSubsystems();
 
@@ -73,7 +73,7 @@ public class NormalTeleOp extends LinearOpMode {
         }
     }
 
-    private void initSubsystems() {
+    private void initSubsystems() throws InterruptedException {
         // Initialize all subsystems here
 
         telemetry.setAutoClear(false);

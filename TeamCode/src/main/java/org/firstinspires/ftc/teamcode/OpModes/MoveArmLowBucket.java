@@ -18,7 +18,11 @@ public class MoveArmLowBucket implements Action {
     }
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        arm.moveArmLowBucketPosition();
+        try {
+            arm.moveArmLowBucketPosition();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 }

@@ -32,7 +32,7 @@ public class ParkOnlyAscent extends LinearOpMode {
     private LinearSlide slides;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
         // for more information on how to create a path
 

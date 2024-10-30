@@ -18,7 +18,11 @@ public class MoveArmHighRung implements Action {
     }
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        arm.moveArmHighRungPosition();
+        try {
+            arm.moveArmHighRungPosition();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 }
