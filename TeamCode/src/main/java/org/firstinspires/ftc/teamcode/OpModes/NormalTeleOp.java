@@ -102,7 +102,7 @@ public class NormalTeleOp extends LinearOpMode {
         gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slide);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
-        gamepadController.runSlides();
+        //gamepadController.runSlides();
         gamepadController.runArm();
       //  gamepadController.runClaw();
 
@@ -114,7 +114,7 @@ public class NormalTeleOp extends LinearOpMode {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        telemetry.addLine("Robot Init Completed");
+        telemetry.addLine("Robot Init Completed Keerthika");
         telemetry.addLine("====================");
         telemetry.update();
     }

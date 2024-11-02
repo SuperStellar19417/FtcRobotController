@@ -45,10 +45,12 @@ public class GamepadController {
     }
 
     public void runSubSystems() throws InterruptedException {
+        opMode.telemetry.addData("in arm", "I am here");
+        opMode.telemetry.update();
         runDriveTrain();
        // runClaw();
         runArm();
-        runSlides();
+       // runSlides();
 
     }
 

@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
-
+import org.firstinspires.ftc.teamcode.SubSystems.LinearSlide;
 
 
 @Autonomous(name = "High Bucket Ascent", group = "01-Test")
@@ -29,6 +29,8 @@ public class HighBucketAscent extends LinearOpMode {
 
     private Claw claw;
     private Arm arm;
+
+    private LinearSlide linearSlide;
 
     @Override
     public void runOpMode() {
@@ -49,21 +51,21 @@ public class HighBucketAscent extends LinearOpMode {
 
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
-        TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
-                .turn(Math.toRadians(-90))
-                .lineToX(5);
-                arm.runArmToLevel(5)
-                .turn(Math.toRadians(90))
-                .lineToX(10)
-                .turn(Math.toRadians(90))
-                .lineToX(10);
-                arm.runArmToLevel(5);
+       // TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
+               // .turn(Math.toRadians(-90))
+               // .lineToX(5);
+               // arm.runArmToLevel(5)
+                //.turn(Math.toRadians(90))
+                        //.lineToX(10)
+               // .turn(Math.toRadians(90))
+                //.lineToX(10);
+               // arm.runArmToLevel(5);
 
 
 
 
         // Create an action that will be run
-        Action followPathAction = tab1.build();
+        //Action followPathAction = tab1.build();
 
         // Run the action (s)
         // You can run multiple actions to execute a complex auto. For example :
@@ -79,7 +81,7 @@ public class HighBucketAscent extends LinearOpMode {
         */
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
-        Actions.runBlocking( new SequentialAction(followPathAction));
+       // Actions.runBlocking( new SequentialAction(followPathAction));
 
     }
 
@@ -100,11 +102,12 @@ public class HighBucketAscent extends LinearOpMode {
         telemetry.update();
 
         //Aarushi-initialize claw and arm
-        arm = new Arm(hardwareMap, telemetry);
+       arm = new Arm( this);
         telemetry.addLine("Arm initialized");
-        claw = new Claw(hardwareMap, telemetry);
+       claw = new Claw(this);
+       linearSlide = new LinearSlide( this);
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, linearSlide);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
