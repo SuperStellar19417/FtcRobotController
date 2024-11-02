@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 //TODO cleanup
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -9,10 +10,8 @@ public class LinearSlide {
     public DcMotorEx slideMotor;
     public Telemetry telemetry;
 
-    public LinearSlide(HardwareMap hardwareMap, Telemetry telemetry){
-        this.telemetry = telemetry;
-        slideMotor = hardwareMap.get(DcMotorEx.class,HardwareConstant.SlideMotor);
-
+    public LinearSlide(OpMode opMode){
+        slideMotor = opMode.hardwareMap.get(DcMotorEx.class,HardwareConstant.SlideMotor);
         initLinearSlide();
     }
 
@@ -29,6 +28,9 @@ public class LinearSlide {
     // Starting position
     public void initLinearSlide() {
         slideMotor.setTargetPosition(0);
+        slideMotor.setPositionPIDFCoefficients(4.0);
+        slideMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        slideMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         intakeArmServoState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
     }
 

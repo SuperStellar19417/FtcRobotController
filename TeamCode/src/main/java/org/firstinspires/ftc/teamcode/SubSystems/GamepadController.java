@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 
@@ -16,6 +17,8 @@ public class GamepadController {
     private DriveTrain driveTrain;
     private LinearOpMode opMode;
     private Claw claw;
+    private Arm arm;
+    private LinearSlide slide;
 
     /**
      * Constructor for GamepadController
@@ -28,19 +31,40 @@ public class GamepadController {
                              Gamepad gamepad2,
                              DriveTrain driveTrain,
                              LinearOpMode opMode,
-                             Claw claw
+                             Claw claw,
+                             Arm arm,
+                             LinearSlide slide
     ) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
         this.driveTrain = driveTrain;
         this.opMode = opMode;
         this.claw = claw;
+        this.arm = arm;
+        this.slide = slide;
     }
 
-    public void runSubSystems(){
+    public void runSubSystems() throws InterruptedException {
         runDriveTrain();
-        runClaw();
+       // runClaw();
+        runArm();
+        runSlides();
+
     }
+
+    public void runArm() throws InterruptedException {
+        if(gp1GetButtonAPress()) {
+            arm.moveArmLowBucketPosition();
+        } else if(gp1GetButtonBPress()) {
+            arm.moveArmHighBucketPosition();
+        } else if(gp1GetButtonXPress()) {
+            arm.moveArmLowRungPosition();
+        } else if(gp1GetButtonYPress()) {
+            arm.moveArmHighRungPosition();
+        }
+    }
+
+
     /**
      *runByGamepad is the main controller function that runs each subsystem controller based on states
      */
@@ -130,7 +154,13 @@ public class GamepadController {
         }
     }
 
-
+    public void runSlides() {
+        if(gp2GetDpad_downPress()) {
+            slide.setSlidePositionHold();
+        } else if (gp2GetDpad_upPress()) {
+            slide.setSlidePositionExtend();
+        }
+    }
 
 
     /**
