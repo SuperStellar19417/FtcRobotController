@@ -54,8 +54,17 @@ public class GamepadController {
 
     }
 
+
     public void runArm() throws InterruptedException {
-        if(gp1GetButtonAPress()) {
+        opMode.telemetry.addData("Entering run arm", "entering run arm 1");
+        opMode.telemetry.update();
+        boolean buttonAPress = gp1GetButtonAPress();
+        opMode.telemetry.addData(" button A pressed", buttonAPress);
+        opMode.telemetry.update();
+        buttonAPress = true;
+        if(buttonAPress) {
+            opMode.telemetry.addData("Entering button A press", "entering run arm 2");
+            opMode.telemetry.update();
             arm.moveArmLowBucketPosition();
         } else if(gp1GetButtonBPress()) {
             arm.moveArmHighBucketPosition();

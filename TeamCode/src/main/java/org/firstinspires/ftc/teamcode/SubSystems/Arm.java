@@ -20,7 +20,7 @@ public class Arm {
     public static int ARM_POSITION_HIGH_RUNG_COUNT = 1900;
     public static double currentPID = 3.00;
     public static int ARM_DELTA_COUNT = 700;
-    public static double POWER_LEVEL_RUN = .25;
+    public static double POWER_LEVEL_RUN = 1;
     public double motorPowerToRun = POWER_LEVEL_RUN;
     public boolean runArmToLevelState = false;
     public boolean armNeedsToGoDown = false;
@@ -70,7 +70,7 @@ public class Arm {
         opmode.telemetry.addData("Inside runarmtolevel", "Testing run motors 3");
         opmode.telemetry.update();
         if (runArmToLevelState) {
-            opmode.telemetry.addData("Inside runarmtolevel", "Testing run motors 4");
+            opmode.telemetry.addData("Inside runarmtolevel", "Testing run motors 4 :" + power);
             opmode.telemetry.update();
             runMotors(power);
             runArmToLevelState = false;
@@ -96,17 +96,22 @@ public class Arm {
             }
         /*    opmode.telemetry.addData("limit switch" , limitSwitch.isPressed());
             opmode.telemetry.addData("limit switch" , limitSwitch.getValue());
-            opmode.telemetry.update(); */
+            opmode.telemetry.update();
             /*boolean pressed = limitSwitch.isPressed();
-            if(!limitSwitch.isPressed()) {
+
+         */
+            prevPosition = prevPosition + 200;
+            armMotor.setTargetPosition(prevPosition);
+            armMotor.setPower(power);
+           /* if(!limitSwitch.isPressed()) {
                 prevPosition = prevPosition + 200;
                 armMotor.setTargetPosition(prevPosition);
                 armMotor.setPower(power);
             } else {
                 stopMotors();
                 return;
-            }
-            */
+            } */
+
         }
         prevPosition = prevPosition + extra;
         armMotor.setTargetPosition(prevPosition);
