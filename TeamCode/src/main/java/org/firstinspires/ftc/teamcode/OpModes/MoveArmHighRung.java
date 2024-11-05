@@ -9,20 +9,19 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 
 public class MoveArmHighRung implements Action {
-    public OpMode opMode;
 
-    Arm arm = new Arm(opMode);
+    private final Arm arm;
+    private final OpMode opMode;
 
     public MoveArmHighRung(OpMode opMode){
+
         this.opMode = opMode;
+        arm = new Arm(opMode);
     }
+
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        try {
-            arm.moveArmHighRungPosition();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        arm.moveArmHighRungPosition();
         return true;
     }
 }
