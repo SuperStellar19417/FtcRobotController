@@ -66,13 +66,19 @@ public class GamepadController {
             opMode.telemetry.addData("Entering button A press", "entering run arm 2");
             opMode.telemetry.update();
             arm.moveArmLowBucketPosition();
-        } else if(gp1GetButtonBPress()) {
+        } else if(gp2GetButtonBPress()) {
             arm.moveArmHighBucketPosition();
-        } else if(gp1GetButtonXPress()) {
+        } else if(gp2GetButtonXPress()) {
             arm.moveArmLowRungPosition();
-        } else if(gp1GetButtonYPress()) {
+        } else if(gp2GetButtonYPress()) {
             arm.moveArmHighRungPosition();
+        } else if (gp2GetDpad_upPress()) {
+            arm.moveArmSlightlyUp();
+        } else if (gp2GetDpad_downPress()) {
+            arm.moveArmSlightlyDown();
         }
+
+
     }
 
 

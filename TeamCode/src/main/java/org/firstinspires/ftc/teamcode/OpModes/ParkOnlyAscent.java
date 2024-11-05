@@ -8,7 +8,6 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
@@ -54,7 +53,7 @@ public class ParkOnlyAscent extends LinearOpMode {
                 .lineToX(14)
                 .turn(Math.toRadians(90))
                 .lineToX(5);
-                arm.runArmToLevel(5); //go forward and touch rung with arm
+                arm.moveArmLowBucketPosition(); //go forward and touch rung with arm
 
 
 

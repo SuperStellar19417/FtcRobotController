@@ -28,6 +28,16 @@ public class MotorTest extends LinearOpMode {
                     arm.moveArmSlightlyDown();
                     telemetry.addLine(arm.armPositionCount + " ");
                 }
+
+                if(gamepad.gp2GetButtonAPress()) {
+                    arm.moveArmLowBucketPosition();
+                } else if(gamepad.gp2GetButtonBPress()) {
+                    arm.moveArmHighBucketPosition();
+                } else if(gamepad.gp2GetButtonXPress()) {
+                    arm.moveArmLowRungPosition();
+                } else if(gamepad.gp2GetButtonYPress()) {
+                    arm.moveArmHighRungPosition();
+                }
             }
         }
     }
