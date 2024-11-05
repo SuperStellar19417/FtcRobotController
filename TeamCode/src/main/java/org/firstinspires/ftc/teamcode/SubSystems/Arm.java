@@ -24,7 +24,7 @@ public class Arm {
     public double motorPowerToRun = POWER_LEVEL_RUN;
     public boolean runArmToLevelState = false;
     public boolean armNeedsToGoDown = false;
-    public TouchSensor limitSwitch;
+    //public TouchSensor limitSwitch;
     public int prevPosition = 0;
 
     public enum ARM_POSITION {
@@ -43,7 +43,7 @@ public class Arm {
     public Arm(OpMode opMode) {
         this.opmode = opMode;
         armMotor = opMode.hardwareMap.get(DcMotorEx.class, HardwareConstant.ArmMotor);
-        limitSwitch = opMode.hardwareMap.get(TouchSensor.class, HardwareConstant.LimitSwitch);
+        //limitSwitch = opMode.hardwareMap.get(TouchSensor.class, HardwareConstant.LimitSwitch);
         initArm();
     }
 
@@ -56,15 +56,22 @@ public class Arm {
     }
 
     public void runArmToLevel(double power) throws InterruptedException {
+        opmode.telemetry.addData("Inside runarmtolevel", "Testing run motors 1");
+        opmode.telemetry.update();
         if (armNeedsToGoDown) {
+            opmode.telemetry.addData("Inside runarmtolevel", "Testing run motors 2");
+            opmode.telemetry.update();
             armPosition = ARM_POSITION.ARM_POSITION_INTAKE;
             armNeedsToGoDown = false;
             resetArm();
             stopMotors();
             return;
         }
+        opmode.telemetry.addData("Inside runarmtolevel", "Testing run motors 3");
+        opmode.telemetry.update();
         if (runArmToLevelState) {
-
+            opmode.telemetry.addData("Inside runarmtolevel", "Testing run motors 4");
+            opmode.telemetry.update();
             runMotors(power);
             runArmToLevelState = false;
         } else {
@@ -90,7 +97,7 @@ public class Arm {
         /*    opmode.telemetry.addData("limit switch" , limitSwitch.isPressed());
             opmode.telemetry.addData("limit switch" , limitSwitch.getValue());
             opmode.telemetry.update(); */
-            boolean pressed = limitSwitch.isPressed();
+            /*boolean pressed = limitSwitch.isPressed();
             if(!limitSwitch.isPressed()) {
                 prevPosition = prevPosition + 200;
                 armMotor.setTargetPosition(prevPosition);
@@ -99,6 +106,7 @@ public class Arm {
                 stopMotors();
                 return;
             }
+            */
         }
         prevPosition = prevPosition + extra;
         armMotor.setTargetPosition(prevPosition);
