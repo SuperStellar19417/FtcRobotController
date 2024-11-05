@@ -57,13 +57,19 @@ public class GamepadController {
     public void runArm() throws InterruptedException {
         if(gp1GetButtonAPress()) {
             arm.moveArmLowBucketPosition();
-        } else if(gp1GetButtonBPress()) {
+        } else if(gp2GetButtonBPress()) {
             arm.moveArmHighBucketPosition();
-        } else if(gp1GetButtonXPress()) {
+        } else if(gp2GetButtonXPress()) {
             arm.moveArmLowRungPosition();
-        } else if(gp1GetButtonYPress()) {
+        } else if(gp2GetButtonYPress()) {
             arm.moveArmHighRungPosition();
+        } else if (gp2GetDpad_upPress()) {
+            arm.moveArmSlightlyUp();
+        } else if (gp2GetDpad_downPress()) {
+            arm.moveArmSlightlyDown();
         }
+
+
     }
 
 
