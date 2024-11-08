@@ -22,13 +22,11 @@ public class Climber {
     }
 
     public static double ENCODER_VAlUE = 0;
-    public static int CLIMBER_UP_POSITION_COUNT = 0; // 2023-12-21 calibrated value
+    public static int CLIMBER_UP_POSITION_COUNT = 40000; // 2023-12-21 calibrated value
     public static int CLIMBER_DOWN_POSITION_COUNT = 0;
-    public static int CLIMBER_SLIGHTLY_DOWN_POSITION_COUNT = 0;  // 2023-12-21 calibrated value
-    public static int CLIMBER_SLIGHTLY_UP_POSITION_COUNT = 0;
-
-    public static int CLIMBER_DELTA_SLIGHTLY_UP_DELTA_COUNT = 0;
-    public static int CLIMBER_DELTA_SLIGHTLY_DOWN_DELTA_COUNT = 0;
+    public static int CLIMBER_DELTA_COUNT = 10000;  // 2023-12-21 calibrated value
+    public static int CLIMBER_MIN_COUNT = 0;
+    public static int CLIMBER_MAX_COUNT = 5000;
 
     public CLIMBER_MOTOR_STATE climberMotorState = CLIMBER_MOTOR_STATE.CLIMBER_DOWN_POSITION;
     public int climberMotorStateCount = CLIMBER_DOWN_POSITION_COUNT;
@@ -60,15 +58,11 @@ public class Climber {
         climberMotor.setDirection(DcMotorEx.Direction.FORWARD);
         climberMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-
         resetClimber();
         //initializeClimberToLowPosition();
-
-
     }
 
     public void resetClimber() {
-
         climberMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
     }
 
@@ -76,7 +70,7 @@ public class Climber {
         climberMotor.setPower(0.0);
     }
 
-    public void runCLimberToLevel(double power, int position) {
+    public void runClimberToLevel(double power, int position) {
         climberMotor.setTargetPosition(position);
         runMotors(power);
 
@@ -84,18 +78,34 @@ public class Climber {
 
     public void moveClimberSlightlyDown() {
         turnClimberBrakeModeOn();
-        climberMotorStateCount = climberMotorStateCount - CLIMBER_DELTA_SLIGHTLY_DOWN_DELTA_COUNT;
-        if (climberMotorStateCount < 0) {
-            climberMotorStateCount = 0;
-        }
+        turnClimberBrakeModeOn();
+        climberMotorStateCount = climberMotorStateCount - CLIMBER_DELTA_COUNT;
+        runClimberToLevel(0.9, climberMotorStateCount);
     }
 
-        public void moveClimberSlightlyUp() {
-            turnClimberBrakeModeOn();
-            climberMotorStateCount = climberMotorStateCount + CLIMBER_DELTA_SLIGHTLY_UP_DELTA_COUNT;
-            if (climberMotorStateCount > 0) {
-                climberMotorStateCount = 1000;
-            }
+    public void moveClimberSlightlyUp() {
+        turnClimberBrakeModeOn();
+        climberMotorStateCount = climberMotorStateCount + CLIMBER_DELTA_COUNT;
+        runClimberToLevel(0.9, climberMotorStateCount);
+
+    }
+
+    public void extendClimberUp() {
+        turnClimberBrakeModeOn();
+        climberMotorStateCount = CLIMBER_UP_POSITION_COUNT;
+        climberMotor.setTargetPosition(climberMotorStateCount);
+        climberMotorState = CLIMBER_MOTOR_STATE.CLIMBER_UP_POSITION;
+
+        runClimberToLevel(0.9, climberMotorStateCount);
+    }
+
+    public void runClimberDown() {
+        turnClimberBrakeModeOn();
+        climberMotorStateCount = CLIMBER_DOWN_POSITION_COUNT;
+        climberMotor.setTargetPosition(climberMotorStateCount);
+        climberMotorState = CLIMBER_MOTOR_STATE.CLIMBER_DOWN_POSITION;
+
+        runClimberToLevel(0.9, climberMotorStateCount);
     }
 
 

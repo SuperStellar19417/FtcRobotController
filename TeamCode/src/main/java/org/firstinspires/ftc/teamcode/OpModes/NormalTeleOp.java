@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
+import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.LinearSlide;
@@ -30,6 +31,7 @@ public class NormalTeleOp extends LinearOpMode {
     private Claw claw;
     private Arm arm;
     private LinearSlide slide;
+    private Climber climber;
 
 
     @Override
@@ -93,17 +95,19 @@ public class NormalTeleOp extends LinearOpMode {
 
        // claw = new Claw(hardwareMap, telemetry);
         arm = new Arm(this);
+        climber = new Climber(this);
         slide = new LinearSlide(this);
         if(allianceSelection == ALLIANCE.RED) {
          //   claw.allianceColor = "RED";
         } else {
             //claw.allianceColor = "BLUE";
         }
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slide);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slide, climber);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
         //gamepadController.runSlides();
         gamepadController.runArm();
+        gamepadController.runClimber();
       //  gamepadController.runClaw();
 
 
@@ -114,7 +118,7 @@ public class NormalTeleOp extends LinearOpMode {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        telemetry.addLine("Robot Init Completed Keerthika");
+        telemetry.addLine("Robot Init Completed ");
         telemetry.addLine("====================");
         telemetry.update();
     }
@@ -130,6 +134,7 @@ public class NormalTeleOp extends LinearOpMode {
 
         // Output telemetry messages for susbsystems here
         driveTrain.outputTelemetry();
+       telemetry.addData("climber position",  climber.climberMotor.getCurrentPosition());
 
         telemetry.update();
     }
@@ -139,6 +144,6 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addLine(claw.allianceColor); */
        /* telemetry.addData("red detected: ", claw.colorSensor.getNormalizedColors().red);
         telemetry.addData("blue detected: ", claw.colorSensor.getNormalizedColors().blue); */
-        telemetry.addData("arm: ", arm.armPositionCount);
+     //   telemetry.addData("arm: ", arm.armPositionCount);
     }
 }

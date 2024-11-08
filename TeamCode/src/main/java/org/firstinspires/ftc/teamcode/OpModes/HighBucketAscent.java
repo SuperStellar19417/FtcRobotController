@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
@@ -107,7 +108,8 @@ public class HighBucketAscent extends LinearOpMode {
        claw = new Claw(this);
        linearSlide = new LinearSlide( this);
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, linearSlide);
+
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, linearSlide, null);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 

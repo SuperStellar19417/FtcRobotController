@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
+import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 
 @TeleOp(name = "Motor Test", group = "00-Teleop")
@@ -15,7 +16,8 @@ public class MotorTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         arm = new Arm(this);
-        gamepad = new GamepadController(gamepad1, gamepad2, null, this, null, arm, null);
+        // climber = new Climber(this);
+        gamepad = new GamepadController(gamepad1, gamepad2, null, this, null, arm, null, null);
 
         waitForStart();
         while(!isStopRequested()) {
@@ -27,6 +29,16 @@ public class MotorTest extends LinearOpMode {
                 } else if (gamepad.gp2GetDpad_downPress()) {
                     arm.moveArmSlightlyDown();
                     telemetry.addLine(arm.armPositionCount + " ");
+                }
+
+                if(gamepad.gp2GetButtonAPress()) {
+                    arm.moveArmLowBucketPosition();
+                } else if(gamepad.gp2GetButtonBPress()) {
+                    arm.moveArmHighBucketPosition();
+                } else if(gamepad.gp2GetButtonXPress()) {
+                    arm.moveArmLowRungPosition();
+                } else if(gamepad.gp2GetButtonYPress()) {
+                    arm.moveArmHighRungPosition();
                 }
 
                 if(gamepad.gp2GetButtonAPress()) {

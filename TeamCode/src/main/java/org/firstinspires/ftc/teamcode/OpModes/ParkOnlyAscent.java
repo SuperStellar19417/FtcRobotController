@@ -101,7 +101,7 @@ public class ParkOnlyAscent extends LinearOpMode {
         claw = new Claw(this);
         slides = new LinearSlide(this);
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slides);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slides, null);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 

@@ -19,6 +19,7 @@ public class GamepadController {
     private Claw claw;
     private Arm arm;
     private LinearSlide slide;
+    private Climber climber;
 
     /**
      * Constructor for GamepadController
@@ -33,7 +34,8 @@ public class GamepadController {
                              LinearOpMode opMode,
                              Claw claw,
                              Arm arm,
-                             LinearSlide slide
+                             LinearSlide slide,
+                             Climber climber
     ) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
@@ -42,6 +44,7 @@ public class GamepadController {
         this.claw = claw;
         this.arm = arm;
         this.slide = slide;
+        this.climber = climber;
     }
 
     public void runSubSystems() throws InterruptedException {
@@ -50,6 +53,7 @@ public class GamepadController {
         runDriveTrain();
        // runClaw();
         runArm();
+        runClimber();
        // runSlides();
 
     }
@@ -70,6 +74,18 @@ public class GamepadController {
         }
 
 
+    }
+
+    public void runClimber() {
+        if(gp1GetDpad_upPress()){
+            climber.moveClimberSlightlyUp();
+        } else if(gp1GetDpad_downPress()) {
+            climber.moveClimberSlightlyDown();
+        } else if(gp1GetRightBumper()) {
+            climber.extendClimberUp();
+        } else if(gp1GetLeftBumper()) {
+            climber.runClimberDown();
+        }
     }
 
 
