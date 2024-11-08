@@ -9,15 +9,15 @@ public class Arm {
 
     public DcMotorEx armMotor;
     public static int ARM_POSITION_INTAKE_COUNT = 0;
-    public static int ARM_POSITION_LOW_BUCKET_COUNT = 1150;
-    public static int ARM_POSITION_HIGH_BUCKET_COUNT = 2050;
+    public static int ARM_POSITION_LOW_BUCKET_COUNT = 1180;
+    public static int ARM_POSITION_HIGH_BUCKET_COUNT = 1120;
     public static int ARM_POSITION_LOW_RUNG_COUNT = 1000;
     public static int ARM_POSITION_HIGH_RUNG_COUNT = 1900;
-    public static int ARM_MAX_POSITION_COUNT = 2000;
+    public static int ARM_MAX_POSITION_COUNT = 3500;
     public static int ARM_MIN_POSITION_COUNT = 500;
 
     public static int ARM_DELTA_COUNT = 700;
-    public static double POWER_LEVEL_RUN = .25;
+    public static double POWER_LEVEL_RUN = 1;
 
     public double currentPID = 3.00;
 
@@ -42,7 +42,9 @@ public class Arm {
         armMotor.setPositionPIDFCoefficients(currentPID);
         armMotor.setDirection(DcMotorEx.Direction.FORWARD);
         armMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        armMotor.setPower(0);
         armMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        opmode.telemetry.addData("current position", this.armMotor.getCurrentPosition());
     }
 
     private void runMotors() {
@@ -55,6 +57,7 @@ public class Arm {
      * Initialize arm to low position
      */
     public void moveArmIntakePosition()  {
+        int check = armMotor.getCurrentPosition();
         armPositionCount = ARM_POSITION_INTAKE_COUNT;
         armPosition = ARM_POSITION.ARM_POSITION_INTAKE;
         armMotor.setTargetPosition(armPositionCount);
@@ -65,9 +68,7 @@ public class Arm {
 
         armPositionCount = ARM_POSITION_LOW_BUCKET_COUNT;
         armMotor.setTargetPosition(armPositionCount);
-
         armPosition = ARM_POSITION.ARM_POSITION_LOW_BUCKET;
-
         runMotors();
     }
 
