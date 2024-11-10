@@ -9,30 +9,24 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 public class Climber {
     public DcMotorEx climberMotor;
 
-
     public enum CLIMBER_MOTOR_STATE {
         CLIMBER_UP_POSITION,
         CLIMBER_DOWN_POSITION,
-
         CLIMBER_SLIGHTLY_DOWN_POSITION,
-
         CLIMBER_SLIGHTLY_UP_POSITION,
-
-
     }
 
     public static double ENCODER_VAlUE = 0;
-    public static int CLIMBER_UP_POSITION_COUNT = 40000; // 2023-12-21 calibrated value
+    public static int CLIMBER_UP_POSITION_COUNT = 20000; // 2024-11-09 calibrated value
     public static int CLIMBER_DOWN_POSITION_COUNT = 0;
-    public static int CLIMBER_DELTA_COUNT = 10000;  // 2023-12-21 calibrated value
+    public static int CLIMBER_DELTA_COUNT = 5000;  // 2024-11-09  calibrated value
     public static int CLIMBER_MIN_COUNT = 0;
     public static int CLIMBER_MAX_COUNT = 5000;
 
     public CLIMBER_MOTOR_STATE climberMotorState = CLIMBER_MOTOR_STATE.CLIMBER_DOWN_POSITION;
     public int climberMotorStateCount = CLIMBER_DOWN_POSITION_COUNT;
 
-    public static double POWER_LEVEL_RUN = 0;
-
+    public static double POWER_LEVEL_RUN = .8;
 
     public double motorPowerToRun = POWER_LEVEL_RUN;
 
