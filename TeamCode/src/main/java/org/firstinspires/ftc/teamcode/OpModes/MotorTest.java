@@ -12,11 +12,12 @@ public class MotorTest extends LinearOpMode {
 
     private GamepadController gamepad;
     private Arm arm;
+    private Climber climber;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        arm = new Arm(this);
-        // climber = new Climber(this);
+        //arm = new Arm(this);
+        climber = new Climber(this);
         gamepad = new GamepadController(gamepad1, gamepad2, null, this, null, arm, null, null);
 
         waitForStart();
@@ -24,14 +25,14 @@ public class MotorTest extends LinearOpMode {
             telemetry.update();
             while(opModeIsActive()) {
                 if (gamepad.gp2GetDpad_upPress()) {
-                    arm.moveArmSlightlyUp();
+                    climber.moveClimberSlightlyUp();
                     telemetry.addLine(arm.armPositionCount + " ");
                 } else if (gamepad.gp2GetDpad_downPress()) {
-                    arm.moveArmSlightlyDown();
+                    climber.moveClimberSlightlyDown();
                     telemetry.addLine(arm.armPositionCount + " ");
                 }
 
-                if(gamepad.gp2GetButtonAPress()) {
+              /*  if(gamepad.gp2GetButtonAPress()) {
                     arm.moveArmLowBucketPosition();
                 } else if(gamepad.gp2GetButtonBPress()) {
                     arm.moveArmHighBucketPosition();
@@ -49,7 +50,7 @@ public class MotorTest extends LinearOpMode {
                     arm.moveArmLowRungPosition();
                 } else if(gamepad.gp2GetButtonYPress()) {
                     arm.moveArmHighRungPosition();
-                }
+                } */
             }
         }
     }

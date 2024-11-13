@@ -17,7 +17,7 @@ public class Climber {
     }
 
     public static double ENCODER_VAlUE = 0;
-    public static int CLIMBER_UP_POSITION_COUNT = 20000; // 2024-11-09 calibrated value
+    public static int CLIMBER_UP_POSITION_COUNT = 10000; // 2024-11-09 calibrated value
     public static int CLIMBER_DOWN_POSITION_COUNT = 0;
     public static int CLIMBER_DELTA_COUNT = 5000;  // 2024-11-09  calibrated value
     public static int CLIMBER_MIN_COUNT = 0;

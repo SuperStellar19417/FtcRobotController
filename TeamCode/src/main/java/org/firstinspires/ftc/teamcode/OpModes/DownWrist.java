@@ -22,7 +22,6 @@ public class DownWrist implements Action {
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        claw.intakeClawDown();
         return true;
     }
 }

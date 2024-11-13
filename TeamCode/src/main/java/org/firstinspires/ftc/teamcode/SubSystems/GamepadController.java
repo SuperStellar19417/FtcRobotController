@@ -20,6 +20,7 @@ public class GamepadController {
     private Arm arm;
     private LinearSlide slide;
     private Climber climber;
+    private boolean endgame = false;
 
     /**
      * Constructor for GamepadController
@@ -48,13 +49,12 @@ public class GamepadController {
     }
 
     public void runSubSystems() throws InterruptedException {
-        opMode.telemetry.addData("in arm", "I am here");
-        opMode.telemetry.update();
         runDriveTrain();
-       // runClaw();
+        runClaw();
         runArm();
         runClimber();
-       // runSlides();
+        runSlides();
+        checkClimberMode();
 
     }
 
@@ -62,22 +62,36 @@ public class GamepadController {
     public void runArm() throws InterruptedException {
         opMode.telemetry.addData("Entering run arm", "entering run arm 1");
         opMode.telemetry.update();
+        if(endgame) {
+            arm.armMotor.setPower(1);
+            arm.ARM_DELTA_COUNT = 500;
+        }
 
-        if(gp2GetButtonAPress()) {
+        if(gp2GetButtonXPress()) {
             arm.moveArmLowBucketPosition();
-        } else if(gp2GetButtonBPress()) {
-            arm.moveArmHighBucketPosition();
-        } else if(gp2GetButtonXPress()) {
-            arm.moveArmLowRungPosition();
         } else if(gp2GetButtonYPress()) {
+            arm.moveArmHighBucketPosition();
+        } else if(gp2GetButtonAPress()) {
+            arm.moveArmLowRungPosition();
+        } else if(gp2GetButtonBPress()) {
             arm.moveArmHighRungPosition();
-        } else if (gp2GetDpad_upPress()) {
+        } else if (gp2GetDpad_upPress() && gp2GetRightBumper()) {
             arm.moveArmSlightlyUp();
-        } else if (gp2GetDpad_downPress()) {
+        } else if (gp2GetDpad_downPress() && gp2GetRightBumper()) {
             arm.moveArmSlightlyDown();
+
+
+        } else if (gp1GetButtonXPress()) {
+            arm.moveArmHangingPosition();
         }
 
 
+    }
+
+    public void checkClimberMode() {
+        if(gp1GetRightBumperPress() && gp1GetLeftBumperPress()) {
+            endgame = true;
+        }
     }
 
     public void runClimber() {
@@ -89,6 +103,25 @@ public class GamepadController {
             climber.extendClimberUp();
         } else if(gp1GetLeftBumper()) {
             climber.runClimberDown();
+        }
+
+    }
+
+    public void runClaw() {
+        if(gp2GetLeftBumperPress()) {
+            if(claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_OPEN) {
+                claw.intakeClawClose();
+            } else {
+                claw.intakeClawOpen();
+            }
+        }
+    }
+
+    public void runSlides() {
+        if(gp2GetDpad_down()) {
+            slide.setSlidePositionHold();
+        } else if (gp2GetDpad_up()) {
+            slide.setSlidePositionExtend();
         }
     }
 
@@ -172,23 +205,6 @@ public class GamepadController {
 
 
 
-    public void runClaw() {
-        if(gp1GetLeftBumper()) {
-            if(claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_OPEN) {
-                claw.intakeClawClose();
-            } else {
-                claw.intakeClawOpen();
-            }
-        }
-    }
-
-    public void runSlides() {
-        if(gp2GetDpad_downPress()) {
-            slide.setSlidePositionHold();
-        } else if (gp2GetDpad_upPress()) {
-            slide.setSlidePositionExtend();
-        }
-    }
 
 
     /**

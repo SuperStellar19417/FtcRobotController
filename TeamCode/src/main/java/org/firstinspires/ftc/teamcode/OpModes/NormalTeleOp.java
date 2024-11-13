@@ -97,6 +97,7 @@ public class NormalTeleOp extends LinearOpMode {
         arm = new Arm(this);
         climber = new Climber(this);
         slide = new LinearSlide(this);
+        claw = new Claw(this);
         if(allianceSelection == ALLIANCE.RED) {
          //   claw.allianceColor = "RED";
         } else {
@@ -105,10 +106,10 @@ public class NormalTeleOp extends LinearOpMode {
         gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slide, climber);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
-        //gamepadController.runSlides();
+        gamepadController.runSlides();
         gamepadController.runArm();
         gamepadController.runClimber();
-      //  gamepadController.runClaw();
+        gamepadController.runClaw();
 
 
         // Set the bulk mode to auto for control and expansion hubs
@@ -135,6 +136,8 @@ public class NormalTeleOp extends LinearOpMode {
         // Output telemetry messages for susbsystems here
         driveTrain.outputTelemetry();
        telemetry.addData("climber position",  climber.climberMotor.getCurrentPosition());
+       telemetry.addData("claw state", claw.clawServoState);
+       telemetry.addData("slides", slide.slideMotor.getCurrentPosition());
 
         telemetry.update();
     }

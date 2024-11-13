@@ -22,6 +22,7 @@ public class LinearSlide {
         SLIDE_EXTEND,
 
     }
+    public int slidePositionCount = 0;
 
     public SLIDE_MOTOR_STATE intakeArmServoState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
 
@@ -34,13 +35,22 @@ public class LinearSlide {
         intakeArmServoState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
     }
 
+    private void runMotors() {
+
+        slideMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        slideMotor.setTargetPosition(slidePositionCount);
+        slideMotor.setPower(0.5);
+    }
+
     // Sets the intake arm to a position that allows for intake
     public void setSlidePositionHold() {
-        slideMotor.setTargetPosition(0);
+        slidePositionCount = 0;
+        runMotors();
         intakeArmServoState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
     }
     public void setSlidePositionExtend() {
-        slideMotor.setTargetPosition(1000);
+        slidePositionCount = 2900;
+        runMotors();
         intakeArmServoState = SLIDE_MOTOR_STATE.SLIDE_EXTEND;
     }
 

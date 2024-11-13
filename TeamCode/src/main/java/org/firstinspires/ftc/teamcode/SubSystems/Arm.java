@@ -9,15 +9,16 @@ public class Arm {
 
     public DcMotorEx armMotor;
     public static int ARM_POSITION_INTAKE_COUNT = 0;
-    public static int ARM_POSITION_LOW_BUCKET_COUNT = 1180;
-    public static int ARM_POSITION_HIGH_BUCKET_COUNT = 1120;
-    public static int ARM_POSITION_LOW_RUNG_COUNT = 1000;
-    public static int ARM_POSITION_HIGH_RUNG_COUNT = 1900;
+    public static int ARM_POSITION_LOW_BUCKET_COUNT = 1090;
+    public static int ARM_POSITION_HIGH_BUCKET_COUNT = 990;
+    public static int ARM_POSITION_LOW_RUNG_COUNT = 1600;
+    public static int ARM_POSITION_HIGH_RUNG_COUNT = 1300;
+    public static int ARM_POSITION_HANGING_COUNT = 1450;
     public static int ARM_MAX_POSITION_COUNT = 3500;
     public static int ARM_MIN_POSITION_COUNT = 500;
 
-    public static int ARM_DELTA_COUNT = 700;
-    public static double POWER_LEVEL_RUN = 1;
+    public static int ARM_DELTA_COUNT = 100;
+    public static double POWER_LEVEL_RUN = 0.5;
 
     public double currentPID = 3.00;
 
@@ -26,7 +27,8 @@ public class Arm {
         ARM_POSITION_LOW_BUCKET,
         ARM_POSITION_HIGH_BUCKET,
         ARM_POSITION_HIGH_RUNG,
-        ARM_POSITION_LOW_RUNG
+        ARM_POSITION_LOW_RUNG,
+        ARM_POSITION_HANGING
     }
 
     public ARM_POSITION armPosition = ARM_POSITION.ARM_POSITION_INTAKE;
@@ -48,6 +50,7 @@ public class Arm {
     }
 
     private void runMotors() {
+
         armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         armMotor.setTargetPosition(armPositionCount);
         armMotor.setPower(POWER_LEVEL_RUN);
@@ -61,6 +64,13 @@ public class Arm {
         armPositionCount = ARM_POSITION_INTAKE_COUNT;
         armPosition = ARM_POSITION.ARM_POSITION_INTAKE;
         armMotor.setTargetPosition(armPositionCount);
+        runMotors();
+    }
+
+    public void moveArmHangingPosition() {
+        armPositionCount = ARM_POSITION_HANGING_COUNT;
+        armMotor.setTargetPosition(armPositionCount);
+        armPosition = ARM_POSITION.ARM_POSITION_HANGING;
         runMotors();
     }
 
