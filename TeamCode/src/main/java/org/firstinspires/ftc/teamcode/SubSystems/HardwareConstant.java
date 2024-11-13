@@ -10,11 +10,10 @@ public class HardwareConstant {
     public static String RightOdoPod = "rightFront"; // Control Hub Port 0 encoder slot
     public static String LateralOdoPod = "rightBack"; // Control Hub Port 1 encoder slot
 
-    public static String ServoIntakeArm = "servoIntakeArm";
-    public static String RightIntakeServo = "rightIntakeServo";
-    public static String LeftIntakeServo = "leftIntakeServo";
-    public static String WristIntakeServo = "wristIntakeServo";
-    public static String RightOuttakeServo = "rightOuttakeServo";
-    public static String LeftOuttakeServo = "leftOuttakeServo";
-    public static String WristOuttakeServo = "wristOuttakeServo";
+    public static String SlideMotor = "linearSlideMotor";
+    public static String ClawServo = "clawServo";
+    public static String WristServo = "wristServo";
+    public static String ClawColorSensor = "clawColorSensor";
+    public static String ArmMotor = "armMotor";
+    public static String LimitSwitch = "limitSwitch";
 }

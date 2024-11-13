@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 
@@ -14,8 +15,12 @@ public class GamepadController {
     // References to hardware components and subsystems
     private Gamepad gamepad1, gamepad2;
     private DriveTrain driveTrain;
-
     private LinearOpMode opMode;
+    private Claw claw;
+    private Arm arm;
+    private LinearSlide slide;
+    private Climber climber;
+    private boolean endgame = false;
 
     /**
      * Constructor for GamepadController
@@ -27,20 +32,103 @@ public class GamepadController {
     public GamepadController(Gamepad gamepad1,
                              Gamepad gamepad2,
                              DriveTrain driveTrain,
-                             LinearOpMode opMode
+                             LinearOpMode opMode,
+                             Claw claw,
+                             Arm arm,
+                             LinearSlide slide,
+                             Climber climber
     ) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
         this.driveTrain = driveTrain;
         this.opMode = opMode;
+        this.claw = claw;
+        this.arm = arm;
+        this.slide = slide;
+        this.climber = climber;
     }
+
+    public void runSubSystems() throws InterruptedException {
+        runDriveTrain();
+        runClaw();
+        runArm();
+        runClimber();
+        runSlides();
+        checkClimberMode();
+
+    }
+
+
+    public void runArm() throws InterruptedException {
+        opMode.telemetry.addData("Entering run arm", "entering run arm 1");
+        opMode.telemetry.update();
+        if(endgame) {
+            arm.armMotor.setPower(1);
+            arm.ARM_DELTA_COUNT = 500;
+        }
+
+        if(gp2GetButtonXPress()) {
+            arm.moveArmLowBucketPosition();
+        } else if(gp2GetButtonYPress()) {
+            arm.moveArmHighBucketPosition();
+        } else if(gp2GetButtonAPress()) {
+            arm.moveArmLowRungPosition();
+        } else if(gp2GetButtonBPress()) {
+            arm.moveArmHighRungPosition();
+        } else if (gp2GetDpad_upPress() && gp2GetRightBumper()) {
+            arm.moveArmSlightlyUp();
+        } else if (gp2GetDpad_downPress() && gp2GetRightBumper()) {
+            arm.moveArmSlightlyDown();
+
+
+        } else if (gp1GetButtonXPress()) {
+            arm.moveArmHangingPosition();
+        }
+
+
+    }
+
+    public void checkClimberMode() {
+        if(gp1GetRightBumperPress() && gp1GetLeftBumperPress()) {
+            endgame = true;
+        }
+    }
+
+    public void runClimber() {
+        if(gp1GetDpad_upPress()){
+            climber.moveClimberSlightlyUp();
+        } else if(gp1GetDpad_downPress()) {
+            climber.moveClimberSlightlyDown();
+        } else if(gp1GetRightBumper()) {
+            climber.extendClimberUp();
+        } else if(gp1GetLeftBumper()) {
+            climber.runClimberDown();
+        }
+
+    }
+
+    public void runClaw() {
+        if(gp2GetLeftBumperPress()) {
+            if(claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_OPEN) {
+                claw.intakeClawClose();
+            } else {
+                claw.intakeClawOpen();
+            }
+        }
+    }
+
+    public void runSlides() {
+        if(gp2GetDpad_down()) {
+            slide.setSlidePositionHold();
+        } else if (gp2GetDpad_up()) {
+            slide.setSlidePositionExtend();
+        }
+    }
+
 
     /**
      *runByGamepad is the main controller function that runs each subsystem controller based on states
      */
-    public void runSubSystems(){
-        runDriveTrain();
-    }
 
     /**
      * runByGamepadRRDriveModes sets modes for Road Runner such as ROBOT and FIELD Centric Modes. <BR>
@@ -114,6 +202,10 @@ public class GamepadController {
     boolean gp2Dpad_rightLast = false;
     boolean gp2LeftTriggerLast = false;
     boolean gp2RightTriggerLast = false;
+
+
+
+
 
     /**
      * Method to convert linear map from gamepad1 and gamepad2 stick input to a cubic map
