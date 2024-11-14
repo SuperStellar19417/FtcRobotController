@@ -43,13 +43,19 @@ public class LinearSlide {
     }
 
     // Sets the intake arm to a position that allows for intake
-    public void setSlidePositionHold() {
-        slidePositionCount = 0;
+    public void moveSlideDown() {
+        slidePositionCount = slidePositionCount - 300;
+        if (slidePositionCount >= 2900) {
+            slidePositionCount = 2900;
+        }
         runMotors();
         intakeArmServoState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
     }
-    public void setSlidePositionExtend() {
-        slidePositionCount = 2900;
+    public void moveSlideUp() {
+        slidePositionCount = slidePositionCount + 300;
+        if (slidePositionCount <= 0) {
+            slidePositionCount = 0;
+        }
         runMotors();
         intakeArmServoState = SLIDE_MOTOR_STATE.SLIDE_EXTEND;
     }

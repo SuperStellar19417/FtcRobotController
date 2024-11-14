@@ -75,14 +75,14 @@ public class GamepadController {
             arm.moveArmLowRungPosition();
         } else if(gp2GetButtonBPress()) {
             arm.moveArmHighRungPosition();
-        } else if (gp2GetDpad_upPress() && gp2GetRightBumper()) {
+        } else if (gp2GetRightTriggerPress()) {
             arm.moveArmSlightlyUp();
-        } else if (gp2GetDpad_downPress() && gp2GetRightBumper()) {
+        } else if (gp2GetLeftTriggerPress()) {
             arm.moveArmSlightlyDown();
-
-
         } else if (gp1GetButtonXPress()) {
             arm.moveArmHangingPosition();
+        } else if (gp2GetRightBumper()) {
+            arm.moveArmIntakePosition();
         }
 
 
@@ -119,9 +119,9 @@ public class GamepadController {
 
     public void runSlides() {
         if(gp2GetDpad_down()) {
-            slide.setSlidePositionHold();
+            slide.moveSlideDown();
         } else if (gp2GetDpad_up()) {
-            slide.setSlidePositionExtend();
+            slide.moveSlideUp();
         }
     }
 
