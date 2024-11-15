@@ -68,7 +68,6 @@ public class NormalTeleOp extends LinearOpMode {
             while (opModeIsActive()) {
                 // TeleOp code here
                 gamepadController.runSubSystems();
-                clawState();
                 outputTelemetry();
                 telemetry.update();
             }

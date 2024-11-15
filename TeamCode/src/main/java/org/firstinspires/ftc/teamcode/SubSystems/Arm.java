@@ -9,16 +9,16 @@ public class Arm {
 
     public DcMotorEx armMotor;
     public static int ARM_POSITION_INTAKE_COUNT = 0;
-    public static int ARM_POSITION_LOW_BUCKET_COUNT = 1090;
-    public static int ARM_POSITION_HIGH_BUCKET_COUNT = 990;
+    public static int ARM_POSITION_LOW_BUCKET_COUNT = 1100;
+    public static int ARM_POSITION_HIGH_BUCKET_COUNT = 1050;
     public static int ARM_POSITION_LOW_RUNG_COUNT = 1600;
     public static int ARM_POSITION_HIGH_RUNG_COUNT = 1300;
-    public static int ARM_POSITION_HANGING_COUNT = 1450;
-    public static int ARM_MAX_POSITION_COUNT = 3500;
+    public static int ARM_POSITION_HANGING_COUNT = 2800;
+    public static int ARM_MAX_POSITION_COUNT = 4250;
     public static int ARM_MIN_POSITION_COUNT = 0;
 
     public static int ARM_DELTA_COUNT = 100;
-    public static double POWER_LEVEL_RUN = 0.5;
+    public static double POWER_LEVEL_RUN = 0.7;
 
     public double currentPID = 3.00;
 

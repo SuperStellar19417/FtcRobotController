@@ -24,7 +24,7 @@ public class LinearSlide {
     }
     public int slidePositionCount = 0;
 
-    public SLIDE_MOTOR_STATE intakeArmServoState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
+    public SLIDE_MOTOR_STATE slideMotorState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
 
     // Starting position
     public void initLinearSlide() {
@@ -32,32 +32,32 @@ public class LinearSlide {
         slideMotor.setPositionPIDFCoefficients(4.0);
         slideMotor.setDirection(DcMotorEx.Direction.FORWARD);
         slideMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        intakeArmServoState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
+        slideMotorState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
     }
 
     private void runMotors() {
 
         slideMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         slideMotor.setTargetPosition(slidePositionCount);
-        slideMotor.setPower(0.5);
+        slideMotor.setPower(0.75);
     }
 
     // Sets the intake arm to a position that allows for intake
-    public void moveSlideDown() {
-        slidePositionCount = slidePositionCount - 300;
-        if (slidePositionCount >= 2900) {
-            slidePositionCount = 2900;
-        }
-        runMotors();
-        intakeArmServoState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
-    }
     public void moveSlideUp() {
         slidePositionCount = slidePositionCount + 300;
+        if (slidePositionCount >= 6200) {
+            slidePositionCount = 6200;
+        }
+        runMotors();
+        slideMotorState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
+    }
+    public void moveSlideDown() {
+        slidePositionCount = slidePositionCount - 300;
         if (slidePositionCount <= 0) {
             slidePositionCount = 0;
         }
         runMotors();
-        intakeArmServoState = SLIDE_MOTOR_STATE.SLIDE_EXTEND;
+        slideMotorState = SLIDE_MOTOR_STATE.SLIDE_EXTEND;
     }
 
 }

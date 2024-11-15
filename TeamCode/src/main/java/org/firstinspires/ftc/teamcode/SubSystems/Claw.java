@@ -18,7 +18,9 @@ public class Claw {
         clawServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.ClawServo); // 4 control hub
         colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
 
-        initIntakeClaw();
+        clawServo.setDirection(Servo.Direction.REVERSE);
+        clawServo.setPosition(0.0);
+        clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
     }
 
     // creates two states in which the claw opens and closes
@@ -34,17 +36,9 @@ public class Claw {
 
 
 
-    // Sa
-    public void initIntakeClaw() {
-        clawServo.setDirection(Servo.Direction.FORWARD);
-       // intakeClawClose();
-        clawServo.setPosition(0.0);
-        clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
-    }
-
-    // Starting positions of the servos for the opened claw
+     // Starting positions of the servos for the opened claw
     public void intakeClawOpen() {
-        clawServo.setPosition(0.6);
+        clawServo.setPosition(0.4);
         clawServoState = CLAW_SERVO_STATE.CLAW_OPEN;
     }
 
