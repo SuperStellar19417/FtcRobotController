@@ -10,6 +10,9 @@ public class HardwareConstant {
     public static String RightOdoPod = "rightFront"; // Control Hub Port 0 encoder slot
     public static String LateralOdoPod = "rightBack"; // Control Hub Port 1 encoder slot
 
+    public static String HeadlightLeft = "leftHeadlight";  //expansion hub servo port 0
+    public static String HeadlightRight = "rightHeadlight"; //control hub servo port 5
+
     public static String SlideMotor = "linearSlideMotor";
     public static String ClawServo = "clawServo";
     public static String WristServo = "wristServo";

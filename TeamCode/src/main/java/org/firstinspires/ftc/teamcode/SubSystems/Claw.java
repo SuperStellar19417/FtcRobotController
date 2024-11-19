@@ -13,13 +13,16 @@ public class Claw {
     public String allianceColor = "RED";
 
     public Telemetry telemetry;
+    public Headlights lights;
 
     public Claw(OpMode opMode) {
         clawServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.ClawServo); // 4 control hub
         colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
+        lights = new Headlights(opMode);
 
         clawServo.setDirection(Servo.Direction.REVERSE);
         clawServo.setPosition(0.0);
+
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
     }
 
@@ -38,8 +41,9 @@ public class Claw {
 
      // Starting positions of the servos for the opened claw
     public void intakeClawOpen() {
-        clawServo.setPosition(0.4);
+        clawServo.setPosition(0.2);
         clawServoState = CLAW_SERVO_STATE.CLAW_OPEN;
+        lights.headlightOff();
     }
 
     // Starting positions of the servos for the closed claw
@@ -49,6 +53,7 @@ public class Claw {
             clawServo.setPosition(0);
             //    leftIntakeServo.setPosition(0.00);
             clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
+            lights.headlightOn();
      //   } else {
 
 
