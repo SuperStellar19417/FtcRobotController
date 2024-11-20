@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.MILLISECONDS;
 import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 
 import com.acmerobotics.roadrunner.Action;
@@ -13,11 +14,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
+import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
+import org.firstinspires.ftc.teamcode.SubSystems.LinearSlide;
 
-@Autonomous(name = "Observation Park Only", group = "01-Test")
+@Autonomous(name = "Preload Deliver + Park", group = "01-Test")
 public class SimplePathTestAuto extends LinearOpMode {
 
     private GamepadController gamepadController;
@@ -29,6 +32,8 @@ public class SimplePathTestAuto extends LinearOpMode {
 
     private Claw claw;
     private Arm arm;
+    private LinearSlide slides;
+    private Climber climber;
     @Override
     public void runOpMode() {
         // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
@@ -49,11 +54,19 @@ public class SimplePathTestAuto extends LinearOpMode {
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
-                .turn(Math.toRadians(90))
+                .turn(Math.toRadians(45))
+                .lineToX(10)
+                .turn(Math.toRadians(135));
+
+        TrajectoryActionBuilder tab2 = driveTrain.actionBuilder(new Pose2d(0,10,Math.toRadians(135)))
+                .turn(Math.toRadians(0))
+                .lineToY(20)
+                .setTangent(0.5)
                 .lineToX(10);
 
         // Create an action that will be run
-        Action followPathAction = tab1.build();
+        Action toBucket = tab1.build();
+        Action toAscent = tab2.build();
 
         // Run the action (s)
         // You can run multiple actions to execute a complex auto. For example :
@@ -69,7 +82,17 @@ public class SimplePathTestAuto extends LinearOpMode {
         */
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
-        Actions.runBlocking( new SequentialAction(followPathAction));
+        Actions.runBlocking(new SequentialAction(toBucket));
+        arm.moveArmHighBucketPosition();
+        safeWaitSeconds(200);
+        slides.moveSlideUp();
+        safeWaitSeconds(200);
+        slides.moveSlideUp();
+        claw.intakeClawOpen();
+        safeWaitSeconds(400);
+        slides.moveSlideDown();
+        slides.moveSlideDown();
+        Actions.runBlocking(new SequentialAction(toAscent));
 
     }
 
@@ -87,8 +110,11 @@ public class SimplePathTestAuto extends LinearOpMode {
         driveTrain.driveType = DriveTrain.DriveType.ROBOT_CENTRIC;
         telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
         telemetry.update();
-
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null, null);
+        claw = new Claw(this);
+        arm = new Arm(this);
+        slides = new LinearSlide(this);
+        climber = new Climber(this);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slides, climber);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
@@ -119,7 +145,7 @@ public class SimplePathTestAuto extends LinearOpMode {
     }
 
     public void safeWaitSeconds(double time) {
-        ElapsedTime timer = new ElapsedTime(SECONDS);
+        ElapsedTime timer = new ElapsedTime(MILLISECONDS);
         timer.reset();
         while (!isStopRequested() && timer.time() < time) {
             //don't even worry about it

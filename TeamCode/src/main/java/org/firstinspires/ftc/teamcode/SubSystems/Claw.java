@@ -41,7 +41,7 @@ public class Claw {
 
      // Starting positions of the servos for the opened claw
     public void intakeClawOpen() {
-        clawServo.setPosition(0.2);
+        clawServo.setPosition(0.5);
         clawServoState = CLAW_SERVO_STATE.CLAW_OPEN;
         lights.headlightOff();
     }
