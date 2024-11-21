@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.OpModes;
 import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.MILLISECONDS;
 import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -34,6 +37,12 @@ public class SimplePathTestAuto extends LinearOpMode {
     private Arm arm;
     private LinearSlide slides;
     private Climber climber;
+    private Action action = new Action() {
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            return true;
+        }
+    };
     @Override
     public void runOpMode() {
         // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
@@ -54,15 +63,19 @@ public class SimplePathTestAuto extends LinearOpMode {
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
-                .turn(Math.toRadians(45))
-                .lineToX(10)
-                .turn(Math.toRadians(135));
+                .lineToX(16)
+                .setTangent(Math.toRadians(90))
+                .lineToY(18)
+                .turn(Math.toRadians(140));
 
-        TrajectoryActionBuilder tab2 = driveTrain.actionBuilder(new Pose2d(0,10,Math.toRadians(135)))
-                .turn(Math.toRadians(0))
-                .lineToY(20)
-                .setTangent(0.5)
-                .lineToX(10);
+        TrajectoryActionBuilder tab2 = driveTrain.actionBuilder(new Pose2d(15,-20,Math.toRadians(140)))
+                .setTangent(170)
+                .lineToY(1)
+                .turn(130)
+                .setTangent(90)
+                .lineToY(2)
+                .lineToX(5)
+                .turn(Math.toRadians(270));
 
         // Create an action that will be run
         Action toBucket = tab1.build();
@@ -83,15 +96,15 @@ public class SimplePathTestAuto extends LinearOpMode {
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
         Actions.runBlocking(new SequentialAction(toBucket));
+        safeWaitSeconds(1000);
         arm.moveArmHighBucketPosition();
-        safeWaitSeconds(200);
-        slides.moveSlideUp();
-        safeWaitSeconds(200);
-        slides.moveSlideUp();
+        safeWaitSeconds(1000);
+        slides.moveSlideHigh();
+        safeWaitSeconds(3000);
         claw.intakeClawOpen();
-        safeWaitSeconds(400);
-        slides.moveSlideDown();
-        slides.moveSlideDown();
+        safeWaitSeconds(1000);
+        slides.moveSlideLow();
+        safeWaitSeconds(4000);
         Actions.runBlocking(new SequentialAction(toAscent));
 
     }
@@ -144,11 +157,12 @@ public class SimplePathTestAuto extends LinearOpMode {
         telemetry.update();
     }
 
-    public void safeWaitSeconds(double time) {
+    public Action safeWaitSeconds(double time) {
         ElapsedTime timer = new ElapsedTime(MILLISECONDS);
         timer.reset();
         while (!isStopRequested() && timer.time() < time) {
             //don't even worry about it
         }
+        return action;
     }
 }

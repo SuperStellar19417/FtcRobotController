@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
@@ -15,13 +19,20 @@ public class Claw {
     public Telemetry telemetry;
     public Headlights lights;
 
+    private Action action = new Action() {
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            return true;
+        }
+    };
+
     public Claw(OpMode opMode) {
         clawServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.ClawServo); // 4 control hub
         colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
         lights = new Headlights(opMode);
 
-        clawServo.setDirection(Servo.Direction.REVERSE);
-        clawServo.setPosition(0.0);
+        clawServo.setDirection(Servo.Direction.FORWARD);
+        clawServo.setPosition(0.3);
 
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
     }
@@ -38,22 +49,24 @@ public class Claw {
     // creates two states in which the claw moves up and down
 
 
-
      // Starting positions of the servos for the opened claw
-    public void intakeClawOpen() {
-        clawServo.setPosition(0.5);
+    public Action intakeClawOpen() {
+        clawServo.setPosition(0.1);
         clawServoState = CLAW_SERVO_STATE.CLAW_OPEN;
         lights.headlightOff();
+        return action;
     }
+
 
     // Starting positions of the servos for the closed claw
 
-    public void intakeClawClose() {
+    public Action intakeClawClose() {
        // if (colorSensor.getNormalizedColors().red > 0.001 && colorSensor.getNormalizedColors().green > 0.001) {
-            clawServo.setPosition(0);
+            clawServo.setPosition(0.3);
             //    leftIntakeServo.setPosition(0.00);
             clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
             lights.headlightOn();
+            return action;
      //   } else {
 
 
