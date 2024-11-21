@@ -1,7 +1,12 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -9,18 +14,25 @@ public class Arm {
 
     public DcMotorEx armMotor;
     public static int ARM_POSITION_INTAKE_COUNT = 0;
-    public static int ARM_POSITION_LOW_BUCKET_COUNT = 1100;
+    public static int ARM_POSITION_LOW_BUCKET_COUNT = 1000;
     public static int ARM_POSITION_HIGH_BUCKET_COUNT = 1050;
     public static int ARM_POSITION_LOW_RUNG_COUNT = 1600;
     public static int ARM_POSITION_HIGH_RUNG_COUNT = 1300;
     public static int ARM_POSITION_HANGING_COUNT = 2800;
-    public static int ARM_MAX_POSITION_COUNT = 4250;
-    public static int ARM_MIN_POSITION_COUNT = 0;
+  //  public static int ARM_MAX_POSITION_COUNT = 4250;
+//    public static int ARM_MIN_POSITION_COUNT = 0;
 
-    public static int ARM_DELTA_COUNT = 100;
-    public static double POWER_LEVEL_RUN = 0.7;
+    public static int ARM_DELTA_COUNT = 10;
+    public static double POWER_LEVEL_RUN = 0.8;
 
     public double currentPID = 3.00;
+
+    public Action action = new Action() {
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            return true;
+        }
+    };
 
     public enum ARM_POSITION {
         ARM_POSITION_INTAKE,
@@ -82,12 +94,13 @@ public class Arm {
         runMotors();
     }
 
-    public void moveArmHighBucketPosition() {
+    public Action moveArmHighBucketPosition() {
         armPositionCount = ARM_POSITION_HIGH_BUCKET_COUNT;
         armMotor.setTargetPosition(armPositionCount);
         armPosition = ARM_POSITION.ARM_POSITION_HIGH_BUCKET;
 
         runMotors();
+        return action;
 
     }
 
@@ -112,9 +125,9 @@ public class Arm {
     public void moveArmSlightlyUp()  {
         armPositionCount = armPositionCount + ARM_DELTA_COUNT;
 
-        if (armPositionCount >= ARM_MAX_POSITION_COUNT) {
+     /*   if (armPositionCount >= ARM_MAX_POSITION_COUNT) {
             armPositionCount = ARM_MAX_POSITION_COUNT;
-        }
+        } */
 
         armMotor.setTargetPosition(armPositionCount);
 
@@ -125,9 +138,9 @@ public class Arm {
         armPositionCount = armPositionCount - ARM_DELTA_COUNT;
         armMotor.setTargetPosition(armPositionCount);
 
-        if (armPositionCount <= ARM_MIN_POSITION_COUNT) {
+        /* if (armPositionCount <= ARM_MIN_POSITION_COUNT) {
             armPositionCount = ARM_MIN_POSITION_COUNT;
-        }
+        } */
 
         runMotors();
     }

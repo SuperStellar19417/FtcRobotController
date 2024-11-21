@@ -1,7 +1,11 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.MILLISECONDS;
 import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -13,11 +17,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
+import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
+import org.firstinspires.ftc.teamcode.SubSystems.LinearSlide;
 
-@Autonomous(name = "Observation Park Only", group = "01-Test")
+@Autonomous(name = "Preload Deliver + Park", group = "01-Test")
 public class SimplePathTestAuto extends LinearOpMode {
 
     private GamepadController gamepadController;
@@ -29,6 +35,14 @@ public class SimplePathTestAuto extends LinearOpMode {
 
     private Claw claw;
     private Arm arm;
+    private LinearSlide slides;
+    private Climber climber;
+    private Action action = new Action() {
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            return true;
+        }
+    };
     @Override
     public void runOpMode() {
         // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
@@ -49,11 +63,23 @@ public class SimplePathTestAuto extends LinearOpMode {
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
-                .turn(Math.toRadians(90))
-                .lineToX(10);
+                .lineToX(16)
+                .setTangent(Math.toRadians(90))
+                .lineToY(18)
+                .turn(Math.toRadians(140));
+
+        TrajectoryActionBuilder tab2 = driveTrain.actionBuilder(new Pose2d(15,-20,Math.toRadians(140)))
+                .setTangent(170)
+                .lineToY(1)
+                .turn(130)
+                .setTangent(90)
+                .lineToY(2)
+                .lineToX(5)
+                .turn(Math.toRadians(270));
 
         // Create an action that will be run
-        Action followPathAction = tab1.build();
+        Action toBucket = tab1.build();
+        Action toAscent = tab2.build();
 
         // Run the action (s)
         // You can run multiple actions to execute a complex auto. For example :
@@ -69,7 +95,17 @@ public class SimplePathTestAuto extends LinearOpMode {
         */
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
-        Actions.runBlocking( new SequentialAction(followPathAction));
+        Actions.runBlocking(new SequentialAction(toBucket));
+        safeWaitSeconds(1000);
+        arm.moveArmHighBucketPosition();
+        safeWaitSeconds(1000);
+        slides.moveSlideHigh();
+        safeWaitSeconds(3000);
+        claw.intakeClawOpen();
+        safeWaitSeconds(1000);
+        slides.moveSlideLow();
+        safeWaitSeconds(4000);
+        Actions.runBlocking(new SequentialAction(toAscent));
 
     }
 
@@ -87,8 +123,11 @@ public class SimplePathTestAuto extends LinearOpMode {
         driveTrain.driveType = DriveTrain.DriveType.ROBOT_CENTRIC;
         telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
         telemetry.update();
-
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null, null);
+        claw = new Claw(this);
+        arm = new Arm(this);
+        slides = new LinearSlide(this);
+        climber = new Climber(this);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slides, climber);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
@@ -118,11 +157,12 @@ public class SimplePathTestAuto extends LinearOpMode {
         telemetry.update();
     }
 
-    public void safeWaitSeconds(double time) {
-        ElapsedTime timer = new ElapsedTime(SECONDS);
+    public Action safeWaitSeconds(double time) {
+        ElapsedTime timer = new ElapsedTime(MILLISECONDS);
         timer.reset();
         while (!isStopRequested() && timer.time() < time) {
             //don't even worry about it
         }
+        return action;
     }
 }

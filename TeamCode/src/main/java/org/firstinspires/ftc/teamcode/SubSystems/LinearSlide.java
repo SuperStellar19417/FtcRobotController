@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 //TODO cleanup
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -9,6 +13,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class LinearSlide {
     public DcMotorEx slideMotor;
     public Telemetry telemetry;
+    private Action action = new Action() {
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            return true;
+        }
+    };
 
     public LinearSlide(OpMode opMode){
         slideMotor = opMode.hardwareMap.get(DcMotorEx.class,HardwareConstant.SlideMotor);
@@ -39,14 +49,27 @@ public class LinearSlide {
 
         slideMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         slideMotor.setTargetPosition(slidePositionCount);
-        slideMotor.setPower(0.75);
+        slideMotor.setPower(0.8);
+    }
+
+    public Action moveSlideHigh() {
+        slidePositionCount = 6300;
+        runMotors();
+        slideMotorState = SLIDE_MOTOR_STATE.SLIDE_EXTEND;
+        return action;
+    }
+    public Action moveSlideLow() {
+        slidePositionCount = 0;
+        runMotors();
+        slideMotorState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
+        return action;
     }
 
     // Sets the intake arm to a position that allows for intake
     public void moveSlideUp() {
         slidePositionCount = slidePositionCount + 300;
-        if (slidePositionCount >= 6200) {
-            slidePositionCount = 6200;
+        if (slidePositionCount >= 6300) {
+            slidePositionCount = 6300;
         }
         runMotors();
         slideMotorState = SLIDE_MOTOR_STATE.SLIDE_HOLD;

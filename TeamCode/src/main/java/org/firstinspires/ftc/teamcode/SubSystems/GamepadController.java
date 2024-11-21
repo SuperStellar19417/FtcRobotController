@@ -63,8 +63,11 @@ public class GamepadController {
         opMode.telemetry.addData("Entering run arm", "entering run arm 1");
         opMode.telemetry.update();
         if(endgame) {
-            arm.armMotor.setPower(1);
+            arm.armMotor.setPower(0.9);
             arm.ARM_DELTA_COUNT = 500;
+        } else {
+            arm.armMotor.setPower(0.7);
+            arm.ARM_DELTA_COUNT = 100;
         }
 
         if(gp2GetButtonXPress()) {
@@ -89,9 +92,13 @@ public class GamepadController {
     }
 
     public void checkClimberMode() {
-        if(gp1GetRightBumperPress() && gp1GetLeftBumperPress()) {
-            endgame = true;
-        }
+  /*      if(gp1GetRightTriggerPress()) {
+            if(endgame){
+                endgame = false;
+            } else {
+                endgame = true;
+            }
+        } */
     }
 
     public void runClimber() {
@@ -108,7 +115,7 @@ public class GamepadController {
     }
 
     public void runClaw() {
-        if(gp2GetLeftBumperPress()) {
+        if(gp1GetLeftTriggerPress()) {
             if(claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_OPEN) {
                 claw.intakeClawClose();
             } else {
