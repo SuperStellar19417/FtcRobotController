@@ -29,17 +29,15 @@ public class ClawTest extends LinearOpMode {
 
             if(gamepad.gp1GetButtonBPress()) {
                 this.telemetry.update();
-                claw.allianceColor = "RED";
+                claw.setAllianceColor("RED");
             } else if (gamepad.gp1GetButtonXPress()) {
                 telemetry.update();
-                claw.allianceColor = "BLUE";
+                claw.setAllianceColor("BLUE");
             }
 
-            telemetry.addData("claw state", claw.clawServo.getPosition());
-            telemetry.addData("red", claw.colorSensor.getNormalizedColors().red);
-            telemetry.addData("blue", claw.colorSensor.getNormalizedColors().blue);
-            telemetry.addData("green", claw.colorSensor.getNormalizedColors().green);
-            telemetry.addData("claw alliance color", claw.allianceColor);
+            telemetry.addData("claw state", claw.getClawServoState());
+            telemetry.addData("detected color", claw.getDetectedColor());
+            telemetry.addData("claw alliance color", claw.getAllianceColor());
             telemetry.update();
 
             if(gamepad.gp1GetRightBumperPress()) {

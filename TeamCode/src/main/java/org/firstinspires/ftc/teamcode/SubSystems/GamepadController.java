@@ -117,6 +117,8 @@ public class GamepadController {
     }
 
     public void runClaw() {
+       claw.UpdateColorSensor();
+
         if (gp1GetLeftTriggerPress()) {
             if (claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_OPEN) {
                 claw.intakeClawClose();

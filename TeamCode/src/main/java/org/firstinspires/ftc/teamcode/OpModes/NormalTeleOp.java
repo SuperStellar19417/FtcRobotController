@@ -135,7 +135,8 @@ public class NormalTeleOp extends LinearOpMode {
         driveTrain.outputTelemetry();
         telemetry.addData("Climber Target Position", climber.getClimberTargetPosition());
         telemetry.addData("Climber Motor Position", climber.getClimberMotorPosition());
-        telemetry.addData("Claw state", claw.clawServoState);
+        telemetry.addData("Claw state", claw.getClawServoState());
+        telemetry.addData("Detected Color", claw.getDetectedColor());
         telemetry.addData("Slides Motor Position", slide.slideMotor.getCurrentPosition());
         telemetry.addData("Arm Motos Position", arm.armMotor.getCurrentPosition());
 

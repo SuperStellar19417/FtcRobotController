@@ -7,17 +7,30 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Claw {
-    public Servo clawServo;
-    public NormalizedColorSensor colorSensor;
-    public String allianceColor = "RED";
+    private static final float COLOR_SENSOR_GAIN = 2.0f;
+    private Servo clawServo;
+    private NormalizedColorSensor colorSensor;
+    private Headlights lights;
 
-    public Telemetry telemetry;
-    public Headlights lights;
+    private static final double CLAW_OPEN_POSITION = 0.15;
+    private static final double CLAW_CLOSE_POSITION = 0.28;
+
+    private String allianceColor = "RED";
+
+    public enum DETECTED_COLOR {
+        RED,
+        BLUE,
+        YELLOW,
+        UNKNOWN
+    }
+
+    private DETECTED_COLOR detectedColor = DETECTED_COLOR.UNKNOWN;
 
     private Action action = new Action() {
         @Override
@@ -29,10 +42,11 @@ public class Claw {
     public Claw(OpMode opMode) {
         clawServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.ClawServo); // 4 control hub
         colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
+        colorSensor.setGain(COLOR_SENSOR_GAIN);
         lights = new Headlights(opMode);
 
         clawServo.setDirection(Servo.Direction.FORWARD);
-        clawServo.setPosition(0.3);
+        clawServo.setPosition(CLAW_CLOSE_POSITION);
 
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
     }
@@ -40,18 +54,55 @@ public class Claw {
     // creates two states in which the claw opens and closes
     public enum CLAW_SERVO_STATE {
         CLAW_OPEN,
-
         CLAW_CLOSE,
     }
 
     public CLAW_SERVO_STATE clawServoState;
 
+    public void UpdateColorSensor() {
+        // If the claw is closed, we will not detect colors because the claw is covering the sensor
+        // and we will always get blue
+
+        if (clawServoState == CLAW_SERVO_STATE.CLAW_CLOSE) {
+            detectedColor = DETECTED_COLOR.UNKNOWN;
+            return;
+        }
+
+        // Get the normalized colors from the sensor
+        NormalizedRGBA colors = colorSensor.getNormalizedColors();
+
+        // Based on the ratio (or you can use the raw values) of the colors, determine the detected color
+        if (colors.red > colors.blue && colors.red > colors.green) {
+            detectedColor = DETECTED_COLOR.RED;
+        } else if (colors.blue > colors.red && colors.blue > colors.green) {
+            detectedColor = DETECTED_COLOR.BLUE;
+        } else {
+            detectedColor = DETECTED_COLOR.YELLOW;
+        }
+    }
+
+    public DETECTED_COLOR getDetectedColor() {
+        return detectedColor;
+    }
+
+    public CLAW_SERVO_STATE getClawServoState() {
+        return clawServoState;
+    }
+
+    public void setAllianceColor(String color) {
+        allianceColor = color;
+    }
+
+    public String getAllianceColor() {
+        return allianceColor;
+    }
+
     // creates two states in which the claw moves up and down
 
 
-     // Starting positions of the servos for the opened claw
+    // Starting positions of the servos for the opened claw
     public Action intakeClawOpen() {
-        clawServo.setPosition(0.1);
+        clawServo.setPosition(CLAW_OPEN_POSITION);
         clawServoState = CLAW_SERVO_STATE.CLAW_OPEN;
         lights.headlightOff();
         return action;
@@ -61,53 +112,10 @@ public class Claw {
     // Starting positions of the servos for the closed claw
 
     public Action intakeClawClose() {
-       // if (colorSensor.getNormalizedColors().red > 0.001 && colorSensor.getNormalizedColors().green > 0.001) {
-            clawServo.setPosition(0.3);
-            //    leftIntakeServo.setPosition(0.00);
-            clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
-            lights.headlightOn();
-            return action;
-     //   } else {
-
-
-          /*  if (allianceColor.equals("BLUE")  ) {
-
-                if (colorSensor.getNormalizedColors().blue > 0.0017 && colorSensor.getNormalizedColors().blue > colorSensor.getNormalizedColors().red) {
-                    clawServo.setPosition(0.00);
-                    //    leftIntakeServo.setPosition(0.00);
-                    clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
-                }
-            } else {
-
-                if (colorSensor.getNormalizedColors().red > 0.0013 && colorSensor.getNormalizedColors().red > colorSensor.getNormalizedColors().blue) {
-                    clawServo.setPosition(0.00);
-                    //    leftIntakeServo.setPosition(0.00);
-                    clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
-
-                } else {
-                    if (colorSensor.getNormalizedColors().red > 0.0023 && colorSensor.getNormalizedColors().blue > 0.0021 && colorSensor.getNormalizedColors().green > 0.0032) {
-                        clawServo.setPosition(0.00);
-                        clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
-
-
-                    }
-
-                }
-                */
-
-            }
-         // }
-
-
-            //TODO: move wrist somewhere else
-
-            // Starting positions of the servos for a wrist that is up
-
-
-
-
-        // Starting positions of the servos for a wrist that is down
-
-
+        clawServo.setPosition(CLAW_CLOSE_POSITION);
+        clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
+        lights.headlightOn();
+        return action;
     }
+}
 
