@@ -6,33 +6,8 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Arm {
-
-    public DcMotorEx armMotor;
-    public static int ARM_POSITION_INTAKE_COUNT = 10;
-    public static int ARM_POSITION_LOW_BUCKET_COUNT = 1000;
-    public static int ARM_POSITION_HIGH_BUCKET_COUNT = 1050;
-    public static int ARM_POSITION_LOW_RUNG_COUNT = 1600;
-    public static int ARM_POSITION_HIGH_RUNG_COUNT = 1250;
-    public static int ARM_POSITION_HANGING_COUNT = 2800;
-  //  public static int ARM_MAX_POSITION_COUNT = 4250;
-//    public static int ARM_MIN_POSITION_COUNT = 0;
-
-    public static int ARM_DELTA_COUNT = 10;
-    public static double POWER_LEVEL_RUN = 0.8;
-
-    public double currentPID = 3.00;
-
-    public Action action = new Action() {
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            return true;
-        }
-    };
 
     public enum ARM_POSITION {
         ARM_POSITION_INTAKE,
@@ -43,8 +18,30 @@ public class Arm {
         ARM_POSITION_HANGING
     }
 
-    public ARM_POSITION armPosition = ARM_POSITION.ARM_POSITION_INTAKE;
-    public int armPositionCount = ARM_POSITION_INTAKE_COUNT;
+    private DcMotorEx armMotor;
+    private final int ARM_POSITION_TICKS_INTAKE = 10;
+    private final int ARM_POSITION_TICKS_LOW_BUCKET = 1000;
+    private final int ARM_POSITION_TICKS_HIGH_BUCKET = 1050;
+    private final int ARM_POSITION_TICKS_LOW_RUNG = 1600;
+    private final int ARM_POSITION_TICKS_HIGH_RUNG = 1250;
+    private final int ARM_POSITION_TICKS_HANGING = 2800;
+  //  public static int ARM_MAX_POSITION_COUNT = 4250;
+//    public static int ARM_MIN_POSITION_COUNT = 0;
+
+    private final int ARM_DELTA_NORMAL_TICKS = 300;
+    private final int ARM_DELTA_END_GAME_TICKS = 400;
+
+    private final double POWER_LEVEL_STOP = 0.0;
+    private final double POWER_LEVEL_RUN = 0.7;
+    private final double POWER_LEVEL_END_GAME = 0.9;
+
+    private double currentPowerLevel = POWER_LEVEL_RUN;
+    private int currentDeltaTicks = ARM_DELTA_NORMAL_TICKS;
+
+    private final double currentPID = 3.00;
+
+    private ARM_POSITION currentArmPosition = ARM_POSITION.ARM_POSITION_INTAKE;
+    private int armPositionTicks = ARM_POSITION_TICKS_INTAKE;
 
     private OpMode opmode;
 
@@ -56,16 +53,27 @@ public class Arm {
         armMotor.setPositionPIDFCoefficients(currentPID);
         armMotor.setDirection(DcMotorEx.Direction.FORWARD);
         armMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        armMotor.setPower(0);
+        armMotor.setPower(POWER_LEVEL_STOP);
         armMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        opmode.telemetry.addData("current position", this.armMotor.getCurrentPosition());
     }
 
-    private void runMotors() {
+    public Action action = new Action() {
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            return true;
+        }
+    };
 
-        armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        armMotor.setTargetPosition(armPositionCount);
-        armMotor.setPower(POWER_LEVEL_RUN);
+
+
+    public void setNormalMode() {
+        currentPowerLevel = POWER_LEVEL_RUN;
+        currentDeltaTicks = ARM_DELTA_NORMAL_TICKS;
+    }
+
+    public void setEndGameMode() {
+        currentPowerLevel = POWER_LEVEL_END_GAME;
+        currentDeltaTicks = ARM_DELTA_END_GAME_TICKS;
     }
 
     /**
@@ -73,31 +81,31 @@ public class Arm {
      */
     public void moveArmIntakePosition()  {
         int check = armMotor.getCurrentPosition();
-        armPositionCount = ARM_POSITION_INTAKE_COUNT;
-        armPosition = ARM_POSITION.ARM_POSITION_INTAKE;
-        armMotor.setTargetPosition(armPositionCount);
+        armPositionTicks = ARM_POSITION_TICKS_INTAKE;
+        currentArmPosition = ARM_POSITION.ARM_POSITION_INTAKE;
+        armMotor.setTargetPosition(armPositionTicks);
         runMotors();
     }
 
     public void moveArmHangingPosition() {
-        armPositionCount = ARM_POSITION_HANGING_COUNT;
-        armMotor.setTargetPosition(armPositionCount);
-        armPosition = ARM_POSITION.ARM_POSITION_HANGING;
+        armPositionTicks = ARM_POSITION_TICKS_HANGING;
+        armMotor.setTargetPosition(armPositionTicks);
+        currentArmPosition = ARM_POSITION.ARM_POSITION_HANGING;
         runMotors();
     }
 
     public void moveArmLowBucketPosition() {
 
-        armPositionCount = ARM_POSITION_LOW_BUCKET_COUNT;
-        armMotor.setTargetPosition(armPositionCount);
-        armPosition = ARM_POSITION.ARM_POSITION_LOW_BUCKET;
+        armPositionTicks = ARM_POSITION_TICKS_LOW_BUCKET;
+        armMotor.setTargetPosition(armPositionTicks);
+        currentArmPosition = ARM_POSITION.ARM_POSITION_LOW_BUCKET;
         runMotors();
     }
 
     public Action moveArmHighBucketPosition() {
-        armPositionCount = ARM_POSITION_HIGH_BUCKET_COUNT;
-        armMotor.setTargetPosition(armPositionCount);
-        armPosition = ARM_POSITION.ARM_POSITION_HIGH_BUCKET;
+        armPositionTicks = ARM_POSITION_TICKS_HIGH_BUCKET;
+        armMotor.setTargetPosition(armPositionTicks);
+        currentArmPosition = ARM_POSITION.ARM_POSITION_HIGH_BUCKET;
 
         runMotors();
         return action;
@@ -105,64 +113,60 @@ public class Arm {
     }
 
     public void moveArmLowRungPosition()  {
-        armPositionCount = ARM_POSITION_LOW_RUNG_COUNT;
-        armMotor.setTargetPosition(armPositionCount);
+        armPositionTicks = ARM_POSITION_TICKS_LOW_RUNG;
+        armMotor.setTargetPosition(armPositionTicks);
 
-        armPosition = ARM_POSITION.ARM_POSITION_LOW_RUNG;
+        currentArmPosition = ARM_POSITION.ARM_POSITION_LOW_RUNG;
 
         runMotors();
     }
 
     public void moveArmHighRungPosition()  {
-        armPositionCount = ARM_POSITION_HIGH_RUNG_COUNT;
-        armMotor.setTargetPosition(armPositionCount);
+        armPositionTicks = ARM_POSITION_TICKS_HIGH_RUNG;
+        armMotor.setTargetPosition(armPositionTicks);
 
-        armPosition = ARM_POSITION.ARM_POSITION_HIGH_RUNG;
+        currentArmPosition = ARM_POSITION.ARM_POSITION_HIGH_RUNG;
 
         runMotors();
     }
 
     public void moveArmSlightlyUp()  {
-        armPositionCount = armPositionCount + ARM_DELTA_COUNT;
+        armPositionTicks = armPositionTicks + currentDeltaTicks;
 
      /*   if (armPositionCount >= ARM_MAX_POSITION_COUNT) {
             armPositionCount = ARM_MAX_POSITION_COUNT;
         } */
 
-        armMotor.setTargetPosition(armPositionCount);
+        armMotor.setTargetPosition(armPositionTicks);
 
         runMotors();
     }
 
     public void moveArmSlightlyDown()  {
-        armPositionCount = armPositionCount - ARM_DELTA_COUNT;
-        armMotor.setTargetPosition(armPositionCount);
-
-        /* if (armPositionCount <= ARM_MIN_POSITION_COUNT) {
-            armPositionCount = ARM_MIN_POSITION_COUNT;
-        } */
+        armPositionTicks = armPositionTicks - currentDeltaTicks;
+        armMotor.setTargetPosition(armPositionTicks);
 
         runMotors();
     }
 
-    public ARM_POSITION getArmPosition() {
-        return armPosition;
+    public ARM_POSITION getCurrentArmPosition() {
+        return currentArmPosition;
     }
-
-    /**
-     * Return elevator current position
-     */
 
     public int currentArmEncoderValue() {
         return armMotor.getCurrentPosition();
     }
 
-
     public void printDebugMessages(){
         //******  debug ******
-        opmode.telemetry.addData("arm level", getArmPosition().toString());
+        opmode.telemetry.addData("arm level", getCurrentArmPosition().toString());
         opmode.telemetry.addData("arm_motor_encoder_right",currentArmEncoderValue());
-        opmode.telemetry.addData("arm_motor_encoder val ", armPositionCount);
+        opmode.telemetry.addData("arm_motor_encoder val ", armPositionTicks);
     }
 
+    private void runMotors() {
+        armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        armMotor.setTargetPosition(armPositionTicks);
+        armMotor.setPower(currentPowerLevel);
+    }
 }

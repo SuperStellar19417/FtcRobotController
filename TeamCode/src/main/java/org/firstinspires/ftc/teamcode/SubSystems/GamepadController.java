@@ -61,11 +61,9 @@ public class GamepadController {
 
     public void runArm() throws InterruptedException {
         if (endgame) {
-            arm.armMotor.setPower(0.9);
-            arm.ARM_DELTA_COUNT = 500;
+            arm.setEndGameMode();
         } else {
-            arm.armMotor.setPower(0.7);
-            arm.ARM_DELTA_COUNT = 100;
+            arm.setNormalMode();
         }
 
         if (gp2GetButtonXPress()) {

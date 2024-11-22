@@ -26,10 +26,10 @@ public class MotorTest extends LinearOpMode {
             while(opModeIsActive()) {
                 if (gamepad.gp2GetDpad_upPress()) {
                     climber.moveClimberSlightlyUp();
-                    telemetry.addLine(arm.armPositionCount + " ");
+                    telemetry.addLine(arm.getCurrentArmPosition() + " ");
                 } else if (gamepad.gp2GetDpad_downPress()) {
                     climber.moveClimberSlightlyDown(true);
-                    telemetry.addLine(arm.armPositionCount + " ");
+                    telemetry.addLine(arm.getCurrentArmPosition() + " ");
                 }
 
               /*  if(gamepad.gp2GetButtonAPress()) {

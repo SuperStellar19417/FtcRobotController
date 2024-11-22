@@ -36,10 +36,10 @@ public class ClimberTest extends LinearOpMode {
                 // Arm tests
                 if (gamepad.gp2GetDpad_upPress()) {
                     arm.moveArmSlightlyUp();
-                    telemetry.addLine(arm.armPositionCount + " ");
+                    telemetry.addLine(arm.getCurrentArmPosition() + " ");
                 } else if (gamepad.gp2GetDpad_downPress()) {
                     arm.moveArmSlightlyDown();
-                    telemetry.addLine(arm.armPositionCount + " ");
+                    telemetry.addLine(arm.getCurrentArmPosition() + " ");
                 }
 
                 if(gamepad.gp2GetButtonAPress()) {
