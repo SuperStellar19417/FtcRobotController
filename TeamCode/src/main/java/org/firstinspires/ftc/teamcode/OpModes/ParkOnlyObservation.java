@@ -9,15 +9,15 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.SubSystems.Arm;
+import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
-import org.firstinspires.ftc.teamcode.SubSystems.Claw;
-import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.LinearSlide;
 
 
-@Autonomous(name = "Park with Ascent", group = "01-Test")
-public class ParkOnlyAscent extends LinearOpMode {
+@Autonomous(name = "Park w/o Ascent", group = "01-Test")
+public class ParkOnlyObservation extends LinearOpMode {
 
     private GamepadController gamepadController;
     private DriveTrain driveTrain;
@@ -26,9 +26,7 @@ public class ParkOnlyAscent extends LinearOpMode {
     // but most the time we don't need to.
     private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
 
-    private Claw claw;
-    private Arm arm;
-    private LinearSlide slides;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -50,10 +48,8 @@ public class ParkOnlyAscent extends LinearOpMode {
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
-                .lineToX(1)
-                .turn(Math.toRadians(90))
-                .lineToX(5);
-                arm.moveArmLowBucketPosition(); //go forward and touch rung with arm
+                .lineToY(14);
+
 
 
 
@@ -96,12 +92,9 @@ public class ParkOnlyAscent extends LinearOpMode {
         telemetry.update();
 
         //Aarushi-initialize claw and arm
-        arm = new Arm(this);
-        telemetry.addLine("Arm initialized");
-        claw = new Claw(this);
-        slides = new LinearSlide(this);
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slides, null);
+
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, null, null, null);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 

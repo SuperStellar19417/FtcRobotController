@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.Action;
 
 import androidx.annotation.NonNull;
 
@@ -8,17 +8,20 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 
-public class MoveArmLowBucket implements Action {
-    public OpMode opMode;
+public class MoveArmHighRung implements Action {
 
-    Arm arm = new Arm(opMode);
+    private final Arm arm;
+    private final OpMode opMode;
 
-    public MoveArmLowBucket(OpMode opMode){
+    public MoveArmHighRung(OpMode opMode){
+
         this.opMode = opMode;
+        arm = new Arm(opMode);
     }
+
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        arm.moveArmLowBucketPosition();
+        arm.moveArmHighRungPosition();
         return true;
     }
 }

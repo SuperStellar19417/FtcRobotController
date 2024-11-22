@@ -13,11 +13,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Arm {
 
     public DcMotorEx armMotor;
-    public static int ARM_POSITION_INTAKE_COUNT = 0;
+    public static int ARM_POSITION_INTAKE_COUNT = 10;
     public static int ARM_POSITION_LOW_BUCKET_COUNT = 1000;
     public static int ARM_POSITION_HIGH_BUCKET_COUNT = 1050;
     public static int ARM_POSITION_LOW_RUNG_COUNT = 1600;
-    public static int ARM_POSITION_HIGH_RUNG_COUNT = 1300;
+    public static int ARM_POSITION_HIGH_RUNG_COUNT = 1250;
     public static int ARM_POSITION_HANGING_COUNT = 2800;
   //  public static int ARM_MAX_POSITION_COUNT = 4250;
 //    public static int ARM_MIN_POSITION_COUNT = 0;
