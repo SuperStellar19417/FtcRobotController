@@ -28,15 +28,15 @@ public class Arm {
   //  public static int ARM_MAX_POSITION_COUNT = 4250;
 //    public static int ARM_MIN_POSITION_COUNT = 0;
 
-    private final int ARM_DELTA_NORMAL_TICKS = 300;
-    private final int ARM_DELTA_END_GAME_TICKS = 400;
+    private final int ARM_DELTA_TICKS_NORMAL = 300;
+    private final int ARM_DELTA_TICKS_END_GAME = 400;
 
     private final double POWER_LEVEL_STOP = 0.0;
     private final double POWER_LEVEL_RUN = 0.7;
     private final double POWER_LEVEL_END_GAME = 0.9;
 
     private double currentPowerLevel = POWER_LEVEL_RUN;
-    private int currentDeltaTicks = ARM_DELTA_NORMAL_TICKS;
+    private int currentDeltaTicks = ARM_DELTA_TICKS_NORMAL;
 
     private final double currentPID = 3.00;
 
@@ -64,16 +64,14 @@ public class Arm {
         }
     };
 
-
-
     public void setNormalMode() {
         currentPowerLevel = POWER_LEVEL_RUN;
-        currentDeltaTicks = ARM_DELTA_NORMAL_TICKS;
+        currentDeltaTicks = ARM_DELTA_TICKS_NORMAL;
     }
 
     public void setEndGameMode() {
         currentPowerLevel = POWER_LEVEL_END_GAME;
-        currentDeltaTicks = ARM_DELTA_END_GAME_TICKS;
+        currentDeltaTicks = ARM_DELTA_TICKS_END_GAME;
     }
 
     /**
@@ -153,15 +151,8 @@ public class Arm {
         return currentArmPosition;
     }
 
-    public int currentArmEncoderValue() {
+    public int getCurrentArmEncoderValue() {
         return armMotor.getCurrentPosition();
-    }
-
-    public void printDebugMessages(){
-        //******  debug ******
-        opmode.telemetry.addData("arm level", getCurrentArmPosition().toString());
-        opmode.telemetry.addData("arm_motor_encoder_right",currentArmEncoderValue());
-        opmode.telemetry.addData("arm_motor_encoder val ", armPositionTicks);
     }
 
     private void runMotors() {
