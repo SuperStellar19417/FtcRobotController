@@ -65,10 +65,10 @@ public class ClimberTest extends LinearOpMode {
                 // Climber tests
                 if (gamepad.gp2GetLeftBumperPress()) {
                     climber.moveClimberSlightlyUp();
-                    telemetry.addLine(climber.climberMotorStateCount + " ");
+                    telemetry.addLine(climber.getClimberTargetPosition() + " ");
                 } else if (gamepad.gp2GetLeftTriggerPress()) {
-                    climber.moveClimberSlightlyDown();
-                    telemetry.addLine(climber.climberMotorStateCount + " ");
+                    climber.moveClimberSlightlyDown(true);
+                    telemetry.addLine(climber.getClimberTargetPosition() + " ");
                 }
             }
         }

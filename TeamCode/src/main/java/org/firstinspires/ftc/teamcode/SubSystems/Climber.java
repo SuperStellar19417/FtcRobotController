@@ -1,45 +1,25 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class Climber {
-    public DcMotorEx climberMotor;
+    private DcMotorEx climberMotor;
 
-    public enum CLIMBER_MOTOR_STATE {
-        CLIMBER_UP_POSITION,
-        CLIMBER_DOWN_POSITION,
-        CLIMBER_SLIGHTLY_DOWN_POSITION,
-        CLIMBER_SLIGHTLY_UP_POSITION,
-    }
+    private final int CLIMBER_POSITION_MIN = 0;
+    private final int CLIMBER_POSITION_MAX = 20000;
 
-    public static double ENCODER_VAlUE = 0;
-    public static int CLIMBER_UP_POSITION_COUNT = 20000; // 2024-11-09 calibrated value
-    public static int CLIMBER_DOWN_POSITION_COUNT = 0;
-    public static int CLIMBER_DELTA_COUNT = 5000;  // 2024-11-09  calibrated value
-    public static int CLIMBER_MIN_COUNT = 0;
-    public static int CLIMBER_MAX_COUNT = 5000;
+    private final int CLIMBER_POSITION_UP = CLIMBER_POSITION_MAX; // 2024-11-09 calibrated value
+    private final int CLIMBER_POSITION_DOWN = 0;
+    private final int CLIMBER_POSITION_DELTA = 5000;  // 2024-11-09  calibrated value
+    private final double POWER_LEVEL_RUN = .9;
+    private final double POWER_LEVEL_STOP = 0.0;
 
-    public CLIMBER_MOTOR_STATE climberMotorState = CLIMBER_MOTOR_STATE.CLIMBER_DOWN_POSITION;
-    public int climberMotorStateCount = CLIMBER_DOWN_POSITION_COUNT;
-
-    public static double POWER_LEVEL_RUN = .9;
-
-    public double motorPowerToRun = POWER_LEVEL_RUN;
-
-    public boolean climberNeedsToGoDown = false;
-
-    //public boolean isClimberInLowPosition() {
-    // return touchSensor.isPressed();
-    //  }
-
-    private void runMotors(double power) {
-        climberMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        climberMotor.setPower(power);
-    }
+    private int climberMotorPosition = CLIMBER_POSITION_DOWN;
 
 
     public Climber(LinearOpMode opMode) {
@@ -48,12 +28,13 @@ public class Climber {
     }
 
     public void initClimber() {
-        //climberMotorLeft.setPositionPIDFCoefficients(5.0);
+        climberMotor.setCurrentAlert(5.0, CurrentUnit.AMPS);
         climberMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        climberMotor.setPower(POWER_LEVEL_STOP);
+        climberMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         climberMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         resetClimber();
-        //initializeClimberToLowPosition();
     }
 
     public void resetClimber() {
@@ -61,50 +42,66 @@ public class Climber {
     }
 
     private void stopMotors() {
-        climberMotor.setPower(0.0);
+        climberMotor.setPower(POWER_LEVEL_STOP);
     }
 
-    public void runClimberToLevel(double power, int position) {
-        climberMotor.setTargetPosition(position);
-        runMotors(power);
-
+    public void runClimberToLevel() {
+        runClimberToLevel(false);
     }
 
-    public void moveClimberSlightlyDown() {
-        turnClimberBrakeModeOn();
-        turnClimberBrakeModeOn();
-        climberMotorStateCount = climberMotorStateCount - CLIMBER_DELTA_COUNT;
-        runClimberToLevel(0.9, climberMotorStateCount);
+    public void runClimberToLevel(boolean overideMinValue) {
+
+        // Do not let climber go below minimum position and above maximum position
+        if (!overideMinValue && climberMotorPosition < CLIMBER_POSITION_MIN) {
+            climberMotorPosition = CLIMBER_POSITION_MIN;
+        } else if (climberMotorPosition >= CLIMBER_POSITION_MAX) {
+            climberMotorPosition = CLIMBER_POSITION_MAX;
+        }
+
+        climberMotor.setTargetPosition(climberMotorPosition);
+        climberMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        climberMotor.setPower(POWER_LEVEL_RUN);
+
+        while (climberMotor.isBusy()) {
+            // Wait for the motor to reach the target position
+        }
+
+        if (climberMotorPosition <= CLIMBER_POSITION_MIN) {
+            climberMotorPosition = CLIMBER_POSITION_MIN;
+            resetClimber();
+        }
+
+        if (climberMotorPosition >= CLIMBER_POSITION_MAX) {
+            climberMotorPosition = CLIMBER_POSITION_MAX;
+        }
+    }
+
+    public void moveClimberSlightlyDown(boolean overideMinValue) {
+        climberMotorPosition = climberMotorPosition - CLIMBER_POSITION_DELTA;
+        runClimberToLevel(overideMinValue);
     }
 
     public void moveClimberSlightlyUp() {
-        turnClimberBrakeModeOn();
-        climberMotorStateCount = climberMotorStateCount + CLIMBER_DELTA_COUNT;
-        runClimberToLevel(0.9, climberMotorStateCount);
-
+        climberMotorPosition = climberMotorPosition + CLIMBER_POSITION_DELTA;
+        runClimberToLevel();
     }
 
-    public void extendClimberUp() {
-        turnClimberBrakeModeOn();
-        climberMotorStateCount = CLIMBER_UP_POSITION_COUNT;
-        climberMotor.setTargetPosition(climberMotorStateCount);
-        climberMotorState = CLIMBER_MOTOR_STATE.CLIMBER_UP_POSITION;
-
-        runClimberToLevel(0.9, climberMotorStateCount);
+    public void moveClimberUp() {
+        climberMotorPosition = CLIMBER_POSITION_UP;
+        runClimberToLevel();
     }
 
     public void runClimberDown() {
-        turnClimberBrakeModeOn();
-        climberMotorStateCount = CLIMBER_DOWN_POSITION_COUNT;
-        climberMotor.setTargetPosition(climberMotorStateCount);
-        climberMotorState = CLIMBER_MOTOR_STATE.CLIMBER_DOWN_POSITION;
-
-        runClimberToLevel(0.9, climberMotorStateCount);
+        climberMotorPosition = CLIMBER_POSITION_DOWN;
+        runClimberToLevel();
+        resetClimber();
     }
 
-
-
-    private void turnClimberBrakeModeOn() {
-        climberMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+    public int getClimberTargetPosition() {
+        return climberMotorPosition;
     }
+
+    public int getClimberMotorPosition() {
+        return climberMotor.getCurrentPosition();
     }
+}

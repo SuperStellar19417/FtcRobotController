@@ -82,6 +82,8 @@ public class SimplePathTestAuto extends LinearOpMode {
         drive.followTrajectory(traj1);
         drive.followTrajectory(traj2); */
 
+
+
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
@@ -112,7 +114,7 @@ public class SimplePathTestAuto extends LinearOpMode {
         Actions.runBlocking(new SequentialAction(toBucket));
         safeWaitSeconds(1000);
         arm.moveArmHighBucketPosition();
-        climber.extendClimberUp();
+        climber.moveClimberUp();
         safeWaitSeconds(1000);
         slides.moveSlideHigh();
         safeWaitSeconds(4000);

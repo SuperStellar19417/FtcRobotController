@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
@@ -19,15 +18,17 @@ public class NormalTeleOp extends LinearOpMode {
     private GamepadController gamepadController;
     // Declare subsystems here
     private DriveTrain driveTrain;
+
     private enum ALLIANCE {
         BLUE,
         RED
     }
+
     private ALLIANCE allianceSelection = ALLIANCE.RED;
 
     // We can tranfer this from last autonoumous opmode if needed,
     // but most the time we don't need to.
-    private Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
+    private Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
     private Claw claw;
     private Arm arm;
     private LinearSlide slide;
@@ -48,9 +49,9 @@ public class NormalTeleOp extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         telemetry.addLine("X for BLUE ALLIANCE : O for RED ALLIANCE");
-        if(gamepadController.gp1GetX()) {
+        if (gamepadController.gp1GetX()) {
             allianceSelection = ALLIANCE.BLUE;
-        } else if (gamepadController.gp1GetX()){
+        } else if (gamepadController.gp1GetX()) {
             allianceSelection = ALLIANCE.RED;
         }
 
@@ -69,7 +70,6 @@ public class NormalTeleOp extends LinearOpMode {
                 // TeleOp code here
                 gamepadController.runSubSystems();
                 outputTelemetry();
-                telemetry.update();
             }
         }
     }
@@ -88,17 +88,16 @@ public class NormalTeleOp extends LinearOpMode {
         driveTrain = new DriveTrain(hardwareMap, startPose, this);
         driveTrain.driveType = DriveTrain.DriveType.ROBOT_CENTRIC;
 
-
-        telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
+        telemetry.addData("DriveTrain Initialized with Pose:", driveTrain.toStringPose2d(driveTrain.pose));
         telemetry.update();
 
-       // claw = new Claw(hardwareMap, telemetry);
+        // claw = new Claw(hardwareMap, telemetry);
         arm = new Arm(this);
         climber = new Climber(this);
         slide = new LinearSlide(this);
         claw = new Claw(this);
-        if(allianceSelection == ALLIANCE.RED) {
-         //   claw.allianceColor = "RED";
+        if (allianceSelection == ALLIANCE.RED) {
+            //   claw.allianceColor = "RED";
         } else {
             //claw.allianceColor = "BLUE";
         }
@@ -127,27 +126,20 @@ public class NormalTeleOp extends LinearOpMode {
     /**
      * Output telemetry messages to the driver station
      */
-    public void outputTelemetry(){
+    public void outputTelemetry() {
 
         telemetry.setAutoClear(true);
         telemetry.addLine("Running Normal TeleOpMode");
 
         // Output telemetry messages for susbsystems here
         driveTrain.outputTelemetry();
-       telemetry.addData("climber position",  climber.climberMotor.getCurrentPosition());
-       telemetry.addData("claw state", claw.clawServoState);
-       telemetry.addData("slides", slide.slideMotor.getCurrentPosition());
-       telemetry.addData("arm position", arm.armMotor.getCurrentPosition());
+        telemetry.addData("Climber Target Position", climber.getClimberTargetPosition());
+        telemetry.addData("Climber Motor Position", climber.getClimberMotorPosition());
+        telemetry.addData("Claw state", claw.clawServoState);
+        telemetry.addData("Slides Motor Position", slide.slideMotor.getCurrentPosition());
+        telemetry.addData("Arm Motos Position", arm.armMotor.getCurrentPosition());
 
 
         telemetry.update();
-    }
-
-    public void clawState() {
-       /* telemetry.addData("claw state: ", claw.clawServoState);
-        telemetry.addLine(claw.allianceColor); */
-       /* telemetry.addData("red detected: ", claw.colorSensor.getNormalizedColors().red);
-        telemetry.addData("blue detected: ", claw.colorSensor.getNormalizedColors().blue); */
-     //   telemetry.addData("arm: ", arm.armPositionCount);
     }
 }
