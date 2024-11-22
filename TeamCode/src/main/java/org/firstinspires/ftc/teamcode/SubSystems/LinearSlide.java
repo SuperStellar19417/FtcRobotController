@@ -52,24 +52,22 @@ public class LinearSlide {
         slideMotor.setPower(0.8);
     }
 
-    public Action moveSlideHigh() {
-        slidePositionCount = 6300;
+    public void moveSlideHigh() {
+        slidePositionCount = 6800;
         runMotors();
         slideMotorState = SLIDE_MOTOR_STATE.SLIDE_EXTEND;
-        return action;
     }
-    public Action moveSlideLow() {
+    public void moveSlideLow() {
         slidePositionCount = 0;
         runMotors();
         slideMotorState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
-        return action;
     }
 
     // Sets the intake arm to a position that allows for intake
     public void moveSlideUp() {
         slidePositionCount = slidePositionCount + 300;
-        if (slidePositionCount >= 6300) {
-            slidePositionCount = 6300;
+        if (slidePositionCount >= 6600) {
+            slidePositionCount = 6600;
         }
         runMotors();
         slideMotorState = SLIDE_MOTOR_STATE.SLIDE_HOLD;
