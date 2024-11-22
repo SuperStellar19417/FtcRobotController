@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.MILLISECONDS;
-import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 
 import androidx.annotation.NonNull;
 
@@ -9,7 +8,6 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.Trajectory;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -18,13 +16,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
-import org.firstinspires.ftc.teamcode.SubSystems.LinearSlide;
+import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 
 @Autonomous(name = "Preload Deliver + Park", group = "01-Test")
 public class SimplePathTestAuto extends LinearOpMode {
@@ -38,7 +35,7 @@ public class SimplePathTestAuto extends LinearOpMode {
 
     private Claw claw;
     private Arm arm;
-    private LinearSlide slides;
+    private IntakeSlide slides;
     private Climber climber;
     private Action action = new Action() {
         @Override
@@ -142,7 +139,7 @@ public class SimplePathTestAuto extends LinearOpMode {
             telemetry.update();
             claw = new Claw(this);
             arm = new Arm(this);
-            slides = new LinearSlide(this);
+            slides = new IntakeSlide(this);
             climber = new Climber(this);
             gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slides, climber);
             telemetry.addLine("Gamepad Initialized");

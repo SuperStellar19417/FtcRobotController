@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
-import org.firstinspires.ftc.teamcode.SubSystems.LinearSlide;
+import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 
 @TeleOp(name = "Normal TeleOp", group = "00-Teleop")
 public class NormalTeleOp extends LinearOpMode {
@@ -31,7 +31,7 @@ public class NormalTeleOp extends LinearOpMode {
     private Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
     private Claw claw;
     private Arm arm;
-    private LinearSlide slide;
+    private IntakeSlide slide;
     private Climber climber;
 
 
@@ -94,7 +94,7 @@ public class NormalTeleOp extends LinearOpMode {
         // claw = new Claw(hardwareMap, telemetry);
         arm = new Arm(this);
         climber = new Climber(this);
-        slide = new LinearSlide(this);
+        slide = new IntakeSlide(this);
         claw = new Claw(this);
         if (allianceSelection == ALLIANCE.RED) {
             //   claw.allianceColor = "RED";
@@ -137,8 +137,9 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addData("Climber Motor Position", climber.getClimberMotorPosition());
         telemetry.addData("Claw state", claw.getClawServoState());
         telemetry.addData("Detected Color", claw.getDetectedColor());
-        telemetry.addData("Slides Motor Position", slide.slideMotor.getCurrentPosition());
-        telemetry.addData("Arm Motos Position", arm.armMotor.getCurrentPosition());
+        telemetry.addData("Slides Target Position", slide.getTargetPosition());
+        telemetry.addData("Slides Motor Position", slide.getMotorPosition());
+        telemetry.addData("Arm Motor Position", arm.armMotor.getCurrentPosition());
 
 
         telemetry.update();

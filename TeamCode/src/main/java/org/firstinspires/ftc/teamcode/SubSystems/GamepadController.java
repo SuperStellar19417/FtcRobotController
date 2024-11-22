@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 
@@ -18,7 +17,7 @@ public class GamepadController {
     private LinearOpMode opMode;
     private Claw claw;
     private Arm arm;
-    private LinearSlide slide;
+    private IntakeSlide slide;
     private Climber climber;
     private boolean endgame = false;
 
@@ -36,7 +35,7 @@ public class GamepadController {
                              LinearOpMode opMode,
                              Claw claw,
                              Arm arm,
-                             LinearSlide slide,
+                             IntakeSlide slide,
                              Climber climber
     ) {
         this.gamepad1 = gamepad1;
@@ -129,10 +128,12 @@ public class GamepadController {
     }
 
     public void runSlides() {
-        if (gp2GetDpad_down()) {
-            slide.moveSlideDown();
-        } else if (gp2GetDpad_up()) {
-            slide.moveSlideUp();
+        if ( gp2GetDpad_upPress()) {
+            slide.extendSlide();
+        } else if (gp2GetStart() && gp2GetDpad_down()) {
+            slide.retractSlide(true);
+        } else if (gp2GetDpad_downPress()) {
+            slide.retractSlide(false);
         }
     }
 

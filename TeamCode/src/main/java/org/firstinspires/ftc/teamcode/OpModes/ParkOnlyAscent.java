@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
-import org.firstinspires.ftc.teamcode.SubSystems.LinearSlide;
+import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 
 
 @Autonomous(name = "Park with Ascent", group = "01-Test")
@@ -28,7 +28,7 @@ public class ParkOnlyAscent extends LinearOpMode {
 
     private Claw claw;
     private Arm arm;
-    private LinearSlide slides;
+    private IntakeSlide slides;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -99,7 +99,7 @@ public class ParkOnlyAscent extends LinearOpMode {
         arm = new Arm(this);
         telemetry.addLine("Arm initialized");
         claw = new Claw(this);
-        slides = new LinearSlide(this);
+        slides = new IntakeSlide(this);
 
         gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slides, null);
         telemetry.addLine("Gamepad Initialized");

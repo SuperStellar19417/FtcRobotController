@@ -1,21 +1,15 @@
 package org.firstinspires.ftc.teamcode.OpModes.Action;
 
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
-import org.firstinspires.ftc.teamcode.SubSystems.LinearSlide;
+import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 
 
 @Autonomous(name = "High Bucket Ascent", group = "01-Test")
@@ -31,7 +25,7 @@ public class HighBucketAscent extends LinearOpMode {
     private Claw claw;
     private Arm arm;
 
-    private LinearSlide linearSlide;
+    private IntakeSlide linearSlide;
 
     @Override
     public void runOpMode() {
@@ -106,7 +100,7 @@ public class HighBucketAscent extends LinearOpMode {
        arm = new Arm( this);
         telemetry.addLine("Arm initialized");
        claw = new Claw(this);
-       linearSlide = new LinearSlide( this);
+       linearSlide = new IntakeSlide( this);
 
 
         gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, linearSlide, null);

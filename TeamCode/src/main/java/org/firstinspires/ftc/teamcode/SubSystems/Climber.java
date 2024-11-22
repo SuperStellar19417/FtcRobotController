@@ -28,7 +28,6 @@ public class Climber {
     }
 
     public void initClimber() {
-        climberMotor.setCurrentAlert(5.0, CurrentUnit.AMPS);
         climberMotor.setDirection(DcMotorEx.Direction.FORWARD);
         climberMotor.setPower(POWER_LEVEL_STOP);
         climberMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
