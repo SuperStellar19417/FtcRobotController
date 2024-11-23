@@ -37,6 +37,15 @@ public class SimplePathTestAuto extends LinearOpMode {
     private Arm arm;
     private IntakeSlide slides;
     private Climber climber;
+
+    private enum STARTING_SIDE {
+        RED_RIGHT,
+        RED_LEFT,
+        BLUE_RIGHT,
+        BLUE_LEFT
+    }
+
+    public STARTING_SIDE startingSide = STARTING_SIDE.BLUE_LEFT;
     private Action action = new Action() {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
@@ -179,4 +188,40 @@ public class SimplePathTestAuto extends LinearOpMode {
             }
             return action;
         }
+
+
+    public void selectStartingPosition() {
+
+        //******select start pose*****
+        while (!isStopRequested()) {
+            telemetry.addLine("Initializing Superstellar Autonomous Mode:");
+            telemetry.addData("---------------------------------------", "");
+            telemetry.addData("Select Starting Position using XYAB on Logitech (or ▢ΔOX on Playstayion) on gamepad 1:", "");
+            telemetry.addData("    Blue Left   ", "(X / ▢)");
+            telemetry.addData("    Blue Right ", "(Y / Δ)");
+            telemetry.addData("    Red Left    ", "(B / O)");
+            telemetry.addData("    Red Right  ", "(A / X)");
+            telemetry.addData("start pose: ", startPose);
+            telemetry.addData("current pose: ", driveTrain.pose);
+            if (gamepad1.x) {
+                startingSide = STARTING_SIDE.BLUE_LEFT;
+                break;
+            }
+            if (gamepad1.y) {
+                startingSide = STARTING_SIDE.BLUE_RIGHT;
+                break;
+            }
+            if (gamepad1.b) {
+                startingSide = STARTING_SIDE.RED_LEFT;
+                break;
+            }
+            if (gamepad1.a) {
+                startingSide = STARTING_SIDE.RED_RIGHT;
+                break;
+            }
+
+            telemetry.update();
+        }
+        telemetry.clearAll();
+    }
 }

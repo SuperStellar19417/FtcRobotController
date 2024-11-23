@@ -19,16 +19,16 @@ public class Arm {
     }
 
     private DcMotorEx armMotor;
-    private final int ARM_POSITION_TICKS_INTAKE = 10;
+    private final int ARM_POSITION_TICKS_INTAKE = 150;
     private final int ARM_POSITION_TICKS_LOW_BUCKET = 1000;
     private final int ARM_POSITION_TICKS_HIGH_BUCKET = 1050;
     private final int ARM_POSITION_TICKS_LOW_RUNG = 1600;
     private final int ARM_POSITION_TICKS_HIGH_RUNG = 1250;
-    private final int ARM_POSITION_TICKS_HANGING = 2800;
+    private final int ARM_POSITION_TICKS_HANGING = 3000;
   //  public static int ARM_MAX_POSITION_COUNT = 4250;
 //    public static int ARM_MIN_POSITION_COUNT = 0;
 
-    private final int ARM_DELTA_TICKS_NORMAL = 300;
+    private final int ARM_DELTA_TICKS_NORMAL = 200;
     private final int ARM_DELTA_TICKS_END_GAME = 400;
 
     private final double POWER_LEVEL_STOP = 0.0;
@@ -55,6 +55,7 @@ public class Arm {
         armMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         armMotor.setPower(POWER_LEVEL_STOP);
         armMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        moveArmIntakePosition();
     }
 
     public Action action = new Action() {
@@ -142,6 +143,10 @@ public class Arm {
 
     public void moveArmSlightlyDown()  {
         armPositionTicks = armPositionTicks - currentDeltaTicks;
+
+        if (armPositionTicks <= ARM_POSITION_TICKS_INTAKE)
+            armPositionTicks = ARM_POSITION_TICKS_INTAKE;
+
         armMotor.setTargetPosition(armPositionTicks);
 
         runMotors();

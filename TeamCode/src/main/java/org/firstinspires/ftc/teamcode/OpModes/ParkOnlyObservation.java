@@ -9,6 +9,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 public class ParkOnlyObservation extends LinearOpMode {
 
     private GamepadController gamepadController;
+    private Arm arm;
     private DriveTrain driveTrain;
 
     // We can transfer this from last autonomous op mode if needed,
@@ -41,15 +43,12 @@ public class ParkOnlyObservation extends LinearOpMode {
 
         // If Stop is pressed, exit OpMode
         if (isStopRequested()) return;
+        TrajectoryActionBuilder tab1;
 
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
-        TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
-                .lineToY(14);
-
-
-
-
+         tab1 = driveTrain.actionBuilder(startPose)
+                .lineToX(30);
 
         // Create an action that will be run
         Action followPathAction = tab1.build();
@@ -84,6 +83,7 @@ public class ParkOnlyObservation extends LinearOpMode {
 
         // Initialize drive train
         driveTrain = new DriveTrain(hardwareMap, startPose, this);
+        arm = new Arm(this);
         driveTrain.driveType = DriveTrain.DriveType.ROBOT_CENTRIC;
         telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
         telemetry.update();
@@ -91,7 +91,7 @@ public class ParkOnlyObservation extends LinearOpMode {
         //Aarushi-initialize claw and arm
 
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, null, null, null);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, arm, null, null);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
@@ -120,5 +120,7 @@ public class ParkOnlyObservation extends LinearOpMode {
 
         telemetry.update();
     }
+
+
 }
 

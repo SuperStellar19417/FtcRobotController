@@ -4,11 +4,13 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
@@ -26,9 +28,8 @@ public class ParkOnlyAscent extends LinearOpMode {
     // but most the time we don't need to.
     private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
 
-    private Claw claw;
+    private Climber climber;
     private Arm arm;
-    private IntakeSlide slides;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -47,20 +48,20 @@ public class ParkOnlyAscent extends LinearOpMode {
         // If Stop is pressed, exit OpMode
         if (isStopRequested()) return;
 
-        // Create a simple path here
-        // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
-        TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
-                .lineToX(1)
-                .turn(Math.toRadians(90))
-                .lineToX(5);
-                arm.moveArmLowBucketPosition(); //go forward and touch rung with arm
+        if(opModeIsActive()) {
+            // Create a simple path here
+            // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
+            TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
+                    .lineToX(25)
+                    .strafeTo(new Vector2d(38,-57))
+                    .strafeTo(new Vector2d(18.5,-57));
 
 
-
-
-        // Create an action that will be run
-        Action followPathAction = tab1.build();
-
+            // Create an action that will be run
+            Action followPathAction = tab1.build();
+            Actions.runBlocking(new SequentialAction(followPathAction));
+            climber.moveClimberUp();
+        }
         // Run the action (s)
         // You can run multiple actions to execute a complex auto. For example :
         /*
@@ -75,7 +76,6 @@ public class ParkOnlyAscent extends LinearOpMode {
         */
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
-        Actions.runBlocking( new SequentialAction(followPathAction));
 
     }
 
@@ -97,11 +97,10 @@ public class ParkOnlyAscent extends LinearOpMode {
 
         //Aarushi-initialize claw and arm
         arm = new Arm(this);
+        climber = new Climber(this);
         telemetry.addLine("Arm initialized");
-        claw = new Claw(this);
-        slides = new IntakeSlide(this);
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slides, null);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, arm, null, climber);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
