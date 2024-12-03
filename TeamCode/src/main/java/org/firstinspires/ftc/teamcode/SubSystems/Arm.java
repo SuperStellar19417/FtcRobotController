@@ -25,7 +25,7 @@ public class Arm {
     private final int ARM_POSITION_TICKS_LOW_RUNG = 1600;
     private final int ARM_POSITION_TICKS_HIGH_RUNG = 1250;
     private final int ARM_POSITION_TICKS_HANGING = 3000;
-  //  public static int ARM_MAX_POSITION_COUNT = 4250;
+  //  public static int ARM_MAX_POSITION_COUNT = 2000;
 //    public static int ARM_MIN_POSITION_COUNT = 0;
 
     private final int ARM_DELTA_TICKS_NORMAL = 200;
@@ -132,8 +132,8 @@ public class Arm {
     public void moveArmSlightlyUp()  {
         armPositionTicks = armPositionTicks + currentDeltaTicks;
 
-     /*   if (armPositionCount >= ARM_MAX_POSITION_COUNT) {
-            armPositionCount = ARM_MAX_POSITION_COUNT;
+     /*   if (armPositionTicks >= ARM_MAX_POSITION_COUNT) {
+            armPositionTicks = ARM_MAX_POSITION_COUNT;
         } */
 
         armMotor.setTargetPosition(armPositionTicks);

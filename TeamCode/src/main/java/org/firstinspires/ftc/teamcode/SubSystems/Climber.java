@@ -15,7 +15,7 @@ public class Climber {
 
     private final int CLIMBER_POSITION_UP = CLIMBER_POSITION_MAX; // 2024-11-09 calibrated value
     private final int CLIMBER_POSITION_DOWN = 0;
-    private final int CLIMBER_POSITION_DELTA = 5000;  // 2024-11-09  calibrated value
+    private final int CLIMBER_POSITION_DELTA = 7500;  // 2024-11-09  calibrated value
     private final double POWER_LEVEL_RUN = .9;
     private final double POWER_LEVEL_STOP = 0.0;
 

@@ -7,12 +7,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 public class IntakeSlide {
 
-    private final double POWER_LEVEL_RUN = 0.8;
+    private final double POWER_LEVEL_RUN = 0.9;
     private final double POWER_LEVEL_STOP = 0.0;
 
     private final int SLIDE_POSITION_MIN = 0;
     private final int SLIDE_POSITION_MAX = 6000;
-    private final int SLIDE_POSITION_DELTA = 500;
+    private final int SLIDE_POSITION_DELTA = 650;
 
     private DcMotorEx slideMotor;
     private int slidePosition = SLIDE_POSITION_MIN;
@@ -48,7 +48,7 @@ public class IntakeSlide {
         slideMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         slideMotor.setPower(POWER_LEVEL_RUN);
 
-        if ( overideMinValue)
+        if (overideMinValue)
         {
             while (slideMotor.isBusy()) {
             }

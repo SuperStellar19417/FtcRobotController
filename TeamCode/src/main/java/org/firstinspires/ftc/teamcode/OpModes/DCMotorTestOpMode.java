@@ -2,14 +2,17 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 @TeleOp(name="DC Motor Test OpMode", group="Tests")
 public class DCMotorTestOpMode extends LinearOpMode {
 
     DcMotorEx testMotor;
-    private final double MAX_VELOCITY = 2460.0;
+    private final double MAX_VELOCITY = 3120;
     private final int RUNNING_VELOCITY = 2000;
+    TouchSensor limitSwitch;
 
     boolean gp1ButtonYLast = false;
     boolean gp1ButtonALast = false;
@@ -18,6 +21,7 @@ public class DCMotorTestOpMode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Initialization code here
         testMotor = hardwareMap.get(DcMotorEx.class, "testMotor");
+        limitSwitch = hardwareMap.get(TouchSensor.class, "limitSwitch");
         initMotor();
 
         telemetry.addData("Status", "Initialized");
@@ -38,11 +42,16 @@ public class DCMotorTestOpMode extends LinearOpMode {
             int currentPosition = testMotor.getCurrentPosition();
             telemetry.addData("Current Position", currentPosition);
 
+            telemetry.addData("touch sensor: ", limitSwitch.getValue());
             // Get the gamepad inputs
+            if(limitSwitch.isPressed()) {
+                stopMotor();
+                telemetry.addLine("motor stopped");
+            }
 
             if (gp1GetButtonYPress()) {
                 telemetry.addLine("Gamepad 1 Y Pressed");
-                runMotorToPosition(1000);
+                runMotorToPosition(2000);
             } else if (gp1GetButtonAPress()) {
                 telemetry.addLine("Gamepad 1 A Pressed");
                 runMotorToPosition(0);
@@ -59,6 +68,11 @@ public class DCMotorTestOpMode extends LinearOpMode {
             telemetry.addData("Status", "Running");
             telemetry.update();
         }
+    }
+
+    private void stopMotor() {
+        testMotor.setPower(0);
+        testMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     private void initMotor() {

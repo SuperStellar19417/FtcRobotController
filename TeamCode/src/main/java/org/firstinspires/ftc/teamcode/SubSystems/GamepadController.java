@@ -129,8 +129,10 @@ public class GamepadController {
         if ( gp2GetDpad_upPress()) {
             slide.extendSlide();
         } else if (gp2GetStart() && gp2GetDpad_down()) {
+            //no press  og
             slide.retractSlide(true);
         } else if (gp2GetDpad_downPress()) {
+            //press og
             slide.retractSlide(false);
         }
     }
