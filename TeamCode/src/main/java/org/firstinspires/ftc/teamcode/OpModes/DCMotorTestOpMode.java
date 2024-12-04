@@ -4,15 +4,18 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 @TeleOp(name="DC Motor Test OpMode", group="Tests")
 public class DCMotorTestOpMode extends LinearOpMode {
 
-    DcMotorEx testMotor;
     private final double MAX_VELOCITY = 3120;
     private final int RUNNING_VELOCITY = 2000;
+
+    DcMotorEx testMotor;
     TouchSensor limitSwitch;
+    LED testLED;
 
     boolean gp1ButtonYLast = false;
     boolean gp1ButtonALast = false;
@@ -22,6 +25,8 @@ public class DCMotorTestOpMode extends LinearOpMode {
         // Initialization code here
         testMotor = hardwareMap.get(DcMotorEx.class, "testMotor");
         limitSwitch = hardwareMap.get(TouchSensor.class, "limitSwitch");
+        testLED = hardwareMap.get(LED.class, "testLed");
+
         initMotor();
 
         telemetry.addData("Status", "Initialized");
@@ -45,8 +50,12 @@ public class DCMotorTestOpMode extends LinearOpMode {
             telemetry.addData("touch sensor: ", limitSwitch.getValue());
             // Get the gamepad inputs
             if(limitSwitch.isPressed()) {
+                testLED.on();
                 stopMotor();
                 telemetry.addLine("motor stopped");
+            }
+            else {
+                testLED.off();
             }
 
             if (gp1GetButtonYPress()) {
