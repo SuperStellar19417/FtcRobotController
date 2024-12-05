@@ -9,6 +9,7 @@ public class MaxVelocityOpMode extends LinearOpMode {
     DcMotorEx motor;
     double currentVelocity;
     double maxVelocity = 0.0;
+    // maxVelocity = 2720  for 435 rpm
 
     @Override
     public void runOpMode() throws InterruptedException {
