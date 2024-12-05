@@ -1,9 +1,16 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
+
+@TeleOp(name = "Practice DC Motor", group = "00-Teleop")
 public class PracticeDcMotorOpmode extends LinearOpMode {
+
+    GamepadController gamepad;
     DcMotorEx practiceMotor;
     private final double MAX_VELOCITY = 3120;
     private final int RUNNING_VELOCITY = 2000;
@@ -20,7 +27,7 @@ public class PracticeDcMotorOpmode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         practiceMotor = hardwareMap.get(DcMotorEx.class, "practiceMotor");
-
+        gamepad = new GamepadController(gamepad1, null, null, );
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -57,38 +64,14 @@ public class PracticeDcMotorOpmode extends LinearOpMode {
         }
     }
 
+
     private void runMotorToPosition(int position) {
 
         telemetry.addData("Target Position", position);
+        practiceMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         practiceMotor.setTargetPosition(position);
         practiceMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        practiceMotor.setVelocity(RUNNING_VELOCITY);
+        practiceMotor.setPower(0.5);
     }
 
-    public boolean gp1GetButtonYPress() {
-        boolean isPressedButtonY = false;
-        if (!gp1ButtonYLast && gamepad1.y) {
-            isPressedButtonY = true;
-        }
-        gp1ButtonYLast = gamepad1.y;
-        return isPressedButtonY;
-    }
-
-    public boolean gp1GetButtonXPress() {
-        boolean isPressedButtonX = false;
-        if (!gp1ButtonXLast && gamepad1.a) {
-            isPressedButtonX = true;
-        }
-        gp1ButtonXLast = gamepad1.a;
-        return isPressedButtonX;
-    }
-
-    public boolean gp1GetButtonBPress() {
-        boolean isPressedButtonB = false;
-        if (!gp1ButtonBLast && gamepad1.a) {
-            isPressedButtonB = true;
-        }
-        gp1ButtonBLast = gamepad1.a;
-        return isPressedButtonB;
-    }
 }
