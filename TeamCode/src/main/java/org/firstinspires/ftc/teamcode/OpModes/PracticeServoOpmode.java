@@ -38,13 +38,13 @@ public class PracticeServoOpmode extends LinearOpMode {
 
         while (!isStopRequested()) {
 
-            if (gamepad.gp1GetButtonBPress()) {
+            if (Gamepad.gp1GetButtonBPress()) {
                 this.telemetry.update();
                 servoPos1();
-            } else if (gamepad.gp1GetButtonXPress()) {
+            } else if (Gamepad.gp1GetButtonXPress()) {
                 this.telemetry.update();
                 servoPos2();
-            } else if (gamepad.gp1GetButtonAPress()) {
+            } else if (Gamepad.gp1GetButtonAPress()) {
                 this.telemetry.update();
                 servoInit();
             }
