@@ -6,13 +6,15 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 @TeleOp(name= "Practice Servo", group= "00-Teleop")
 public class PracticeServoOpmode extends LinearOpMode {
     private Servo Servo;
-    private GamepadController gamepad;
+    private GamepadController Gamepad;
+
 
     private Action action = new Action() {
         @Override
@@ -29,6 +31,7 @@ public class PracticeServoOpmode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Servo = hardwareMap.get(Servo.class, "testServo");
+        Gamepad = new GamepadController(gamepad1, null, null);
         if (isStopRequested()) {
             return;
         }
