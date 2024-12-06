@@ -5,10 +5,11 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
-
+@TeleOp(name= "Practice Servo", group= "00-Teleop")
 public class PracticeServoOpmode extends LinearOpMode {
     private Servo Servo;
     private GamepadController gamepad;
