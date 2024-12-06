@@ -15,11 +15,17 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Claw {
     private static final float COLOR_SENSOR_GAIN = 2.0f;
     private Servo clawServo;
+
+    private Servo wristServo;
     private NormalizedColorSensor colorSensor;
     private Headlights lights;
 
     private static final double CLAW_OPEN_POSITION = 0.15;
     private static final double CLAW_CLOSE_POSITION = 0.28;
+
+    private static final double WRIST_UP_POSITION = 0;
+    private static final double WRIST_DOWN_POSITION = 0;
+
 
     private String allianceColor = "RED";
 
@@ -41,14 +47,21 @@ public class Claw {
 
     public Claw(OpMode opMode) {
         clawServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.ClawServo); // 4 control hub
+        wristServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.WristServo);
         colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
         colorSensor.setGain(COLOR_SENSOR_GAIN);
         lights = new Headlights(opMode);
 
         clawServo.setDirection(Servo.Direction.FORWARD);
         clawServo.setPosition(CLAW_CLOSE_POSITION);
+        wristServo.setDirection(Servo.Direction.FORWARD);
+        wristServo.setPosition(WRIST_UP_POSITION);
 
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
+        wristServoState = WRIST_SERVO_STATE.WRIST_UP;
+
+
+
     }
 
     // creates two states in which the claw opens and closes
@@ -56,8 +69,14 @@ public class Claw {
         CLAW_OPEN,
         CLAW_CLOSE,
     }
+    public enum WRIST_SERVO_STATE {
+        WRIST_UP,
+        WRIST_DOWN;
+
+    }
 
     public CLAW_SERVO_STATE clawServoState;
+    public WRIST_SERVO_STATE wristServoState;
 
     public void UpdateColorSensor() {
         // If the claw is closed, we will not detect colors because the claw is covering the sensor
@@ -89,6 +108,8 @@ public class Claw {
         return clawServoState;
     }
 
+    public WRIST_SERVO_STATE getWristServoState(){return wristServoState;}
+
     public void setAllianceColor(String color) {
         allianceColor = color;
     }
@@ -98,6 +119,14 @@ public class Claw {
     }
 
     // creates two states in which the claw moves up and down
+    public void wristUp() {
+        wristServo.setPosition(WRIST_UP_POSITION);
+        wristServoState = WRIST_SERVO_STATE.WRIST_UP;
+    }
+    public void wristDown() {
+        wristServo.setPosition(WRIST_DOWN_POSITION);
+        wristServoState = WRIST_SERVO_STATE.WRIST_DOWN;
+    }
 
 
     // Starting positions of the servos for the opened claw
