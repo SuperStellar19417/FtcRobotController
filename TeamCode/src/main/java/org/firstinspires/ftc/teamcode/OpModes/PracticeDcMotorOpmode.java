@@ -27,7 +27,7 @@ public class PracticeDcMotorOpmode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         practiceMotor = hardwareMap.get(DcMotorEx.class, "practiceMotor");
-        gamepad = new GamepadController(gamepad1, null, null);
+        gamepad= new GamepadController(gamepad1, null, null,null,null,null,null,null);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -48,6 +48,7 @@ public class PracticeDcMotorOpmode extends LinearOpMode {
 
 
             if (gp1GetButtonBPress()) {
+
                 telemetry.addLine("Gamepad 1 B Pressed");
                 runMotorToPosition(Position1);
             }
