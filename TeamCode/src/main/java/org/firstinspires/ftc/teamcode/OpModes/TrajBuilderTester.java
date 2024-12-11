@@ -14,22 +14,23 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
+import org.firstinspires.ftc.teamcode.SubSystems.Claw;
+import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
-import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 
-@Autonomous(name = "Observation Park Only", group = "01-Test")
-public class SimplePathTestAuto extends LinearOpMode {
-
+@Autonomous (name = "Scoring Auto 1st Ascent TEST", group = "01-Test")
+public class TrajBuilderTester extends LinearOpMode {
     private GamepadController gamepadController;
     private DriveTrain driveTrain;
 
     // We can transfer this from last autonomous op mode if needed,
     // but most the time we don't need to.
-    private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
+    private final Pose2d startPose = new Pose2d(-59.7, 11.16,  Math.toRadians(90));
 
     private Claw claw;
     private Arm arm;
+    private Climber climber;
     @Override
     public void runOpMode() {
         // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
@@ -49,13 +50,17 @@ public class SimplePathTestAuto extends LinearOpMode {
 
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
-        TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
-                .turn(Math.toRadians(90))
-                .lineToX(10);
+        TrajectoryActionBuilder toBasket = driveTrain.actionBuilder(startPose)
+                .splineTo(new Vector2d(-50.58, 52.38), Math.toRadians(135));
+
+        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(new Vector2d(-50.58,52.38), Math.toRadians(135)))
+                .splineTo(new Vector2d(-9.9, 33.66), Math.toRadians(90))
+                .splineTo(new Vector2d(-10.62, 20.7), Math.toRadians(90));
 
 
         // Create an action that will be run
-        Action followPathAction = tab1.build();
+        Action basketAction = toBasket.build();
+        Action submersibleAction = toSub.build();
 
         // Run the action (s)
         // You can run multiple actions to execute a complex auto. For example :
@@ -71,7 +76,16 @@ public class SimplePathTestAuto extends LinearOpMode {
         */
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
-        Actions.runBlocking( new SequentialAction(followPathAction));
+        Actions.runBlocking(new SequentialAction(basketAction));
+        safeWaitSeconds(2);
+        arm.moveArmHighBucketPosition();
+        safeWaitSeconds(2);
+        claw.intakeClawOpen();
+        safeWaitSeconds(1.5);
+        arm.moveArmIntakePosition();
+        Actions.runBlocking(new SequentialAction(submersibleAction));
+        safeWaitSeconds(2);
+        climber.moveClimberUp();
 
     }
 
@@ -127,4 +141,7 @@ public class SimplePathTestAuto extends LinearOpMode {
             //don't even worry about it
         }
     }
+
+
+
 }

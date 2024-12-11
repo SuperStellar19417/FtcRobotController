@@ -23,8 +23,8 @@ public class Claw {
     private static final double CLAW_OPEN_POSITION = 0.15;
     private static final double CLAW_CLOSE_POSITION = 0.28;
 
-    private static final double WRIST_UP_POSITION = 0;
-    private static final double WRIST_DOWN_POSITION = 0;
+    private static final double WRIST_UP_POSITION = 0.8;
+    private static final double WRIST_DOWN_POSITION = 0.1;
 
 
     private String allianceColor = "RED";

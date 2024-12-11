@@ -3,23 +3,26 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 import static java.lang.Thread.sleep;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class IntakeSlide {
 
     private final double POWER_LEVEL_RUN = 0.9;
     private final double POWER_LEVEL_STOP = 0.0;
-
     private final int SLIDE_POSITION_MIN = 0;
     private final int SLIDE_POSITION_MAX = 6000;
     private final int SLIDE_POSITION_DELTA = 650;
     private final double MAX_VELOCITY = 2720;
 
     private DcMotorEx slideMotor;
+    public TouchSensor slideLimitSwitch;
     private int slidePosition = SLIDE_POSITION_MIN;
 
     public IntakeSlide(OpMode opMode){
         slideMotor = opMode.hardwareMap.get(DcMotorEx.class,HardwareConstant.SlideMotor);
+        slideLimitSwitch = opMode.hardwareMap.get(TouchSensor.class, HardwareConstant.SlidesLimitSwitch);
         initSlide();
     }
 
@@ -29,12 +32,25 @@ public class IntakeSlide {
 
       // Starting position
     public void initSlide() {
-        slideMotor.setPositionPIDFCoefficients(4.0);
+      /*  slideMotor.setPositionPIDFCoefficients(4.0);
         slideMotor.setDirection(DcMotorEx.Direction.FORWARD);
         slideMotor.setPower(POWER_LEVEL_STOP);
         slideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         slideMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        resetSlide();
+        resetSlide(); */
+        slideMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        //testMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        slideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        // Calculate PIDF values for velocity control
+        double kF = 32767/MAX_VELOCITY;
+        double kP = 0.1 * kF;
+        double kI = 0.1 * kP;
+        double kD = 0.0;
+
+        slideMotor.setVelocityPIDFCoefficients(kP, kI, kD, kF);
+        slideMotor.setPositionPIDFCoefficients(5.0);
     }
 
     private void runMotors(boolean overideMinValue) {
@@ -84,6 +100,11 @@ public class IntakeSlide {
     public void retractSlide(boolean overideMinValue) {
         slidePosition = slidePosition - SLIDE_POSITION_DELTA;
         runMotors(overideMinValue);
+    }
+
+    public void stopIntakeMotor() {
+        slideMotor.setPower(0);
+        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public int getTargetPosition() {

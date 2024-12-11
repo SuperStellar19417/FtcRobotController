@@ -15,7 +15,7 @@ public class HardwareConstant {
 
     public static String SlideMotor = "linearSlideMotor";
     public static String ClawServo = "clawServo"; //control hub servo port 0
-    public static String WristServo = "wristServo";
+    public static String WristServo = "wristServo"; // expansion hub port 2
     public static String ClawColorSensor = "clawColorSensor";
     public static String ArmMotor = "armMotor";
     public static String SlidesLimitSwitch = "slidesLimitSwitch";
