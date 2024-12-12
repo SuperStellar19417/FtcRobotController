@@ -18,6 +18,7 @@ public class HardwareConstant {
     public static String WristServo = "wristServo"; // expansion hub port 2
     public static String ClawColorSensor = "clawColorSensor";
     public static String ArmMotor = "armMotor";
+    public static String ClimberMotor = "climberMotor";
     public static String SlidesLimitSwitch = "slidesLimitSwitch";
     public static String ClimberLimitSwitch = "climberLimitSwitch";
 }

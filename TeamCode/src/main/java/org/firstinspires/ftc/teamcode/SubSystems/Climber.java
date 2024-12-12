@@ -27,7 +27,7 @@ public class Climber {
 
 
     public Climber(LinearOpMode opMode) {
-        climberMotor = opMode.hardwareMap.get(DcMotorEx.class, "climberMotor");
+        climberMotor = opMode.hardwareMap.get(DcMotorEx.class, HardwareConstant.ClimberMotor);
         climberLimitSwitch = opMode.hardwareMap.get(TouchSensor.class, HardwareConstant.ClimberLimitSwitch);
         initClimber();
     }
