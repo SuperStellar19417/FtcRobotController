@@ -32,14 +32,7 @@ public class IntakeSlide {
 
       // Starting position
     public void initSlide() {
-      /*  slideMotor.setPositionPIDFCoefficients(4.0);
-        slideMotor.setDirection(DcMotorEx.Direction.FORWARD);
-        slideMotor.setPower(POWER_LEVEL_STOP);
-        slideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        slideMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        resetSlide(); */
         slideMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        //testMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         slideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
@@ -73,7 +66,7 @@ public class IntakeSlide {
             slideMotor.setPower(POWER_LEVEL_STOP);
         }
 
-        if (slidePosition <= SLIDE_POSITION_MIN) {
+        if (slidePosition < SLIDE_POSITION_MIN) {
             slidePosition = SLIDE_POSITION_MIN;
             resetSlide();
         }
@@ -92,6 +85,27 @@ public class IntakeSlide {
         runMotors(false);
     }
 
+    public boolean runSlideMotorAllTheWayDown() {
+        boolean isLimitSwitchPressed = slideLimitSwitch.isPressed();
+
+
+        // If limit switch is pressed, stop the motor and return false to get out of override mode
+        if (isLimitSwitchPressed) {
+            stopIntakeMotor();
+            return false;
+        }
+
+        // otherwise, keep moving the motor down by delta
+        int position = slideMotor.getCurrentPosition();
+        position -= SLIDE_POSITION_DELTA;
+        slideMotor.setTargetPosition(position);
+        slideMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        slideMotor.setPower(POWER_LEVEL_RUN);
+
+        // return true to indicate that we have not hit the limit switch
+        return true;
+    }
+
     // Sets the intake arm to a position that allows for intake
     public void extendSlide() {
         slidePosition = slidePosition + SLIDE_POSITION_DELTA;
@@ -104,6 +118,7 @@ public class IntakeSlide {
 
     public void stopIntakeMotor() {
         slideMotor.setPower(0);
+        slidePosition = SLIDE_POSITION_MIN;
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 

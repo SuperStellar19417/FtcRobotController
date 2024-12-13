@@ -15,8 +15,8 @@ public class LimitDCMotorTest extends LinearOpMode {
     private final double POWER_LEVEL_STOP = 0.0;
     private final double POWER_LEVEL_RUN = 0.9;
 
-    private final double MAX_VELOCITY = 2460.0;
-    private final int RUNNING_VELOCITY = 2000;
+    private final double MAX_VELOCITY = 2720;
+    //private final int RUNNING_VELOCITY = 2000;
 
     private final int MOTOR_LOW_POSITION = 0;
     private final int MOTOR_HIGH_POSITION = 1000;
@@ -24,7 +24,7 @@ public class LimitDCMotorTest extends LinearOpMode {
     // Keep this small so we have an opportunity to stop the motor
     // if it is too big, then we will not have a chance to stop the motor because it will run
     // for a while before we can do the checks
-    private final int MOTOR_DELTA = 100;
+    private final int MOTOR_DELTA = 50;
 
     boolean gp1ButtonYLast = false;
     boolean gp1ButtonALast = false;
@@ -32,8 +32,8 @@ public class LimitDCMotorTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Initialization code here
-        testMotor = hardwareMap.get(DcMotorEx.class, HardwareConstant.ClimberMotor);
-        limitSwitch = hardwareMap.get(TouchSensor.class, HardwareConstant.ClimberLimitSwitch);
+        testMotor = hardwareMap.get(DcMotorEx.class, HardwareConstant.SlideMotor);
+        limitSwitch = hardwareMap.get(TouchSensor.class, HardwareConstant.SlidesLimitSwitch);
 
         initMotor();
 
@@ -106,7 +106,7 @@ public class LimitDCMotorTest extends LinearOpMode {
         telemetry.addData("Target Position", position);
         testMotor.setTargetPosition(position);
         testMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        testMotor.setVelocity(RUNNING_VELOCITY);
+        testMotor.setVelocity(MAX_VELOCITY);
     }
 
     /**

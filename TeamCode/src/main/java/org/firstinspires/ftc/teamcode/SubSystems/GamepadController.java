@@ -20,6 +20,8 @@ public class GamepadController {
     private IntakeSlide slide;
     private Climber climber;
     private boolean endgame = false;
+    boolean runToClimberLimitSwitch = false;
+    boolean runToIntakeLimitSwitch = false;
 
     /**
      * Constructor for GamepadController
@@ -98,27 +100,36 @@ public class GamepadController {
     }
 
     public void runClimber() {
-        if(climber.climberLimitSwitch.isPressed()) {
-            climber.stopClimberMotor();
-            opMode.telemetry.addLine("climber is stopped");
+        // If we have to move down, use encoder to move down
+        boolean isLimitSwitchPressed = climber.climberLimitSwitch.isPressed();
+        boolean wantsToGoUp = gp1GetDpad_upPress();
+        boolean wantsToGoDown = gp1GetDpad_downPress();
+        boolean override = gp1GetStart() && gp1GetDpad_down();
 
+        opMode.telemetry.addData("Status", "Running");
+
+        // If override is pressed, run the motor to the limit switch
+        // this is sort of a state machine, every loop, we check if we
+        // have to run the motor to the limit switch, and if yes, we do that
+        if (override) {
+            runToClimberLimitSwitch = true;
         }
 
-        if (gp1GetDpad_upPress()) {
+        if (runToClimberLimitSwitch) {
+            opMode.telemetry.addData("Climber Status", "Running in override mode");
+            opMode.telemetry.update();
+            runToClimberLimitSwitch = climber.runMotorAllTheWayDown();
+            return;
+        }
+
+        // react to gamepad inputs
+        if (wantsToGoUp) {
             climber.moveClimberSlightlyUp();
-        } else if (gp1GetStart() && gp1GetDpad_down()) {
-            climber.moveClimberSlightlyDown(true);
-        } else if (gp1GetDpad_downPress()) {
+        }
+        // If we have to move down, use encoder to move down
+        else if (wantsToGoDown && !isLimitSwitchPressed) {
             climber.moveClimberSlightlyDown(false);
         }
-        opMode.telemetry.addData("climber position", climber.getClimberTargetPosition());
-        opMode.telemetry.addData("climber value", climber.getClimberMotorPosition());
-//        } else if (gp1GetRightBumper()) {
-//            climber.moveClimberUp();
-//        } else if (gp1GetLeftBumper()) {
-//            climber.runClimberDown();
-//        }
-
     }
 
     public void runClaw() {
@@ -142,19 +153,38 @@ public class GamepadController {
     }
 
     public void runSlides() {
-        if(slide.slideLimitSwitch.isPressed()) {
-            slide.stopIntakeMotor();
+
+        // If we have to move down, use encoder to move down
+        boolean isLimitSwitchPressed = slide.slideLimitSwitch.isPressed();
+        boolean wantsToGoUp = gp2GetDpad_upPress();
+        boolean wantsToGoDown = gp2GetDpad_downPress();
+        boolean override = gp2GetStart() && gp2GetDpad_down();
+
+        opMode.telemetry.addData("Status", "Running");
+
+        // If override is pressed, run the motor to the limit switch
+        // this is sort of a state machine, every loop, we check if we
+        // have to run the motor to the limit switch, and if yes, we do that
+        if (override) {
+            runToIntakeLimitSwitch = true;
         }
 
-        if ( gp2GetDpad_upPress()) {
+        if (runToIntakeLimitSwitch) {
+            opMode.telemetry.addData("Intake Status", "Running in override mode");
+            opMode.telemetry.update();
+            runToIntakeLimitSwitch = slide.runSlideMotorAllTheWayDown();
+            return;
+        }
+
+        // react to gamepad inputs
+        if (wantsToGoUp) {
             slide.extendSlide();
-        } else if (gp2GetStart() && gp2GetDpad_down()) {
-            //no press  og
-            slide.retractSlide(true);
-        } else if (gp2GetDpad_downPress()) {
-            //press og
+        }
+        // If we have to move down, use encoder to move down
+        else if (wantsToGoDown && !isLimitSwitchPressed) {
             slide.retractSlide(false);
         }
+
     }
 
 
