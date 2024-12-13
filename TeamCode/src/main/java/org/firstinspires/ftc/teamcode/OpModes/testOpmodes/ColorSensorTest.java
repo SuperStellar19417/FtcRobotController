@@ -68,6 +68,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.HardwareConstant;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @TeleOp(name = "Sensor: Color", group = "00-Teleop")
+@Disabled
 public class ColorSensorTest extends LinearOpMode {
 
   /** The colorSensor field will contain a reference to our color sensor hardware object */

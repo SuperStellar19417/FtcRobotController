@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.testOpmodes;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,7 +10,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 
-@TeleOp
+@TeleOp(name="Arm Position Values", group="Tests")
+@Disabled
 public class ArmPositionValues extends LinearOpMode {
 
 private Arm arm;

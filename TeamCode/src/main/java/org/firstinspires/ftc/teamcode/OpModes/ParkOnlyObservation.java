@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 
 
-@Autonomous(name = "Park w/o Ascent", group = "01-Test")
+@Autonomous(name = "Park w/o Ascent", group = "01-Auto", preselectTeleOp = "Normal TeleOp")
 public class ParkOnlyObservation extends LinearOpMode {
 
     private GamepadController gamepadController;

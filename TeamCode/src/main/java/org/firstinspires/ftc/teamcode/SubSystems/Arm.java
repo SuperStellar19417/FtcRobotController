@@ -55,7 +55,7 @@ public class Arm {
         armMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         armMotor.setPower(POWER_LEVEL_STOP);
         armMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        moveArmIntakePosition();
+        //moveArmIntakePosition();
     }
 
     public Action action = new Action() {

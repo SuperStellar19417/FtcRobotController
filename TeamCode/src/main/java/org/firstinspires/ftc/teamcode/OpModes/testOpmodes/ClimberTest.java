@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes.testOpmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
  * GP2 LEFT TRIGGER - move climber slightly down
  */
 @TeleOp(name = "Climber Test", group = "00-Teleop")
+@Disabled
 public class ClimberTest extends LinearOpMode {
 
     private GamepadController gamepad;
