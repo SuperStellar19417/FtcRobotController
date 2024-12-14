@@ -28,7 +28,7 @@ public class Arm {
   //  public static int ARM_MAX_POSITION_COUNT = 2000;
 //    public static int ARM_MIN_POSITION_COUNT = 0;
 
-    private final int ARM_DELTA_TICKS_NORMAL = 200;
+    private final int ARM_DELTA_TICKS_NORMAL = 150;
     private final int ARM_DELTA_TICKS_END_GAME = 400;
 
     private final double POWER_LEVEL_STOP = 0.0;

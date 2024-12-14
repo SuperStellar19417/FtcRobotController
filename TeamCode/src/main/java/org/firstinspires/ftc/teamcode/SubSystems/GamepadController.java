@@ -82,8 +82,6 @@ public class GamepadController {
             arm.moveArmSlightlyDown();
         } else if (gp1GetButtonXPress()) {
             arm.moveArmHangingPosition();
-        } else if (gp2GetRightBumper()) {
-            arm.moveArmIntakePosition();
         }
 
 
@@ -135,7 +133,7 @@ public class GamepadController {
     public void runClaw() {
        claw.UpdateColorSensor();
 
-        if (gp1GetLeftTriggerPress()) {
+        if (gp2GetRightBumperPress()) {
             if (claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_OPEN) {
                 claw.intakeClawClose();
             } else {
@@ -143,8 +141,10 @@ public class GamepadController {
             }
         }
 
-        if(gp1GetLeftBumperPress()) {
+        if(gp2GetLeftBumperPress()) {
             if(claw.wristServoState == Claw.WRIST_SERVO_STATE.WRIST_UP) {
+                claw.wristMid();
+            } else if (claw.wristServoState == Claw.WRIST_SERVO_STATE.WRIST_MID){
                 claw.wristDown();
             } else {
                 claw.wristUp();

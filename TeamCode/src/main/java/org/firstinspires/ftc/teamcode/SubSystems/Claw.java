@@ -5,9 +5,12 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Claw {
     private static final float COLOR_SENSOR_GAIN = 2.0f;
@@ -17,12 +20,13 @@ public class Claw {
     private NormalizedColorSensor colorSensor;
     private Headlights lights;
 
-    private static final double CLAW_POSITION_OPEN = 0.15;
-    private static final double CLAW_POSITION_CLOSE = 0.35;
+    private static final double CLAW_OPEN_POSITION = 0.15;
+    private static final double CLAW_CLOSE_POSITION = 0.355;
 
-    private static final double WRIST_POSITION_UP = 0.8;
-    private static final double WRIST_POSITION_DOWN = 0.2;
-    private static final double WRIST_POSITION_STRAIGHT = 0.0;
+    private static final double WRIST_UP_POSITION = 0.9;
+    private static final double WRIST_MID_POSITION = 0.45;
+    private static final double WRIST_DOWN_POSITION = 0.2;
+
 
     private String allianceColor = "RED";
 
@@ -50,13 +54,15 @@ public class Claw {
         lights = new Headlights(opMode);
 
         clawServo.setDirection(Servo.Direction.FORWARD);
+        clawServo.setPosition(CLAW_CLOSE_POSITION);
         wristServo.setDirection(Servo.Direction.FORWARD);
+        wristServo.setPosition(WRIST_UP_POSITION);
 
-        clawServo.setPosition(CLAW_POSITION_CLOSE);
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
-
-        wristServo.setPosition(WRIST_POSITION_UP);
         wristServoState = WRIST_SERVO_STATE.WRIST_UP;
+
+
+
     }
 
     // creates two states in which the claw opens and closes
@@ -66,8 +72,9 @@ public class Claw {
     }
     public enum WRIST_SERVO_STATE {
         WRIST_UP,
-        WRIST_DOWN,
-        WRIST_STRAIGHT
+        WRIST_MID,
+        WRIST_DOWN;
+
     }
 
     public CLAW_SERVO_STATE clawServoState;
@@ -115,23 +122,32 @@ public class Claw {
 
     // creates two states in which the claw moves up and down
     public void wristUp() {
-        wristServo.setPosition(WRIST_POSITION_UP);
+        wristServo.setPosition(WRIST_UP_POSITION);
         wristServoState = WRIST_SERVO_STATE.WRIST_UP;
     }
     public void wristDown() {
-        wristServo.setPosition(WRIST_POSITION_DOWN);
+        wristServo.setPosition(WRIST_DOWN_POSITION);
         wristServoState = WRIST_SERVO_STATE.WRIST_DOWN;
     }
+    public void wristMid() {
+        wristServo.setPosition(WRIST_MID_POSITION);
+        wristServoState = WRIST_SERVO_STATE.WRIST_MID;
+    }
 
+
+    // Starting positions of the servos for the opened claw
     public Action intakeClawOpen() {
-        clawServo.setPosition(CLAW_POSITION_OPEN);
+        clawServo.setPosition(CLAW_OPEN_POSITION);
         clawServoState = CLAW_SERVO_STATE.CLAW_OPEN;
         lights.headlightOff();
         return action;
     }
 
+
+    // Starting positions of the servos for the closed claw
+
     public Action intakeClawClose() {
-        clawServo.setPosition(CLAW_POSITION_CLOSE);
+        clawServo.setPosition(CLAW_CLOSE_POSITION);
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
         lights.headlightOn();
         return action;
