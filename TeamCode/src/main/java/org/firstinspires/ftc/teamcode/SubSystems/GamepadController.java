@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
+import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
+
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 /**
@@ -68,17 +71,17 @@ public class GamepadController {
             arm.setNormalMode();
         }
 
-        if (gp2GetButtonXPress()) {
+        if (gp2GetButtonAPress()) {
             arm.moveArmLowBucketPosition();
         } else if (gp2GetButtonYPress()) {
-            arm.moveArmHighBucketPosition();
-        } else if (gp2GetButtonAPress()) {
-            arm.moveArmLowRungPosition();
-        } else if (gp2GetButtonBPress()) {
             arm.moveArmHighRungPosition();
+        } else if (gp2GetButtonAPress()) {
+            arm.moveArmLowBucketPosition();
+        } else if (gp2GetButtonBPress()) {
+           // arm.move();
         } else if (gp2GetRightTriggerPress()) {
             arm.moveArmSlightlyUp();
-        } else if (gp2GetLeftTriggerPress()) {
+        } else if(gp2GetRightBumper()) {
             arm.moveArmSlightlyDown();
         } else if (gp1GetButtonXPress()) {
             arm.moveArmHangingPosition();
@@ -122,18 +125,18 @@ public class GamepadController {
 
         // react to gamepad inputs
         if (wantsToGoUp) {
-            climber.moveClimberSlightlyUp();
+            climber.moveClimberUp();
         }
         // If we have to move down, use encoder to move down
         else if (wantsToGoDown && !isLimitSwitchPressed) {
-            climber.moveClimberSlightlyDown(false);
+            climber.runMotorAllTheWayDown();
         }
     }
 
     public void runClaw() {
        claw.UpdateColorSensor();
 
-        if (gp2GetRightBumperPress()) {
+        if (gp2GetLeftTriggerPress()) {
             if (claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_OPEN) {
                 claw.intakeClawClose();
             } else {
@@ -185,6 +188,13 @@ public class GamepadController {
             slide.retractSlide(false);
         }
 
+    }
+    public void safeWaitSeconds(double time) {
+        ElapsedTime timer = new ElapsedTime(SECONDS);
+        timer.reset();
+        while (timer.time() < time) {
+            //don't even worry about it
+        }
     }
 
 

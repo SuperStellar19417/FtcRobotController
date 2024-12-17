@@ -78,7 +78,7 @@ public class TrajBuilderTester extends LinearOpMode {
         // that should be executed once that path is completed.
         Actions.runBlocking(new SequentialAction(basketAction));
         safeWaitSeconds(2);
-        arm.moveArmHighBucketPosition();
+        arm.moveArmLowBucketPosition();
         safeWaitSeconds(2);
         claw.intakeClawOpen();
         safeWaitSeconds(1.5);

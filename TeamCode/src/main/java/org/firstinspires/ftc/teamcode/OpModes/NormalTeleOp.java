@@ -142,6 +142,7 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addData("Slides Motor Position: ", slide.getMotorPosition());
         telemetry.addData("Arm Motor Position: ", arm.getCurrentArmPosition());
         telemetry.addData("Arm Motor Encoder: ", arm.getCurrentArmEncoderValue());
+        telemetry.addData("joystick position", gamepadController.gp2GetLeftStickY());
 
         telemetry.update();
     }

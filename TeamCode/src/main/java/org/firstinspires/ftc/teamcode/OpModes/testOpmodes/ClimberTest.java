@@ -47,7 +47,7 @@ public class ClimberTest extends LinearOpMode {
                 if(gamepad.gp2GetButtonAPress()) {
                     arm.moveArmLowBucketPosition();
                 } else if(gamepad.gp2GetButtonBPress()) {
-                    arm.moveArmHighBucketPosition();
+                //    arm.moveArmHighBucketPosition();
                 } else if(gamepad.gp2GetButtonXPress()) {
                     arm.moveArmLowRungPosition();
                 } else if(gamepad.gp2GetButtonYPress()) {
@@ -57,7 +57,7 @@ public class ClimberTest extends LinearOpMode {
                 if(gamepad.gp2GetButtonAPress()) {
                     arm.moveArmLowBucketPosition();
                 } else if(gamepad.gp2GetButtonBPress()) {
-                    arm.moveArmHighBucketPosition();
+          //          arm.moveArmHighBucketPosition();
                 } else if(gamepad.gp2GetButtonXPress()) {
                     arm.moveArmLowRungPosition();
                 } else if(gamepad.gp2GetButtonYPress()) {

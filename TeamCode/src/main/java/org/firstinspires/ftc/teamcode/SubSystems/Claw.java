@@ -21,11 +21,13 @@ public class Claw {
     private Headlights lights;
 
     private static final double CLAW_OPEN_POSITION = 0.15;
-    private static final double CLAW_CLOSE_POSITION = 0.355;
+    private static final double CLAW_CLOSE_POSITION = 0.37;
+
 
     private static final double WRIST_UP_POSITION = 0.9;
     private static final double WRIST_MID_POSITION = 0.45;
     private static final double WRIST_DOWN_POSITION = 0.2;
+    private static final double WRIST_INIT_POSITION = 1;
 
 
     private String allianceColor = "RED";
@@ -56,7 +58,7 @@ public class Claw {
         clawServo.setDirection(Servo.Direction.FORWARD);
         clawServo.setPosition(CLAW_CLOSE_POSITION);
         wristServo.setDirection(Servo.Direction.FORWARD);
-        wristServo.setPosition(WRIST_UP_POSITION);
+     //   wristServo.setPosition(WRIST_UP_POSITION);
 
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
         wristServoState = WRIST_SERVO_STATE.WRIST_UP;
