@@ -28,12 +28,13 @@ public class Arm {
     public static int ARM_MAX_POSITION_COUNT = 1100;
 //    public static int ARM_MIN_POSITION_COUNT = 0;
 
-    private final int ARM_DELTA_TICKS_NORMAL = 150;
+    private final int ARM_DELTA_TICKS_NORMAL = 100;
     private final int ARM_DELTA_TICKS_END_GAME = 400;
 
     private final double POWER_LEVEL_STOP = 0.0;
     private final double POWER_LEVEL_RUN = 0.7;
     private final double POWER_LEVEL_END_GAME = 0.9;
+    private final int maxVelocity = 2640;
 
     private double currentPowerLevel = POWER_LEVEL_RUN;
     private int currentDeltaTicks = ARM_DELTA_TICKS_NORMAL;
@@ -41,7 +42,7 @@ public class Arm {
     private final double currentPID = 3.00;
 
     private ARM_POSITION currentArmPosition = ARM_POSITION.ARM_POSITION_INTAKE;
-    private int armPositionTicks = ARM_POSITION_TICKS_INTAKE;
+    public int armPositionTicks = ARM_POSITION_TICKS_INTAKE;
 
     private OpMode opmode;
 
@@ -162,9 +163,9 @@ public class Arm {
         return armMotor.getCurrentPosition();
     }
 
-    private void runMotors() {
+    public void runMotors() {
         armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         armMotor.setTargetPosition(armPositionTicks);
-        armMotor.setPower(currentPowerLevel);
+        armMotor.setVelocity(maxVelocity*0.9);
     }
 }

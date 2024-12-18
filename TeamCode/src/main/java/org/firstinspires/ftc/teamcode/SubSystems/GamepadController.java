@@ -25,6 +25,10 @@ public class GamepadController {
     private boolean endgame = false;
     boolean runToClimberLimitSwitch = false;
     boolean runToIntakeLimitSwitch = false;
+    int armUptickCounter = 0;
+    boolean armTriesUp = false;
+    boolean armTriesDown = false;
+    double joyconPosition = 0;
 
     /**
      * Constructor for GamepadController
@@ -65,6 +69,16 @@ public class GamepadController {
 
 
     public void runArm() throws InterruptedException {
+
+        boolean movingBack = false;
+        if(armTriesUp && (joyconPosition < gp2GetLeftStickY())) {
+            movingBack = true;
+        } else if (armTriesDown && (joyconPosition > gp2GetLeftStickY())){
+            movingBack = true;
+        }
+
+        armTriesUp = false;
+        armTriesDown = false;
         if (endgame) {
             arm.setEndGameMode();
         } else {
@@ -79,14 +93,15 @@ public class GamepadController {
             arm.moveArmLowBucketPosition();
         } else if (gp2GetButtonBPress()) {
            // arm.move();
-        } else if (gp2GetRightTriggerPress()) {
-            arm.moveArmSlightlyUp();
-        } else if(gp2GetRightBumper()) {
+        } else if (gp2GetLeftStickY() > 0.3) {
             arm.moveArmSlightlyDown();
+            safeWaitSeconds(0.05);
+        } else if(gp2GetLeftStickY() < -0.3) {
+            arm.moveArmSlightlyUp();
+            safeWaitSeconds(0.05);
         } else if (gp1GetButtonXPress()) {
             arm.moveArmHangingPosition();
         }
-
 
     }
 
