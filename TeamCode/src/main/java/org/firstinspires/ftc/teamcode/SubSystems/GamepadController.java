@@ -101,9 +101,14 @@ public class GamepadController {
             safeWaitSeconds(0.05);
         } else if (gp1GetButtonXPress()) {
             arm.moveArmHangingPosition();
+        } else if(gp2GetRightBumperPress()){
+            arm.moveArmIntakePosition();
+            safeWaitSeconds(0.05);
+            arm.moveArmSlightlyDown();
+            claw.wristDown();
+            claw.intakeClawOpen();
         }
-
-    }
+   }
 
     public void checkClimberMode() {
   /*      if(gp1GetRightTriggerPress()) {

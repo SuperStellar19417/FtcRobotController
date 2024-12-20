@@ -23,7 +23,7 @@ public class Arm {
     private DcMotorEx armMotor;
     private final int ARM_POSITION_TICKS_INTAKE = 150;
     private final int ARM_POSITION_TICKS_LOW_BUCKET = 1000;
-    private final int ARM_POSITION_TICKS_HIGH_BUCKET = 1050;
+    private final int ARM_POSITION_TICKS_HIGH_BUCKET = 1100;
     private final int ARM_POSITION_TICKS_LOW_RUNG = 1600;
     private final int ARM_POSITION_TICKS_HIGH_RUNG = 1250;
     private final int ARM_POSITION_TICKS_HANGING = 3000;
@@ -114,6 +114,7 @@ public class Arm {
         currentArmPosition = ARM_POSITION.ARM_POSITION_LOW_BUCKET;
         runMotors();
     }
+
 
     public Action moveArmPlaceSpecimenPosition() {
         armPositionTicks -= 150;

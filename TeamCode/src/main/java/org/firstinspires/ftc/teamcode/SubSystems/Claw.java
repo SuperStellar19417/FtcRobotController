@@ -20,8 +20,8 @@ public class Claw {
     private NormalizedColorSensor colorSensor;
     private Headlights lights;
 
-    private static final double CLAW_OPEN_POSITION = 0.15;
-    private static final double CLAW_CLOSE_POSITION = 0.37;
+    private static final double CLAW_OPEN_POSITION = 0.10;
+    private static final double CLAW_CLOSE_POSITION = 0.40;
 
 
     private static final double WRIST_UP_POSITION = 0.9;
