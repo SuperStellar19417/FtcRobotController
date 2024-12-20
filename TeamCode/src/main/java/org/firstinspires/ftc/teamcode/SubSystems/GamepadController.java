@@ -56,6 +56,7 @@ public class GamepadController {
     public void runSubSystems() throws InterruptedException {
         runDriveTrain();
         runClaw();
+        runWrist();
         runArm();
         runClimber();
         runSlides();
@@ -65,11 +66,7 @@ public class GamepadController {
 
 
     public void runArm() throws InterruptedException {
-        if (endgame) {
-            arm.setEndGameMode();
-        } else {
-            arm.setNormalMode();
-        }
+
 
         if (gp2GetButtonAPress()) {
             arm.moveArmLowBucketPosition();
@@ -81,6 +78,9 @@ public class GamepadController {
            // arm.move();
         } else if (gp2GetRightTriggerPress()) {
             arm.moveArmSlightlyUp();
+            arm.moveArmSpecimenIntakePosition();
+            claw.wristMid();
+            claw.intakeClawOpen();
         } else if(gp2GetRightBumper()) {
             arm.moveArmSlightlyDown();
         } else if (gp1GetButtonXPress()) {
@@ -153,6 +153,16 @@ public class GamepadController {
                 claw.wristUp();
             }
         }
+
+
+    }
+    public void runWrist(){
+        if (gp1GetRightTriggerPress()) {
+            claw.wristUp();
+        } else {
+            claw.wristDown();
+        }
+
     }
 
     public void runSlides() {

@@ -15,7 +15,9 @@ public class Arm {
         ARM_POSITION_HIGH_BUCKET,
         ARM_POSITION_HIGH_RUNG,
         ARM_POSITION_LOW_RUNG,
-        ARM_POSITION_HANGING
+        ARM_POSITION_HANGING,
+
+        ARM_POSITION_SPECIMEN_INTAKE;
     }
 
     private DcMotorEx armMotor;
@@ -25,6 +27,8 @@ public class Arm {
     private final int ARM_POSITION_TICKS_LOW_RUNG = 1600;
     private final int ARM_POSITION_TICKS_HIGH_RUNG = 1250;
     private final int ARM_POSITION_TICKS_HANGING = 3000;
+
+    private final int ARM_POSITION_SPECIMEN_INTAKE = 0;
     public static int ARM_MAX_POSITION_COUNT = 1100;
 //    public static int ARM_MIN_POSITION_COUNT = 0;
 
@@ -84,6 +88,15 @@ public class Arm {
         currentArmPosition = ARM_POSITION.ARM_POSITION_INTAKE;
         armMotor.setTargetPosition(armPositionTicks);
         runMotors();
+    }
+
+    public void moveArmSpecimenIntakePosition() {
+        armPositionTicks = ARM_POSITION_SPECIMEN_INTAKE;
+        armMotor.setTargetPosition(armPositionTicks);
+        currentArmPosition = ARM_POSITION.ARM_POSITION_SPECIMEN_INTAKE;
+        runMotors();
+
+
     }
 
     public void moveArmHangingPosition() {
