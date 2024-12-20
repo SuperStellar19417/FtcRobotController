@@ -26,7 +26,7 @@ public class TrajBuilderTester extends LinearOpMode {
 
     // We can transfer this from last autonomous op mode if needed,
     // but most the time we don't need to.
-    private final Pose2d startPose = new Pose2d(-59.7, 11.16,  Math.toRadians(90));
+    private final Pose2d startPose = new Pose2d(-59.7, 11.16,  Math.toRadians(0));
 
     private Claw claw;
     private Arm arm;
@@ -51,11 +51,11 @@ public class TrajBuilderTester extends LinearOpMode {
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder toBasket = driveTrain.actionBuilder(startPose)
-                .splineTo(new Vector2d(-50.58, 52.38), Math.toRadians(135));
+                .splineTo(new Vector2d(-53, 55), Math.toRadians(135));
 
         TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(new Vector2d(-50.58,52.38), Math.toRadians(135)))
-                .splineTo(new Vector2d(-9.9, 33.66), Math.toRadians(90))
-                .splineTo(new Vector2d(-10.62, 20.7), Math.toRadians(90));
+                .strafeTo(new Vector2d(-35, 40.7))
+                .strafeTo(new Vector2d(-30, 30.7));
 
 
         // Create an action that will be run
@@ -77,14 +77,13 @@ public class TrajBuilderTester extends LinearOpMode {
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
         Actions.runBlocking(new SequentialAction(basketAction));
-        safeWaitSeconds(2);
         arm.moveArmLowBucketPosition();
-        safeWaitSeconds(2);
+        safeWaitSeconds(1);
         claw.intakeClawOpen();
         safeWaitSeconds(1.5);
         arm.moveArmIntakePosition();
         Actions.runBlocking(new SequentialAction(submersibleAction));
-        safeWaitSeconds(2);
+        safeWaitSeconds(1);
         climber.moveClimberUp();
 
     }
@@ -103,6 +102,9 @@ public class TrajBuilderTester extends LinearOpMode {
         driveTrain.driveType = DriveTrain.DriveType.ROBOT_CENTRIC;
         telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
         telemetry.update();
+        arm = new Arm(this);
+        claw = new Claw(this);
+        climber = new Climber(this);
 
         gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null, null);
         telemetry.addLine("Gamepad Initialized");

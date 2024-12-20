@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @TeleOp(name="Max Velocity OpMode", group="Tests")
-@Disabled
+
 public class MaxVelocityOpMode extends LinearOpMode {
     DcMotorEx motor;
     double currentVelocity;
@@ -18,7 +18,7 @@ public class MaxVelocityOpMode extends LinearOpMode {
         // Initialization code here
 
 
-        motor = hardwareMap.get(DcMotorEx.class, "testMotor");
+        motor = hardwareMap.get(DcMotorEx.class, "armMotor");
         motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         // Wait for the game to start (driver presses PLAY)

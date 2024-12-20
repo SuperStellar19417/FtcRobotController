@@ -25,6 +25,10 @@ public class GamepadController {
     private boolean endgame = false;
     boolean runToClimberLimitSwitch = false;
     boolean runToIntakeLimitSwitch = false;
+    int armUptickCounter = 0;
+    boolean armTriesUp = false;
+    boolean armTriesDown = false;
+    double joyconPosition = 0;
 
     /**
      * Constructor for GamepadController
@@ -56,7 +60,6 @@ public class GamepadController {
     public void runSubSystems() throws InterruptedException {
         runDriveTrain();
         runClaw();
-        runWrist();
         runArm();
         runClimber();
         runSlides();
@@ -67,6 +70,20 @@ public class GamepadController {
 
     public void runArm() throws InterruptedException {
 
+        boolean movingBack = false;
+        if(armTriesUp && (joyconPosition < gp2GetLeftStickY())) {
+            movingBack = true;
+        } else if (armTriesDown && (joyconPosition > gp2GetLeftStickY())){
+            movingBack = true;
+        }
+
+        armTriesUp = false;
+        armTriesDown = false;
+        if (endgame) {
+            arm.setEndGameMode();
+        } else {
+            arm.setNormalMode();
+        }
 
         if (gp2GetButtonAPress()) {
             arm.moveArmLowBucketPosition();
@@ -76,17 +93,15 @@ public class GamepadController {
             arm.moveArmLowBucketPosition();
         } else if (gp2GetButtonBPress()) {
            // arm.move();
-        } else if (gp2GetRightTriggerPress()) {
-            arm.moveArmSlightlyUp();
-            arm.moveArmSpecimenIntakePosition();
-            claw.wristMid();
-            claw.intakeClawOpen();
-        } else if(gp2GetRightBumper()) {
+        } else if (gp2GetLeftStickY() > 0.3) {
             arm.moveArmSlightlyDown();
+            safeWaitSeconds(0.05);
+        } else if(gp2GetLeftStickY() < -0.3) {
+            arm.moveArmSlightlyUp();
+            safeWaitSeconds(0.05);
         } else if (gp1GetButtonXPress()) {
             arm.moveArmHangingPosition();
         }
-
 
     }
 
@@ -153,16 +168,6 @@ public class GamepadController {
                 claw.wristUp();
             }
         }
-
-
-    }
-    public void runWrist(){
-        if (gp1GetRightTriggerPress()) {
-            claw.wristUp();
-        } else {
-            claw.wristDown();
-        }
-
     }
 
     public void runSlides() {
