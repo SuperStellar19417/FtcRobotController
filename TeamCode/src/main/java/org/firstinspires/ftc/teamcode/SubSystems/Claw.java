@@ -5,12 +5,14 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Claw {
     private static final float COLOR_SENSOR_GAIN = 2.0f;
@@ -20,6 +22,10 @@ public class Claw {
     private NormalizedColorSensor colorSensor;
     private Headlights lights;
 
+  private DistanceSensor distanceSensor;
+
+  private double distance = distanceSensor.getDistance(DistanceUnit.CM);
+    private double distanceFromSubmersible = 0;
     private static final double CLAW_OPEN_POSITION = 0.15;
     private static final double CLAW_CLOSE_POSITION = 0.37;
 
@@ -54,6 +60,7 @@ public class Claw {
         colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
         colorSensor.setGain(COLOR_SENSOR_GAIN);
         lights = new Headlights(opMode);
+        distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.distanceSensor );
 
         clawServo.setDirection(Servo.Direction.FORWARD);
         clawServo.setPosition(CLAW_CLOSE_POSITION);
@@ -63,7 +70,9 @@ public class Claw {
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
         wristServoState = WRIST_SERVO_STATE.WRIST_UP;
 
-
+        if(distance > distanceFromSubmersible - 1 && distance < distanceFromSubmersible +1) {
+            lights.headlightOn();
+        }
 
     }
 
@@ -81,6 +90,7 @@ public class Claw {
 
     public CLAW_SERVO_STATE clawServoState;
     public WRIST_SERVO_STATE wristServoState;
+
 
     public void UpdateColorSensor() {
         // If the claw is closed, we will not detect colors because the claw is covering the sensor
@@ -103,6 +113,8 @@ public class Claw {
             detectedColor = DETECTED_COLOR.YELLOW;
         }
     }
+
+
 
     public DETECTED_COLOR getDetectedColor() {
         return detectedColor;
