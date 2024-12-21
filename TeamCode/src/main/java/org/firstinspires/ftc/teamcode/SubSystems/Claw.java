@@ -27,7 +27,10 @@ public class Claw {
     private static final double WRIST_UP_POSITION = 0.9;
     private static final double WRIST_MID_POSITION = 0.45;
     private static final double WRIST_DOWN_POSITION = 0.2;
+    private static final double WRIST_DELTA = 0.1;
     private static final double WRIST_INIT_POSITION = 1;
+    private static double WRIST_CURRENT_POSITION = WRIST_INIT_POSITION;
+
 
 
     private String allianceColor = "RED";
@@ -58,11 +61,10 @@ public class Claw {
         clawServo.setDirection(Servo.Direction.FORWARD);
         clawServo.setPosition(CLAW_CLOSE_POSITION);
         wristServo.setDirection(Servo.Direction.FORWARD);
-     //   wristServo.setPosition(WRIST_UP_POSITION);
+        //   wristServo.setPosition(WRIST_UP_POSITION);
 
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
         wristServoState = WRIST_SERVO_STATE.WRIST_UP;
-
 
 
     }
@@ -72,6 +74,7 @@ public class Claw {
         CLAW_OPEN,
         CLAW_CLOSE,
     }
+
     public enum WRIST_SERVO_STATE {
         WRIST_UP,
         WRIST_MID,
@@ -112,7 +115,9 @@ public class Claw {
         return clawServoState;
     }
 
-    public WRIST_SERVO_STATE getWristServoState(){return wristServoState;}
+    public WRIST_SERVO_STATE getWristServoState() {
+        return wristServoState;
+    }
 
     public void setAllianceColor(String color) {
         allianceColor = color;
@@ -125,16 +130,41 @@ public class Claw {
     // creates two states in which the claw moves up and down
     public void wristUp() {
         wristServo.setPosition(WRIST_UP_POSITION);
+        WRIST_CURRENT_POSITION = WRIST_UP_POSITION;
+
         wristServoState = WRIST_SERVO_STATE.WRIST_UP;
+
     }
+
     public void wristDown() {
         wristServo.setPosition(WRIST_DOWN_POSITION);
+        WRIST_CURRENT_POSITION = WRIST_DOWN_POSITION;
         wristServoState = WRIST_SERVO_STATE.WRIST_DOWN;
     }
+
     public void wristMid() {
         wristServo.setPosition(WRIST_MID_POSITION);
+        WRIST_CURRENT_POSITION = WRIST_MID_POSITION;
+
         wristServoState = WRIST_SERVO_STATE.WRIST_MID;
     }
+
+    public void wristSlightlyUp() {
+        WRIST_CURRENT_POSITION += WRIST_DELTA;
+        if(WRIST_CURRENT_POSITION > 1) {
+            WRIST_CURRENT_POSITION = 1;
+        }
+        wristServo.setPosition(WRIST_CURRENT_POSITION);
+
+    }
+    public void wristSlightlyDown() {
+        WRIST_CURRENT_POSITION -= WRIST_DELTA;
+        if(WRIST_CURRENT_POSITION < 0) {
+            WRIST_CURRENT_POSITION = 0;
+        }
+        wristServo.setPosition(WRIST_CURRENT_POSITION);
+    }
+
 
 
     // Starting positions of the servos for the opened claw
