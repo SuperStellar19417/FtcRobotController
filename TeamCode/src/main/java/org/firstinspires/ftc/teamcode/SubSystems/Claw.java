@@ -20,12 +20,11 @@ public class Claw {
 
     private Servo wristServo;
     private NormalizedColorSensor colorSensor;
-    private Headlights lights;
+    public Headlights lights;
 
-  private DistanceSensor distanceSensor;
+  public DistanceSensor distanceSensor;
 
-  private double distance = distanceSensor.getDistance(DistanceUnit.CM);
-    private double distanceFromSubmersible = 0;
+    public double distanceFromSubmersible = 0;
     private static final double CLAW_OPEN_POSITION = 0.15;
     private static final double CLAW_CLOSE_POSITION = 0.37;
 
@@ -70,9 +69,7 @@ public class Claw {
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
         wristServoState = WRIST_SERVO_STATE.WRIST_UP;
 
-        if(distance > distanceFromSubmersible - 1 && distance < distanceFromSubmersible +1) {
-            lights.headlightOn();
-        }
+
 
     }
 
