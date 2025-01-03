@@ -136,11 +136,10 @@ public class Climber {
         runClimberToLevel();
     }
 
-    /*public void runClimberDown() {
+    public void runClimberDown() {
         climberMotorPosition = CLIMBER_POSITION_DOWN;
         runClimberToLevel();
-        resetClimber();
-    } */
+    }
 
     public void stopClimberMotor() {
         // TODO:  reading as pressing in gamepadcontroller so add a boolean thing to toggle pressed ONCE god bless

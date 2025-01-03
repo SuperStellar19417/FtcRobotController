@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes.testOpmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.SubSystems.HardwareConstant;
 
 @TeleOp(name="Limit DC Motor Test OpMode", group="Tests")
+@Disabled
 public class LimitDCMotorTest extends LinearOpMode {
     private DcMotorEx testMotor;
     public TouchSensor limitSwitch;

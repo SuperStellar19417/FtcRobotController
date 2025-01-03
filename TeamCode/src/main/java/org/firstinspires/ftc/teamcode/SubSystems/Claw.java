@@ -5,12 +5,14 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Claw {
     private static final float COLOR_SENSOR_GAIN = 2.0f;
@@ -18,13 +20,19 @@ public class Claw {
 
     private Servo wristServo;
     private NormalizedColorSensor colorSensor;
-    private Headlights lights;
+    public Headlights lights;
 
+  public DistanceSensor distanceSensor;
+
+    public double distanceFromSubmersible = 0;
     private static final double CLAW_OPEN_POSITION = 0.15;
-    private static final double CLAW_CLOSE_POSITION = 0.28;
+    private static final double CLAW_CLOSE_POSITION = 0.37;
 
-    private static final double WRIST_UP_POSITION = 0.8;
-    private static final double WRIST_DOWN_POSITION = 0.1;
+
+    private static final double WRIST_UP_POSITION = 0.9;
+    private static final double WRIST_MID_POSITION = 0.45;
+    private static final double WRIST_DOWN_POSITION = 0.2;
+    private static final double WRIST_INIT_POSITION = 1;
 
 
     private String allianceColor = "RED";
@@ -51,11 +59,12 @@ public class Claw {
         colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
         colorSensor.setGain(COLOR_SENSOR_GAIN);
         lights = new Headlights(opMode);
+        distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.distanceSensor );
 
         clawServo.setDirection(Servo.Direction.FORWARD);
         clawServo.setPosition(CLAW_CLOSE_POSITION);
         wristServo.setDirection(Servo.Direction.FORWARD);
-        wristServo.setPosition(WRIST_UP_POSITION);
+     //   wristServo.setPosition(WRIST_UP_POSITION);
 
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
         wristServoState = WRIST_SERVO_STATE.WRIST_UP;
@@ -71,12 +80,14 @@ public class Claw {
     }
     public enum WRIST_SERVO_STATE {
         WRIST_UP,
+        WRIST_MID,
         WRIST_DOWN;
 
     }
 
     public CLAW_SERVO_STATE clawServoState;
     public WRIST_SERVO_STATE wristServoState;
+
 
     public void UpdateColorSensor() {
         // If the claw is closed, we will not detect colors because the claw is covering the sensor
@@ -99,6 +110,8 @@ public class Claw {
             detectedColor = DETECTED_COLOR.YELLOW;
         }
     }
+
+
 
     public DETECTED_COLOR getDetectedColor() {
         return detectedColor;
@@ -126,6 +139,10 @@ public class Claw {
     public void wristDown() {
         wristServo.setPosition(WRIST_DOWN_POSITION);
         wristServoState = WRIST_SERVO_STATE.WRIST_DOWN;
+    }
+    public void wristMid() {
+        wristServo.setPosition(WRIST_MID_POSITION);
+        wristServoState = WRIST_SERVO_STATE.WRIST_MID;
     }
 
 

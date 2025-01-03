@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 
-@Autonomous(name = "Observation Park Only", group = "01-Test")
+@Autonomous(name = "Observation Park Only", group = "01-Auto", preselectTeleOp = "Normal TeleOp")
 public class SimplePathTestAuto extends LinearOpMode {
 
     private GamepadController gamepadController;

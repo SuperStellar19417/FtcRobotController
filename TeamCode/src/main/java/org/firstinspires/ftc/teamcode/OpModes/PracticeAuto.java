@@ -9,12 +9,14 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 
-@Autonomous(name = "PracticeAuto", group = "00-Teleop")
+@Autonomous(name = "PracticeAuto", group = "01-Auto")
+@Disabled
 public class PracticeAuto extends LinearOpMode {
     private GamepadController gamepadController;
 

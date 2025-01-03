@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes.testOpmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 
 @TeleOp(name = "Motor Test", group = "00-Teleop")
+@Disabled
 public class MotorTest extends LinearOpMode {
 
     private GamepadController gamepad;

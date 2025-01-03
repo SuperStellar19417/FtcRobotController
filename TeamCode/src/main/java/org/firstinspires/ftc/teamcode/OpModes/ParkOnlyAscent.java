@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 
 
-@Autonomous(name = "Park with Ascent", group = "01-Test")
+@Autonomous(name = "Park with Ascent", group = "01-Auto", preselectTeleOp = "Normal TeleOp")
 public class ParkOnlyAscent extends LinearOpMode {
 
     private GamepadController gamepadController;
