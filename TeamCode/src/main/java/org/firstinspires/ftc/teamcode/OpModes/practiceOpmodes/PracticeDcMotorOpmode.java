@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.practiceOpmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -7,7 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 
-@TeleOp(name = "Practice DC Motor", group = "00-Teleop")
+@TeleOp(name = "Practice DC Motor", group = "Tests")
+@Disabled
 public class PracticeDcMotorOpmode extends LinearOpMode {
 
     GamepadController gamepad;
@@ -27,7 +29,7 @@ public class PracticeDcMotorOpmode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         practiceMotor = hardwareMap.get(DcMotorEx.class, "practiceMotor");
-        gamepad = new GamepadController(gamepad1, null, null);
+        gamepad= new GamepadController(gamepad1, null, null,null,null,null,null,null);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -48,6 +50,7 @@ public class PracticeDcMotorOpmode extends LinearOpMode {
 
 
             if (gp1GetButtonBPress()) {
+
                 telemetry.addLine("Gamepad 1 B Pressed");
                 runMotorToPosition(Position1);
             }

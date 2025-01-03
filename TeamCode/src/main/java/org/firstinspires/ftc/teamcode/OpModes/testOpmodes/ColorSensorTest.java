@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.testOpmodes;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -68,6 +68,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.HardwareConstant;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @TeleOp(name = "Sensor: Color", group = "00-Teleop")
+@Disabled
 public class ColorSensorTest extends LinearOpMode {
 
   /** The colorSensor field will contain a reference to our color sensor hardware object */

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
-import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -10,28 +9,27 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
-import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 
-@Autonomous(name = "Observation Park Only", group = "01-Auto", preselectTeleOp = "Normal TeleOp")
-public class SimplePathTestAuto extends LinearOpMode {
-
+@Autonomous(name = "PracticeAuto", group = "01-Auto")
+@Disabled
+public class PracticeAuto extends LinearOpMode {
     private GamepadController gamepadController;
+
     private DriveTrain driveTrain;
 
     // We can transfer this from last autonomous op mode if needed,
     // but most the time we don't need to.
     private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
 
-    private Claw claw;
-    private Arm arm;
+
+
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
         // for more information on how to create a path
 
@@ -46,13 +44,12 @@ public class SimplePathTestAuto extends LinearOpMode {
 
         // If Stop is pressed, exit OpMode
         if (isStopRequested()) return;
+        TrajectoryActionBuilder tab1;
 
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
-        TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
-                .turn(Math.toRadians(90))
-                .lineToX(10);
-
+        tab1 = driveTrain.actionBuilder(startPose)
+                .lineToX(30);
 
         // Create an action that will be run
         Action followPathAction = tab1.build();
@@ -79,6 +76,7 @@ public class SimplePathTestAuto extends LinearOpMode {
         // Initialize all subsystems here
         telemetry.setAutoClear(false);
 
+
         // Init Pressed
         telemetry.addLine("Robot Init Pressed");
         telemetry.addLine("==================");
@@ -86,11 +84,15 @@ public class SimplePathTestAuto extends LinearOpMode {
 
         // Initialize drive train
         driveTrain = new DriveTrain(hardwareMap, startPose, this);
+
         driveTrain.driveType = DriveTrain.DriveType.ROBOT_CENTRIC;
         telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
         telemetry.update();
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null, null);
+        //Aarushi-initialize claw and arm
+
+
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, null, null, null);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
@@ -120,11 +122,5 @@ public class SimplePathTestAuto extends LinearOpMode {
         telemetry.update();
     }
 
-    public void safeWaitSeconds(double time) {
-        ElapsedTime timer = new ElapsedTime(SECONDS);
-        timer.reset();
-        while (!isStopRequested() && timer.time() < time) {
-            //don't even worry about it
-        }
-    }
+
 }

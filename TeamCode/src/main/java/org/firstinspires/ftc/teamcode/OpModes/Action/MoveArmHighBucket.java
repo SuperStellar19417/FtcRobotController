@@ -18,7 +18,7 @@ public class MoveArmHighBucket implements Action {
     }
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        arm.moveArmHighBucketPosition();
+        //arm.moveArmHighBucketPosition();
         return true;
     }
 }

@@ -5,6 +5,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Climber;
@@ -136,11 +137,14 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addData("Climber Target Position: ", climber.getClimberTargetPosition());
         telemetry.addData("Climber Motor Position: ", climber.getClimberMotorPosition());
         telemetry.addData("Claw state: ", claw.getClawServoState());
+        telemetry.addData("Wrist state: ", claw.getWristServoState());
         telemetry.addData("Detected Color: ", claw.getDetectedColor());
         telemetry.addData("Slides Target Position: ", slide.getTargetPosition());
         telemetry.addData("Slides Motor Position: ", slide.getMotorPosition());
         telemetry.addData("Arm Motor Position: ", arm.getCurrentArmPosition());
         telemetry.addData("Arm Motor Encoder: ", arm.getCurrentArmEncoderValue());
+        telemetry.addData("joystick position", gamepadController.gp2GetLeftStickY());
+        telemetry.addData("distance", claw.distanceSensor.getDistance(DistanceUnit.MM));
 
         telemetry.update();
     }

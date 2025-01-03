@@ -1,16 +1,18 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.practiceOpmodes;
 
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
-@TeleOp(name= "Practice Servo", group= "00-Teleop")
+@TeleOp(name= "Practice Servo", group= "Tests")
+@Disabled
 public class PracticeServoOpmode extends LinearOpMode {
     private Servo servo;
     private GamepadController gamepad;

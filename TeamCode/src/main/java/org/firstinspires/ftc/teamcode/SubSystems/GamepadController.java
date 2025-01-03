@@ -1,8 +1,13 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
+import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
+
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 /**
@@ -20,6 +25,20 @@ public class GamepadController {
     private IntakeSlide slide;
     private Climber climber;
     private boolean endgame = false;
+    boolean runToClimberLimitSwitch = false;
+    boolean runToIntakeLimitSwitch = false;
+    int armUptickCounter = 0;
+    boolean armTriesUp = false;
+    boolean armTriesDown = false;
+    double joyconPosition = 0;
+
+    Gamepad.RumbleEffect hapticFeedback = new Gamepad.RumbleEffect.Builder()
+            .addStep(1.0, 1.0, 500)  //  Rumble right motor 100% for 500 mSec
+            .addStep(0.0, 0.0, 250)  //  Pause for 300 mSec
+            .addStep(1.0, 1.0, 250)  //  Rumble left motor 100% for 250 mSec
+            .addStep(0.0, 0.0, 250)  //  Pause for 250 mSec
+            .addStep(1.0, 1.0, 250)  //  Rumble left motor 100% for 250 mSec
+            .build();
 
     /**
      * Constructor for GamepadController
@@ -60,32 +79,50 @@ public class GamepadController {
 
 
     public void runArm() throws InterruptedException {
+
+        boolean movingBack = false;
+        if(armTriesUp && (joyconPosition < gp2GetLeftStickY())) {
+            movingBack = true;
+        } else if (armTriesDown && (joyconPosition > gp2GetLeftStickY())){
+            movingBack = true;
+        }
+
+        armTriesUp = false;
+        armTriesDown = false;
         if (endgame) {
             arm.setEndGameMode();
         } else {
             arm.setNormalMode();
         }
 
-        if (gp2GetButtonXPress()) {
+        if (gp2GetButtonAPress()) {
             arm.moveArmLowBucketPosition();
         } else if (gp2GetButtonYPress()) {
-            arm.moveArmHighBucketPosition();
-        } else if (gp2GetButtonAPress()) {
-            arm.moveArmLowRungPosition();
-        } else if (gp2GetButtonBPress()) {
             arm.moveArmHighRungPosition();
-        } else if (gp2GetRightTriggerPress()) {
-            arm.moveArmSlightlyUp();
-        } else if (gp2GetLeftTriggerPress()) {
+        } else if (gp2GetButtonAPress()) {
+            arm.moveArmLowBucketPosition();
+        } else if (gp2GetButtonBPress()) {
+           // arm.move();
+        } else if (gp2GetLeftStickY() > 0.3) {
             arm.moveArmSlightlyDown();
+            safeWaitSeconds(0.05);
+        } else if(gp2GetLeftStickY() < -0.3) {
+            arm.moveArmSlightlyUp();
+            safeWaitSeconds(0.05);
         } else if (gp1GetButtonXPress()) {
             arm.moveArmHangingPosition();
-        } else if (gp2GetRightBumper()) {
+        } else if(gp2GetRightBumperPress()){
             arm.moveArmIntakePosition();
+            safeWaitSeconds(0.05);
+            arm.moveArmSlightlyDown();
+            claw.wristDown();
+            claw.intakeClawOpen();
+        } else if(gp2GetRightTriggerPress()){
+            arm.moveArmSpecimenIntakePosition();;
+            claw.wristMid();
+            claw.intakeClawOpen();
         }
-
-
-    }
+   }
 
     public void checkClimberMode() {
   /*      if(gp1GetRightTriggerPress()) {
@@ -98,42 +135,115 @@ public class GamepadController {
     }
 
     public void runClimber() {
-        if (gp1GetDpad_upPress()) {
-            climber.moveClimberSlightlyUp();
-        } else if (gp1GetStart() && gp1GetDpad_down()) {
-            climber.moveClimberSlightlyDown(true);
-        } else if (gp1GetDpad_downPress()) {
-            climber.moveClimberSlightlyDown(false);
-        }
-//        } else if (gp1GetRightBumper()) {
-//            climber.moveClimberUp();
-//        } else if (gp1GetLeftBumper()) {
-//            climber.runClimberDown();
-//        }
+        // If we have to move down, use encoder to move down
+        boolean isLimitSwitchPressed = climber.climberLimitSwitch.isPressed();
+        boolean wantsToGoUp = gp1GetDpad_upPress();
+        boolean wantsToGoDown = gp1GetDpad_downPress();
+        boolean override = gp1GetStart() && gp1GetDpad_down();
 
+        opMode.telemetry.addData("Status", "Running");
+
+        // If override is pressed, run the motor to the limit switch
+        // this is sort of a state machine, every loop, we check if we
+        // have to run the motor to the limit switch, and if yes, we do that
+        if (override) {
+            runToClimberLimitSwitch = true;
+        }
+
+        if (runToClimberLimitSwitch) {
+            opMode.telemetry.addData("Climber Status", "Running in override mode");
+            opMode.telemetry.update();
+            runToClimberLimitSwitch = climber.runMotorAllTheWayDown();
+            return;
+        }
+
+        // react to gamepad inputs
+        if (wantsToGoUp) {
+            climber.moveClimberUp();
+        }
+        // If we have to move down, use encoder to move down
+        else if (wantsToGoDown && !isLimitSwitchPressed) {
+            climber.runMotorAllTheWayDown();
+        }
     }
 
     public void runClaw() {
        claw.UpdateColorSensor();
+        double distance = claw.distanceSensor.getDistance(DistanceUnit.MM);
+       if(distance > 124 && distance < 232) {
+            claw.lights.headlightOn();
+           gamepad1.runRumbleEffect(hapticFeedback);
+           gamepad2.runRumbleEffect(hapticFeedback);
+        } else {
+           claw.lights.headlightOff();
+       }
 
-        if (gp1GetLeftTriggerPress()) {
-            if (claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_OPEN) {
-                claw.intakeClawClose();
+        if(gp2GetRightStickY() < -0.3) {
+            claw.wristSlightlyUp();
+            safeWaitSeconds(0.05);
+        } else if (gp2GetRightStickY() > 0.3) {
+            claw.wristSlightlyDown();
+            safeWaitSeconds(0.05);
+        }
+
+        if(gp2GetLeftBumperPress()) {
+            if(claw.wristServoState == Claw.WRIST_SERVO_STATE.WRIST_UP) {
+                claw.wristMid();
+            } else if (claw.wristServoState == Claw.WRIST_SERVO_STATE.WRIST_MID){
+                claw.wristDown();
             } else {
+                claw.wristUp();
+            }
+        }
+
+        if(gp2GetLeftTriggerPress()) {
+            if(claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_CLOSE) {
                 claw.intakeClawOpen();
+            } else {
+                claw.intakeClawClose();
             }
         }
     }
 
     public void runSlides() {
-        if ( gp2GetDpad_upPress()) {
+
+        // If we have to move down, use encoder to move down
+        boolean isLimitSwitchPressed = slide.slideLimitSwitch.isPressed();
+        boolean wantsToGoUp = gp2GetDpad_upPress();
+        boolean wantsToGoDown = gp2GetDpad_downPress();
+        boolean override = gp2GetStart() && gp2GetDpad_down();
+
+        opMode.telemetry.addData("Status", "Running");
+
+        // If override is pressed, run the motor to the limit switch
+        // this is sort of a state machine, every loop, we check if we
+        // have to run the motor to the limit switch, and if yes, we do that
+        if (override) {
+            runToIntakeLimitSwitch = true;
+        }
+
+        if (runToIntakeLimitSwitch) {
+            opMode.telemetry.addData("Intake Status", "Running in override mode");
+            opMode.telemetry.update();
+            runToIntakeLimitSwitch = slide.runSlideMotorAllTheWayDown();
+            return;
+        }
+
+        // react to gamepad inputs
+        if (wantsToGoUp) {
             slide.extendSlide();
-        } else if (gp2GetStart() && gp2GetDpad_down()) {
-            //no press  og
-            slide.retractSlide(true);
-        } else if (gp2GetDpad_downPress()) {
-            //press og
+        }
+        // If we have to move down, use encoder to move down
+        else if (wantsToGoDown && !isLimitSwitchPressed) {
             slide.retractSlide(false);
+        }
+
+    }
+    public void safeWaitSeconds(double time) {
+        ElapsedTime timer = new ElapsedTime(SECONDS);
+        timer.reset();
+        while (timer.time() < time) {
+            //don't even worry about it
         }
     }
 
