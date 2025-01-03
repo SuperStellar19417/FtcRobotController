@@ -51,11 +51,11 @@ public class TrajBuilderTester extends LinearOpMode {
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder toBasket = driveTrain.actionBuilder(startPose)
-                .splineTo(new Vector2d(-53, 55), Math.toRadians(135));
+                .splineTo(new Vector2d(-54, 45), Math.toRadians(127));
 
-        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(new Vector2d(-50.58,52.38), Math.toRadians(135)))
-                .strafeTo(new Vector2d(-35, 40.7))
-                .strafeTo(new Vector2d(-30, 30.7));
+        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(new Vector2d(-54,45), Math.toRadians(127)))
+                .strafeToLinearHeading(new Vector2d(-35, 43), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-15, 40), Math.toRadians(90));
 
 
         // Create an action that will be run
@@ -79,8 +79,11 @@ public class TrajBuilderTester extends LinearOpMode {
         Actions.runBlocking(new SequentialAction(basketAction));
         arm.moveArmLowBucketPosition();
         safeWaitSeconds(1);
+        claw.wristDown();
+        safeWaitSeconds(1);
         claw.intakeClawOpen();
-        safeWaitSeconds(1.5);
+        safeWaitSeconds(0.5);
+        claw.wristUp();
         arm.moveArmIntakePosition();
         Actions.runBlocking(new SequentialAction(submersibleAction));
         safeWaitSeconds(1);
