@@ -111,9 +111,18 @@ public class GamepadController {
             safeWaitSeconds(0.05);
         } else if (gp1GetButtonXPress()) {
             arm.moveArmHangingPosition();
+        } else if(gp2GetRightBumperPress()){
+            arm.moveArmIntakePosition();
+            safeWaitSeconds(0.05);
+            arm.moveArmSlightlyDown();
+            claw.wristDown();
+            claw.intakeClawOpen();
+        } else if(gp2GetRightTriggerPress()){
+            arm.moveArmSpecimenIntakePosition();;
+            claw.wristMid();
+            claw.intakeClawOpen();
         }
-
-    }
+   }
 
     public void checkClimberMode() {
   /*      if(gp1GetRightTriggerPress()) {
@@ -169,12 +178,12 @@ public class GamepadController {
            claw.lights.headlightOff();
        }
 
-        if (gp2GetLeftTriggerPress()) {
-            if (claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_OPEN) {
-                claw.intakeClawClose();
-            } else {
-                claw.intakeClawOpen();
-            }
+        if(gp2GetRightStickY() < -0.3) {
+            claw.wristSlightlyUp();
+            safeWaitSeconds(0.05);
+        } else if (gp2GetRightStickY() > 0.3) {
+            claw.wristSlightlyDown();
+            safeWaitSeconds(0.05);
         }
 
         if(gp2GetLeftBumperPress()) {
@@ -184,6 +193,14 @@ public class GamepadController {
                 claw.wristDown();
             } else {
                 claw.wristUp();
+            }
+        }
+
+        if(gp2GetLeftTriggerPress()) {
+            if(claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_CLOSE) {
+                claw.intakeClawOpen();
+            } else {
+                claw.intakeClawClose();
             }
         }
     }
