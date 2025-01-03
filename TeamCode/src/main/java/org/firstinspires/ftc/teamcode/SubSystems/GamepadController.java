@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 
 /**
  * GamepadController class is the main interface for the driver to control the robot.
@@ -29,6 +31,14 @@ public class GamepadController {
     boolean armTriesUp = false;
     boolean armTriesDown = false;
     double joyconPosition = 0;
+
+    Gamepad.RumbleEffect hapticFeedback = new Gamepad.RumbleEffect.Builder()
+            .addStep(1.0, 1.0, 500)  //  Rumble right motor 100% for 500 mSec
+            .addStep(0.0, 0.0, 250)  //  Pause for 300 mSec
+            .addStep(1.0, 1.0, 250)  //  Rumble left motor 100% for 250 mSec
+            .addStep(0.0, 0.0, 250)  //  Pause for 250 mSec
+            .addStep(1.0, 1.0, 250)  //  Rumble left motor 100% for 250 mSec
+            .build();
 
     /**
      * Constructor for GamepadController
@@ -159,6 +169,14 @@ public class GamepadController {
 
     public void runClaw() {
        claw.UpdateColorSensor();
+        double distance = claw.distanceSensor.getDistance(DistanceUnit.MM);
+       if(distance > 124 && distance < 232) {
+            claw.lights.headlightOn();
+           gamepad1.runRumbleEffect(hapticFeedback);
+           gamepad2.runRumbleEffect(hapticFeedback);
+        } else {
+           claw.lights.headlightOff();
+       }
 
         if(gp2GetRightStickY() < -0.3) {
             claw.wristSlightlyUp();
