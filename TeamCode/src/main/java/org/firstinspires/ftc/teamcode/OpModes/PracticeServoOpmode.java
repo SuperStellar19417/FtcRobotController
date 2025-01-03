@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 @TeleOp(name= "Practice Servo", group= "00-Teleop")
 public class PracticeServoOpmode extends LinearOpMode {
-    private Servo Servo;
-    private GamepadController Gamepad;
+    private Servo servo;
+    private GamepadController gamepad;
 
 
     private Action action = new Action() {
@@ -29,22 +29,26 @@ public class PracticeServoOpmode extends LinearOpMode {
      * telemetry updates for each position
      */
     @Override
-    public void runOpMode() throws InterruptedException {
-        Servo = hardwareMap.get(Servo.class, "testServo");
-        Gamepad = new GamepadController(gamepad1, null, null);
+    public void runOpMode() {
+        servo = hardwareMap.get(Servo.class, "testServo");
+        servo.setDirection(Servo.Direction.FORWARD);
+        gamepad = new GamepadController(gamepad1, null, null, this, null, null, null, null);
         if (isStopRequested()) {
             return;
         }
 
         while (!isStopRequested()) {
 
-            if (Gamepad.gp1GetButtonBPress()) {
+            if (gamepad.gp1GetB()) {, yrf54
+                telemetry.addLine("b");
                 this.telemetry.update();
                 servoPos1();
-            } else if (Gamepad.gp1GetButtonXPress()) {
+            } else if (gamepad.gp1GetX()) {
+                telemetry.addLine("x");
                 this.telemetry.update();
                 servoPos2();
-            } else if (Gamepad.gp1GetButtonAPress()) {
+            } else if (gamepad.gp1GetA()) {
+                telemetry.addLine("a");
                 this.telemetry.update();
                 servoInit();
             }
@@ -61,21 +65,19 @@ public class PracticeServoOpmode extends LinearOpMode {
         public SERVO_STATE servoState;
 
         private void servoPos1 () {
-            Servo.setPosition(0.8);
+            servo.setPosition(0.8);
             servoState = SERVO_STATE.SERVO_POS1;
         }
 
         private void servoPos2 () {
-            Servo.setPosition(0.3);
+            servo.setPosition(0.3);
             servoState = SERVO_STATE.SERVO_POS2;
         }
 
         private void servoInit () {
-            Servo.setPosition(0.0);
+            servo.setPosition(0.0);
             servoState = SERVO_STATE.SERVO_INIT;
         }
-
-
 
 
 
