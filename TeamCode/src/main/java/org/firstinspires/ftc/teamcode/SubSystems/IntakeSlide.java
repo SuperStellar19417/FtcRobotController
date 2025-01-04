@@ -13,7 +13,7 @@ public class IntakeSlide {
     private final double POWER_LEVEL_STOP = 0.0;
     private final int SLIDE_POSITION_MIN = 0;
     private final int SLIDE_POSITION_MAX = 1050;
-    private final int SLIDE_POSITION_DELTA = 250;
+    private final int SLIDE_POSITION_DELTA = 260;
     private final double MAX_VELOCITY = 2720*0.8;
 
     private DcMotorEx slideMotor;

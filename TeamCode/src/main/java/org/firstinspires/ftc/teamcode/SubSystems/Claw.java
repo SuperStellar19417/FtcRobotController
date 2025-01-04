@@ -34,6 +34,8 @@ public class Claw {
     private static final double WRIST_DOWN_POSITION = 0.2;
     private static final double WRIST_INIT_POSITION = 1;
 
+    public static double WRIST_CURRENT_POSITION = WRIST_INIT_POSITION;
+
 
     private String allianceColor = "RED";
 
@@ -59,7 +61,7 @@ public class Claw {
         colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
         colorSensor.setGain(COLOR_SENSOR_GAIN);
         lights = new Headlights(opMode);
-        distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.distanceSensor );
+        distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.DistanceSensor );
 
         clawServo.setDirection(Servo.Direction.FORWARD);
         clawServo.setPosition(CLAW_CLOSE_POSITION);
@@ -133,16 +135,29 @@ public class Claw {
 
     // creates two states in which the claw moves up and down
     public void wristUp() {
-        wristServo.setPosition(WRIST_UP_POSITION);
+        WRIST_CURRENT_POSITION = WRIST_UP_POSITION;
+        wristServo.setPosition(WRIST_CURRENT_POSITION);
         wristServoState = WRIST_SERVO_STATE.WRIST_UP;
     }
     public void wristDown() {
-        wristServo.setPosition(WRIST_DOWN_POSITION);
+        WRIST_CURRENT_POSITION = WRIST_DOWN_POSITION;
+        wristServo.setPosition(WRIST_CURRENT_POSITION);
         wristServoState = WRIST_SERVO_STATE.WRIST_DOWN;
     }
     public void wristMid() {
-        wristServo.setPosition(WRIST_MID_POSITION);
+        WRIST_CURRENT_POSITION = WRIST_MID_POSITION;
+        wristServo.setPosition(WRIST_CURRENT_POSITION);
         wristServoState = WRIST_SERVO_STATE.WRIST_MID;
+    }
+
+    public void wristSlightlyUp() {
+        WRIST_CURRENT_POSITION+= 0.1;
+        wristServo.setPosition(WRIST_CURRENT_POSITION);
+    }
+
+    public void wristSlightlyDown() {
+        WRIST_CURRENT_POSITION-= 0.1;
+        wristServo.setPosition(WRIST_CURRENT_POSITION);
     }
 
 

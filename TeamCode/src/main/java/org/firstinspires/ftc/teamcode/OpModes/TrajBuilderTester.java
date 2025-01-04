@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
+import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 
 @Autonomous (name = "Scoring Auto 1st Ascent TEST", group = "01-Test")
 public class TrajBuilderTester extends LinearOpMode {
@@ -26,10 +27,12 @@ public class TrajBuilderTester extends LinearOpMode {
 
     // We can transfer this from last autonomous op mode if needed,
     // but most the time we don't need to.
-    private final Pose2d startPose = new Pose2d(-59.7, 11.16,  Math.toRadians(0));
+  //  private final Pose2d startPose = new Pose2d(-59.7, 11.16,  Math.toRadians(0));
+    private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
 
     private Claw claw;
     private Arm arm;
+    private IntakeSlide slide;
     private Climber climber;
     @Override
     public void runOpMode() {
@@ -51,16 +54,28 @@ public class TrajBuilderTester extends LinearOpMode {
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder toBasket = driveTrain.actionBuilder(startPose)
-                .splineTo(new Vector2d(-54, 45), Math.toRadians(127));
+                .splineTo(new Vector2d(5,36.5), Math.toRadians(125));
 
-        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(new Vector2d(-54,45), Math.toRadians(127)))
-                .strafeToLinearHeading(new Vector2d(-35, 43), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(-15, 40), Math.toRadians(90));
+        TrajectoryActionBuilder cyclePartOne = driveTrain.actionBuilder(new Pose2d(new Vector2d(4,34), Math.toRadians(125)))
+                .strafeToLinearHeading(new Vector2d(21,37), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(28.5, 36.5), Math.toRadians(30));
+
+        TrajectoryActionBuilder toBasket2 = driveTrain.actionBuilder(new Pose2d(new Vector2d(23, 33), Math.toRadians(30)))
+                .splineTo(new Vector2d(11,34.5), Math.toRadians(120));
+
+
+        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(new Vector2d(11,34.5), Math.toRadians(120)))
+                .strafeToLinearHeading(new Vector2d(55, 33), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(63, 10), Math.toRadians(90));
+
 
 
         // Create an action that will be run
         Action basketAction = toBasket.build();
         Action submersibleAction = toSub.build();
+        Action cycle1Action = cyclePartOne.build();
+        Action basket2Action = toBasket2.build();
+
 
         // Run the action (s)
         // You can run multiple actions to execute a complex auto. For example :
@@ -77,20 +92,37 @@ public class TrajBuilderTester extends LinearOpMode {
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
         Actions.runBlocking(new SequentialAction(basketAction));
+        cycleToBasket();
+        Actions.runBlocking(new SequentialAction(cycle1Action));
+        claw.wristMid();
+        claw.intakeClawClose();
+        safeWaitSeconds(1);
+
+        Actions.runBlocking(new SequentialAction(basket2Action));
         arm.moveArmLowBucketPosition();
+        slide.extendSlide();
         safeWaitSeconds(1);
-        claw.wristDown();
-        safeWaitSeconds(1);
-        claw.intakeClawOpen();
-        safeWaitSeconds(0.5);
-        claw.wristUp();
-        arm.moveArmIntakePosition();
+
         Actions.runBlocking(new SequentialAction(submersibleAction));
+        slide.retractSlide(false);
+        arm.moveArmIntakePosition();
         safeWaitSeconds(1);
         climber.moveClimberUp();
 
     }
 
+    private void cycleToBasket() {
+        arm.moveArmLowBucketPosition();
+        slide.extendSlide();
+        claw.wristMid();
+        safeWaitSeconds(1.5);
+        claw.intakeClawOpen();
+        safeWaitSeconds(1);
+        claw.wristUp();
+        slide.retractSlide(false);
+        safeWaitSeconds(0.5);
+        arm.moveArmIntakePosition();
+    }
     private void initSubsystems() {
         // Initialize all subsystems here
         telemetry.setAutoClear(false);
@@ -108,6 +140,7 @@ public class TrajBuilderTester extends LinearOpMode {
         arm = new Arm(this);
         claw = new Claw(this);
         climber = new Climber(this);
+        slide = new IntakeSlide(this);
 
         gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null, null);
         telemetry.addLine("Gamepad Initialized");
