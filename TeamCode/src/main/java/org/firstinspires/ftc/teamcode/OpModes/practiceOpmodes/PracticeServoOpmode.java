@@ -41,7 +41,7 @@ public class PracticeServoOpmode extends LinearOpMode {
 
         while (!isStopRequested()) {
 
-            if (gamepad.gp1GetB()) {, yrf54
+            if (gamepad.gp1GetB()) {
                 telemetry.addLine("b");
                 this.telemetry.update();
                 servoPos1();
