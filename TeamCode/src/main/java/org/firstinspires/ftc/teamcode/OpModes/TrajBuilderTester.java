@@ -54,7 +54,7 @@ public class TrajBuilderTester extends LinearOpMode {
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder toBasket = driveTrain.actionBuilder(startPose)
-                .splineTo(new Vector2d(5,36.5), Math.toRadians(125));
+                .splineTo(new Vector2d(5,35.5), Math.toRadians(125));
 
         TrajectoryActionBuilder cyclePartOne = driveTrain.actionBuilder(new Pose2d(new Vector2d(4,34), Math.toRadians(125)))
                 .strafeToLinearHeading(new Vector2d(21,37), Math.toRadians(90))
@@ -62,6 +62,13 @@ public class TrajBuilderTester extends LinearOpMode {
 
         TrajectoryActionBuilder toBasket2 = driveTrain.actionBuilder(new Pose2d(new Vector2d(23, 33), Math.toRadians(30)))
                 .splineTo(new Vector2d(11,34.5), Math.toRadians(120));
+
+        TrajectoryActionBuilder cyclePartTwo = driveTrain.actionBuilder(new Pose2d(new Vector2d(11,34.5), Math.toRadians(120)))
+                .strafeToLinearHeading(new Vector2d(21,37), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(28.5, 38.5), Math.toRadians(30));
+
+        TrajectoryActionBuilder toBasket3 = driveTrain.actionBuilder(new Pose2d(new Vector2d(28.5, 38.5), Math.toRadians(30)))
+                .splineTo(new Vector2d(9,33), Math.toRadians(120));
 
 
         TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(new Vector2d(11,34.5), Math.toRadians(120)))
@@ -75,6 +82,8 @@ public class TrajBuilderTester extends LinearOpMode {
         Action submersibleAction = toSub.build();
         Action cycle1Action = cyclePartOne.build();
         Action basket2Action = toBasket2.build();
+        Action cycle2Action = cyclePartTwo.build();
+        Action basket3Action = toBasket3.build();
 
 
         // Run the action (s)
@@ -98,16 +107,32 @@ public class TrajBuilderTester extends LinearOpMode {
         claw.intakeClawClose();
         safeWaitSeconds(1);
 
+
         Actions.runBlocking(new SequentialAction(basket2Action));
         arm.moveArmLowBucketPosition();
         slide.extendSlide();
         safeWaitSeconds(1);
+        claw.wristMid();
+        claw.intakeClawOpen();
+        safeWaitSeconds(1);
+
+        Actions.runBlocking(cycle2Action);
+        arm.moveArmIntakePosition();
+        safeWaitSeconds(0.5);
+        claw.intakeClawClose();
+
+        Actions.runBlocking(basket3Action);
+        arm.moveArmLowBucketPosition();
+        safeWaitSeconds(1);
+        claw.intakeClawOpen();
+        safeWaitSeconds(0.5);
 
         Actions.runBlocking(new SequentialAction(submersibleAction));
         slide.retractSlide(false);
         arm.moveArmIntakePosition();
         safeWaitSeconds(1);
-        climber.moveClimberUp();
+        climber.runMotorToPosition(700);
+        //climber.moveClimberUp();
 
     }
 
@@ -123,6 +148,7 @@ public class TrajBuilderTester extends LinearOpMode {
         safeWaitSeconds(0.5);
         arm.moveArmIntakePosition();
     }
+
     private void initSubsystems() {
         // Initialize all subsystems here
         telemetry.setAutoClear(false);
