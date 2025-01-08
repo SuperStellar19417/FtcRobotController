@@ -54,6 +54,8 @@ public class SimplePathTestAuto extends LinearOpMode {
                 .lineToX(10);
 
 
+
+
         // Create an action that will be run
         Action followPathAction = tab1.build();
 
@@ -71,7 +73,6 @@ public class SimplePathTestAuto extends LinearOpMode {
         */
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
-        Actions.runBlocking( new SequentialAction(followPathAction));
 
     }
 

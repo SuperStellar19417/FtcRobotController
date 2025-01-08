@@ -30,10 +30,21 @@ public class TrajBuilderTester extends LinearOpMode {
   //  private final Pose2d startPose = new Pose2d(-59.7, 11.16,  Math.toRadians(0));
     private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
 
+    private final Vector2d dropPose = new Vector2d(9, 44); //132
+    private final Vector2d midPoseCycle = new Vector2d(13, 45); //90
+    private final Vector2d cycle1 = new Vector2d(23, 50); //50
+    private final Vector2d cycle2 = new Vector2d(33, 50); //40
+
+    private final Vector2d midPoseSub = new Vector2d(41, 47); //90
+
+    private final Vector2d parkPose = new Vector2d(46, 22); //90
+
+
     private Claw claw;
     private Arm arm;
     private IntakeSlide slide;
     private Climber climber;
+
     @Override
     public void runOpMode() {
         // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
@@ -54,26 +65,26 @@ public class TrajBuilderTester extends LinearOpMode {
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
         TrajectoryActionBuilder toBasket = driveTrain.actionBuilder(startPose)
-                .splineTo(new Vector2d(5,35.5), Math.toRadians(125));
+                .splineTo(dropPose, Math.toRadians(132));
+        //new Vector2d(5,35.5), Math.toRadians(125));
+        TrajectoryActionBuilder cyclePartOne = driveTrain.actionBuilder(new Pose2d(dropPose, Math.toRadians(132)))
+                .strafeToLinearHeading(midPoseCycle, Math.toRadians(90))
+                .strafeToLinearHeading(cycle1, Math.toRadians(50));
 
-        TrajectoryActionBuilder cyclePartOne = driveTrain.actionBuilder(new Pose2d(new Vector2d(4,34), Math.toRadians(125)))
-                .strafeToLinearHeading(new Vector2d(21,37), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(28.5, 36.5), Math.toRadians(30));
+        TrajectoryActionBuilder toBasket2 = driveTrain.actionBuilder(new Pose2d(cycle1, Math.toRadians(50)))
+                .splineTo(dropPose, Math.toRadians(132));
 
-        TrajectoryActionBuilder toBasket2 = driveTrain.actionBuilder(new Pose2d(new Vector2d(23, 33), Math.toRadians(30)))
-                .splineTo(new Vector2d(11,34.5), Math.toRadians(120));
+        TrajectoryActionBuilder cyclePartTwo = driveTrain.actionBuilder(new Pose2d(dropPose, Math.toRadians(132)))
+                .strafeToLinearHeading(midPoseCycle, Math.toRadians(40))
+                .strafeToLinearHeading(cycle2, Math.toRadians(90));
 
-        TrajectoryActionBuilder cyclePartTwo = driveTrain.actionBuilder(new Pose2d(new Vector2d(11,34.5), Math.toRadians(120)))
-                .strafeToLinearHeading(new Vector2d(21,37), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(28.5, 38.5), Math.toRadians(30));
-
-        TrajectoryActionBuilder toBasket3 = driveTrain.actionBuilder(new Pose2d(new Vector2d(28.5, 38.5), Math.toRadians(30)))
-                .splineTo(new Vector2d(9,33), Math.toRadians(120));
+        TrajectoryActionBuilder toBasket3 = driveTrain.actionBuilder(new Pose2d(cycle2, Math.toRadians(90)))
+                .splineTo(dropPose, Math.toRadians(132));
 
 
-        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(new Vector2d(11,34.5), Math.toRadians(120)))
-                .strafeToLinearHeading(new Vector2d(55, 33), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(63, 10), Math.toRadians(90));
+        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(dropPose, Math.toRadians(132)))
+                .strafeToLinearHeading(midPoseSub, Math.toRadians(90))
+                .strafeToLinearHeading(parkPose, Math.toRadians(90));
 
 
 
