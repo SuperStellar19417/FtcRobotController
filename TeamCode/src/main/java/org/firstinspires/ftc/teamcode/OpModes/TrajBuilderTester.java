@@ -30,14 +30,12 @@ public class TrajBuilderTester extends LinearOpMode {
   //  private final Pose2d startPose = new Pose2d(-59.7, 11.16,  Math.toRadians(0));
     private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
 
-    private final Vector2d dropPose = new Vector2d(9, 44); //132
-    private final Vector2d midPoseCycle = new Vector2d(13, 45); //90
-    private final Vector2d cycle1 = new Vector2d(23, 50); //50
-    private final Vector2d cycle2 = new Vector2d(33, 50); //40
-
-    private final Vector2d midPoseSub = new Vector2d(41, 47); //90
-
-    private final Vector2d parkPose = new Vector2d(46, 22); //90
+    private final Vector2d dropPose = new Vector2d(9, 36.5); //132
+    private final Vector2d midPoseCycle = new Vector2d(17, 35); //90
+    private final Vector2d cycle1 = new Vector2d(29.5, 35 ); //50
+    private final Vector2d cycle2 = new Vector2d(33.5, 44); //40
+    private final Vector2d midPoseSub = new Vector2d(55, 47); //90
+    private final Vector2d parkPose = new Vector2d(68, 15); //90
 
 
     private Claw claw;
@@ -68,23 +66,23 @@ public class TrajBuilderTester extends LinearOpMode {
                 .splineTo(dropPose, Math.toRadians(132));
         //new Vector2d(5,35.5), Math.toRadians(125));
         TrajectoryActionBuilder cyclePartOne = driveTrain.actionBuilder(new Pose2d(dropPose, Math.toRadians(132)))
-                .strafeToLinearHeading(midPoseCycle, Math.toRadians(90))
-                .strafeToLinearHeading(cycle1, Math.toRadians(50));
+                .strafeToLinearHeading(midPoseCycle, Math.toRadians(55))
+                .strafeToLinearHeading(cycle1, Math.toRadians(55));
 
-        TrajectoryActionBuilder toBasket2 = driveTrain.actionBuilder(new Pose2d(cycle1, Math.toRadians(50)))
+        TrajectoryActionBuilder toBasket2 = driveTrain.actionBuilder(new Pose2d(cycle1, Math.toRadians(55)))
                 .splineTo(dropPose, Math.toRadians(132));
 
         TrajectoryActionBuilder cyclePartTwo = driveTrain.actionBuilder(new Pose2d(dropPose, Math.toRadians(132)))
-                .strafeToLinearHeading(midPoseCycle, Math.toRadians(40))
+                .strafeToLinearHeading(midPoseCycle, Math.toRadians(45))
                 .strafeToLinearHeading(cycle2, Math.toRadians(90));
 
         TrajectoryActionBuilder toBasket3 = driveTrain.actionBuilder(new Pose2d(cycle2, Math.toRadians(90)))
-                .splineTo(dropPose, Math.toRadians(132));
+                .splineTo(dropPose, Math.toRadians(130));
 
 
-        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(dropPose, Math.toRadians(132)))
-                .strafeToLinearHeading(midPoseSub, Math.toRadians(90))
-                .strafeToLinearHeading(parkPose, Math.toRadians(90));
+        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(dropPose, Math.toRadians(130)))
+                .strafeToLinearHeading(midPoseSub, Math.toRadians(100))
+                .strafeToLinearHeading(parkPose, Math.toRadians(100));
 
 
 
@@ -111,44 +109,44 @@ public class TrajBuilderTester extends LinearOpMode {
         */
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
+       // arm.moveArmLowBucketPosition();
         Actions.runBlocking(new SequentialAction(basketAction));
-        cycleToBasket();
+      //  cycleToBasket();
         Actions.runBlocking(new SequentialAction(cycle1Action));
-        claw.wristMid();
-        claw.intakeClawClose();
+      //  claw.wristMid();
+     //   claw.intakeClawClose();
         safeWaitSeconds(1);
 
 
         Actions.runBlocking(new SequentialAction(basket2Action));
-        arm.moveArmLowBucketPosition();
-        slide.extendSlide();
+     //   arm.moveArmLowBucketPosition();
+      //  slide.extendSlide();
         safeWaitSeconds(1);
-        claw.wristMid();
-        claw.intakeClawOpen();
+      //  claw.wristMid();
+     //   claw.intakeClawOpen();
         safeWaitSeconds(1);
 
         Actions.runBlocking(cycle2Action);
-        arm.moveArmIntakePosition();
+    //    arm.moveArmIntakePosition();
         safeWaitSeconds(0.5);
-        claw.intakeClawClose();
+   //     claw.intakeClawClose();
 
         Actions.runBlocking(basket3Action);
-        arm.moveArmLowBucketPosition();
+    //    arm.moveArmLowBucketPosition();
         safeWaitSeconds(1);
-        claw.intakeClawOpen();
+    //    claw.intakeClawOpen();
         safeWaitSeconds(0.5);
 
         Actions.runBlocking(new SequentialAction(submersibleAction));
-        slide.retractSlide(false);
-        arm.moveArmIntakePosition();
+     //   slide.retractSlide(false);
+     //   arm.moveArmIntakePosition();
         safeWaitSeconds(1);
-        climber.runMotorToPosition(700);
+     //   climber.runMotorToPosition(700);
         //climber.moveClimberUp();
 
     }
 
     private void cycleToBasket() {
-        arm.moveArmLowBucketPosition();
         slide.extendSlide();
         claw.wristMid();
         safeWaitSeconds(1.5);
