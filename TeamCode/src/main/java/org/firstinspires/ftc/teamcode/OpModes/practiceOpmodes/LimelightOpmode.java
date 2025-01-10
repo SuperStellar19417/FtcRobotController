@@ -40,7 +40,7 @@ public class LimelightOpmode extends LinearOpMode {
                     // Access color results
                     List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
                     for (LLResultTypes.ColorResult cr : colorResults) {
-                        telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
+                        telemetry.addData("Color", "X:, Y:", result.getTx(), result.getTy());
                     }
                 }
 
