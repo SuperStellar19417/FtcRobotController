@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 @TeleOp(name= "Practice Servo", group= "Tests")
-@Disabled
+
 public class PracticeServoOpmode extends LinearOpMode {
     private Servo servo;
     private GamepadController gamepad;
@@ -67,12 +67,12 @@ public class PracticeServoOpmode extends LinearOpMode {
         public SERVO_STATE servoState;
 
         private void servoPos1 () {
-            servo.setPosition(0.8);
+            servo.setPosition(0.3);
             servoState = SERVO_STATE.SERVO_POS1;
         }
 
         private void servoPos2 () {
-            servo.setPosition(0.3);
+            servo.setPosition(0);
             servoState = SERVO_STATE.SERVO_POS2;
         }
 

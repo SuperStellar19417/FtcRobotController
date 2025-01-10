@@ -31,11 +31,13 @@ public class TrajBuilderTester extends LinearOpMode {
     private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
 
     private final Vector2d dropPose = new Vector2d(9, 36.5); //132
+    private final Vector2d dropPoseAdjust = new Vector2d(11, 35); //132
     private final Vector2d midPoseCycle = new Vector2d(17, 35); //90
     private final Vector2d cycle1 = new Vector2d(29.5, 35 ); //50
     private final Vector2d cycle2 = new Vector2d(33.5, 44); //40
     private final Vector2d midPoseSub = new Vector2d(55, 47); //90
     private final Vector2d parkPose = new Vector2d(68, 15); //90
+
 
 
     private Claw claw;
@@ -77,10 +79,10 @@ public class TrajBuilderTester extends LinearOpMode {
                 .strafeToLinearHeading(cycle2, Math.toRadians(90));
 
         TrajectoryActionBuilder toBasket3 = driveTrain.actionBuilder(new Pose2d(cycle2, Math.toRadians(90)))
-                .splineTo(dropPose, Math.toRadians(130));
+                .splineTo(dropPoseAdjust, Math.toRadians(130));
 
 
-        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(dropPose, Math.toRadians(130)))
+        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(dropPoseAdjust, Math.toRadians(130)))
                 .strafeToLinearHeading(midPoseSub, Math.toRadians(100))
                 .strafeToLinearHeading(parkPose, Math.toRadians(100));
 
@@ -109,21 +111,21 @@ public class TrajBuilderTester extends LinearOpMode {
         */
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
-       // arm.moveArmLowBucketPosition();
+        arm.moveArmLowBucketPosition();
         Actions.runBlocking(new SequentialAction(basketAction));
-      //  cycleToBasket();
+        cycleToBasket();
         Actions.runBlocking(new SequentialAction(cycle1Action));
-      //  claw.wristMid();
-     //   claw.intakeClawClose();
+        claw.wristMid();
+        claw.intakeClawClose();
         safeWaitSeconds(1);
 
 
         Actions.runBlocking(new SequentialAction(basket2Action));
-     //   arm.moveArmLowBucketPosition();
-      //  slide.extendSlide();
+        arm.moveArmLowBucketPosition();
+        slide.extendSlide();
         safeWaitSeconds(1);
-      //  claw.wristMid();
-     //   claw.intakeClawOpen();
+        claw.wristMid();
+        claw.intakeClawOpen();
         safeWaitSeconds(1);
 
         Actions.runBlocking(cycle2Action);

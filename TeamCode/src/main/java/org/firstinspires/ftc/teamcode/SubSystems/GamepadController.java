@@ -98,26 +98,34 @@ public class GamepadController {
         if (gp2GetButtonAPress()) {
             arm.moveArmLowBucketPosition();
         } else if (gp2GetButtonYPress()) {
+
             arm.moveArmHighRungPosition();
         } else if (gp2GetButtonAPress()) {
+
             arm.moveArmLowBucketPosition();
         } else if (gp2GetButtonBPress()) {
+
            // arm.move();
         } else if (gp2GetLeftStickY() > 0.3) {
+
             arm.moveArmSlightlyDown();
             safeWaitSeconds(0.05);
         } else if(gp2GetLeftStickY() < -0.3) {
+
             arm.moveArmSlightlyUp();
             safeWaitSeconds(0.05);
         } else if (gp1GetButtonXPress()) {
+
             arm.moveArmHangingPosition();
-        } else if(gp2GetRightBumperPress()){
+        } else if(gp2GetRightBumperPress()) {
+
             arm.moveArmIntakePosition();
             safeWaitSeconds(0.05);
             arm.moveArmSlightlyDown();
             claw.wristDown();
             claw.intakeClawOpen();
-        } else if(gp2GetRightTriggerPress()){
+        } else if(gp2GetRightTriggerPress()) {
+
             arm.moveArmSpecimenIntakePosition();;
             claw.wristMid();
             claw.intakeClawOpen();
@@ -172,8 +180,8 @@ public class GamepadController {
         double distance = claw.distanceSensor.getDistance(DistanceUnit.MM);
        if(distance > 124 && distance < 232) {
             claw.lights.headlightOn();
-           gamepad1.runRumbleEffect(hapticFeedback);
-           gamepad2.runRumbleEffect(hapticFeedback);
+          // gamepad1.runRumbleEffect(hapticFeedback);
+         //  gamepad2.runRumbleEffect(hapticFeedback);
         } else {
            claw.lights.headlightOff();
        }
