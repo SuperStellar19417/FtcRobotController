@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 
 import java.util.List;
 
-@TeleOp(name = "Practice DC Motor", group = "Tests")
+@TeleOp(name = "Practice Limelight", group = "Tests")
 public class LimelightOpmode extends LinearOpMode {
     private Limelight3A limelight;
 
