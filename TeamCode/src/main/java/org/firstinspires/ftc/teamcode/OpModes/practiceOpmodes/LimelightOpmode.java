@@ -20,6 +20,7 @@ public class LimelightOpmode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        waitForStart();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
         limelight.start();
@@ -28,9 +29,15 @@ public class LimelightOpmode extends LinearOpMode {
             if (isStopRequested())
                 break;
             LLResult result = limelight.getLatestResult();
-
+            telemetry.addData("Recieve Result from limelight", "Red Result");
             if (result != null) {
+                //telemetry.addData("Result is",result.toString());
                 if (result.isValid()) {
+                    telemetry.addData("Result is valid","Red Result 3");
+                    telemetry.addData("tx:",result.getTx());
+                    telemetry.addData("ty:",result.getTy());
+                    telemetry.addData("ta:",result.getTa());
+
                     // Access fiducial results
                     List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
                     for (LLResultTypes.FiducialResult fr : fiducialResults) {
@@ -40,16 +47,20 @@ public class LimelightOpmode extends LinearOpMode {
                     // Access color results
                     List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
                     for (LLResultTypes.ColorResult cr : colorResults) {
-                        telemetry.addData("Color", "X:, Y:", result.getTx(), result.getTy());
+                        telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
                     }
                 }
 
 
 
             }
+            else{
+                telemetry.addData("Limelight","no target");
+            }
             telemetry.addData("Status", "Running");
             telemetry.update();
         }
+        limelight.stop();
 
     }
 }
