@@ -29,7 +29,7 @@ public class Arm {
     private final int ARM_POSITION_TICKS_HANGING = 3000;
     //someone ass here
 
-    private final int ARM_POSITION_SPECIMEN_INTAKE = 495;
+    private final int ARM_POSITION_SPECIMEN_INTAKE = 202;
     public static int ARM_MAX_POSITION_COUNT = 1100;
 //    public static int ARM_MIN_POSITION_COUNT = 0;
 

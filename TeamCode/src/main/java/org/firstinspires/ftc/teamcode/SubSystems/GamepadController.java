@@ -118,10 +118,12 @@ public class GamepadController {
 
             arm.moveArmHangingPosition();
         } else if(gp2GetRightTriggerPress()) {
-
             arm.moveArmSpecimenIntakePosition();;
             claw.wristMid();
             claw.intakeClawOpen();
+        } else if (gp2GetButtonXPress()) {
+            //Move the arm to specimen intake position
+            arm.moveArmSpecimenIntakePosition();
         }
    }
 
@@ -169,15 +171,15 @@ public class GamepadController {
     }
 
     public void runClaw() {
-       claw.UpdateColorSensor();
-        double distance = claw.distanceSensor.getDistance(DistanceUnit.MM);
-       if(distance > 124 && distance < 232) {
-            claw.lights.headlightOn();
-          // gamepad1.runRumbleEffect(hapticFeedback);
-         //  gamepad2.runRumbleEffect(hapticFeedback);
-        } else {
-           claw.lights.headlightOff();
-       }
+//       claw.UpdateColorSensor();
+//        double distance = claw.distanceSensor.getDistance(DistanceUnit.MM);
+//       if(distance > 124 && distance < 232) {
+//            claw.lights.headlightOn();
+//          // gamepad1.runRumbleEffect(hapticFeedback);
+//         //  gamepad2.runRumbleEffect(hapticFeedback);
+//        } else {
+//           claw.lights.headlightOff();
+//       }
 
 
         if(gp2GetLeftBumperPress()) {
