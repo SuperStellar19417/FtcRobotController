@@ -117,13 +117,6 @@ public class GamepadController {
         } else if (gp1GetButtonXPress()) {
 
             arm.moveArmHangingPosition();
-        } else if(gp2GetRightBumperPress()) {
-
-            arm.moveArmIntakePosition();
-            safeWaitSeconds(0.05);
-            arm.moveArmSlightlyDown();
-            claw.wristDown();
-            claw.intakeClawOpen();
         } else if(gp2GetRightTriggerPress()) {
 
             arm.moveArmSpecimenIntakePosition();;
@@ -186,29 +179,23 @@ public class GamepadController {
            claw.lights.headlightOff();
        }
 
-        if(gp2GetRightStickY() < -0.3) {
-            claw.wristSlightlyUp();
-            safeWaitSeconds(0.05);
-        } else if (gp2GetRightStickY() > 0.3) {
-            claw.wristSlightlyDown();
-            safeWaitSeconds(0.05);
-        }
 
         if(gp2GetLeftBumperPress()) {
-            if(claw.wristServoState == Claw.WRIST_SERVO_STATE.WRIST_UP) {
-                claw.wristMid();
-            } else if (claw.wristServoState == Claw.WRIST_SERVO_STATE.WRIST_MID){
-                claw.wristDown();
-            } else {
-                claw.wristUp();
-            }
-        }
-
-        if(gp2GetLeftTriggerPress()) {
             if(claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_CLOSE) {
                 claw.intakeClawOpen();
             } else {
                 claw.intakeClawClose();
+            }
+
+        }
+
+        if(gp2GetRightBumperPress()) {
+            if(claw.wristServoState == Claw.WRIST_SERVO_STATE.WRIST_UP) {
+                claw.wristMid();
+//            } else if (claw.wristServoState == Claw.WRIST_SERVO_STATE.WRIST_MID){
+//                claw.wristDown();
+            } else {
+                claw.wristUp();
             }
         }
     }
