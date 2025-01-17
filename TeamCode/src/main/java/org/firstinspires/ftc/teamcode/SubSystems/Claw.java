@@ -6,36 +6,31 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 public class Claw {
-    private static final float COLOR_SENSOR_GAIN = 2.0f;
+    //private static final float COLOR_SENSOR_GAIN = 2.0f;
     private Servo clawServo;
 
     private Servo wristServo;
-    private NormalizedColorSensor colorSensor;
+    //private NormalizedColorSensor colorSensor;
     public Headlights lights;
 
-  public DistanceSensor distanceSensor;
+    public DistanceSensor distanceSensor;
 
     public double distanceFromSubmersible = 0;
-    private static final double CLAW_OPEN_POSITION = 0.15;
-    private static final double CLAW_CLOSE_POSITION = 0.37;
+    private static final double CLAW_OPEN_POSITION = 0.28;
+    private static final double CLAW_CLOSE_POSITION = 0.01;
 
+    private static final double WRIST_MIN_POSITION = 1;
+    private static final double WRIST_MAX_POSITION = 0.3;
+    private static final double WRIST_DELTA = 0.01;
 
-    private static final double WRIST_UP_POSITION = 0.9;
-    private static final double WRIST_MID_POSITION = 0.45;
-    private static final double WRIST_DOWN_POSITION = 0.2;
-    private static final double WRIST_INIT_POSITION = 1;
+    private static final double WRIST_UP_POSITION = WRIST_MIN_POSITION;
+    private static final double WRIST_MID_POSITION = .6;
+    private static final double WRIST_DOWN_POSITION = WRIST_MAX_POSITION;
 
-    public static double WRIST_CURRENT_POSITION = WRIST_INIT_POSITION;
-
+    public static double WRIST_CURRENT_POSITION = WRIST_UP_POSITION;
 
     private String allianceColor = "RED";
 
@@ -46,7 +41,7 @@ public class Claw {
         UNKNOWN
     }
 
-    private DETECTED_COLOR detectedColor = DETECTED_COLOR.UNKNOWN;
+    // private DETECTED_COLOR detectedColor = DETECTED_COLOR.UNKNOWN;
 
     private Action action = new Action() {
         @Override
@@ -58,21 +53,17 @@ public class Claw {
     public Claw(OpMode opMode) {
         clawServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.ClawServo); // 4 control hub
         wristServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.WristServo);
-        colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
-        colorSensor.setGain(COLOR_SENSOR_GAIN);
+        // colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
+        // colorSensor.setGain(COLOR_SENSOR_GAIN);
         lights = new Headlights(opMode);
         distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.DistanceSensor );
 
         clawServo.setDirection(Servo.Direction.FORWARD);
         clawServo.setPosition(CLAW_CLOSE_POSITION);
-        wristServo.setDirection(Servo.Direction.FORWARD);
-     //   wristServo.setPosition(WRIST_UP_POSITION);
+        wristServo.setDirection(Servo.Direction.REVERSE);
 
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
         wristServoState = WRIST_SERVO_STATE.WRIST_UP;
-
-
-
     }
 
     // creates two states in which the claw opens and closes
@@ -83,41 +74,39 @@ public class Claw {
     public enum WRIST_SERVO_STATE {
         WRIST_UP,
         WRIST_MID,
-        WRIST_DOWN;
-
+        WRIST_DOWN,
     }
 
     public CLAW_SERVO_STATE clawServoState;
     public WRIST_SERVO_STATE wristServoState;
-
 
     public void UpdateColorSensor() {
         // If the claw is closed, we will not detect colors because the claw is covering the sensor
         // and we will always get blue
 
         if (clawServoState == CLAW_SERVO_STATE.CLAW_CLOSE) {
-            detectedColor = DETECTED_COLOR.UNKNOWN;
+            //detectedColor = DETECTED_COLOR.UNKNOWN;
             return;
         }
 
         // Get the normalized colors from the sensor
-        NormalizedRGBA colors = colorSensor.getNormalizedColors();
-
-        // Based on the ratio (or you can use the raw values) of the colors, determine the detected color
-        if (colors.red > colors.blue && colors.red > colors.green) {
-            detectedColor = DETECTED_COLOR.RED;
-        } else if (colors.blue > colors.red && colors.blue > colors.green) {
-            detectedColor = DETECTED_COLOR.BLUE;
-        } else {
-            detectedColor = DETECTED_COLOR.YELLOW;
-        }
+//        NormalizedRGBA colors = colorSensor.getNormalizedColors();
+//
+//        // Based on the ratio (or you can use the raw values) of the colors, determine the detected color
+//        if (colors.red > colors.blue && colors.red > colors.green) {
+//            detectedColor = DETECTED_COLOR.RED;
+//        } else if (colors.blue > colors.red && colors.blue > colors.green) {
+//            detectedColor = DETECTED_COLOR.BLUE;
+//        } else {
+//            detectedColor = DETECTED_COLOR.YELLOW;
+//        }
     }
 
 
 
-    public DETECTED_COLOR getDetectedColor() {
-        return detectedColor;
-    }
+    // public DETECTED_COLOR getDetectedColor() {
+//        return detectedColor;
+//    }
 
     public CLAW_SERVO_STATE getClawServoState() {
         return clawServoState;
@@ -151,12 +140,18 @@ public class Claw {
     }
 
     public void wristSlightlyUp() {
-        WRIST_CURRENT_POSITION+= 0.1;
+        WRIST_CURRENT_POSITION+= WRIST_DELTA;
+        if (WRIST_CURRENT_POSITION > WRIST_MAX_POSITION) {
+            WRIST_CURRENT_POSITION = WRIST_MAX_POSITION;
+        }
         wristServo.setPosition(WRIST_CURRENT_POSITION);
     }
 
     public void wristSlightlyDown() {
-        WRIST_CURRENT_POSITION-= 0.1;
+        WRIST_CURRENT_POSITION-= WRIST_DELTA;
+        if (WRIST_CURRENT_POSITION < WRIST_MIN_POSITION) {
+            WRIST_CURRENT_POSITION = WRIST_MIN_POSITION;
+        }
         wristServo.setPosition(WRIST_CURRENT_POSITION);
     }
 

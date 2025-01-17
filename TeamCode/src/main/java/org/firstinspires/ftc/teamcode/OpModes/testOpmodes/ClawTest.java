@@ -38,7 +38,6 @@ public class ClawTest extends LinearOpMode {
             }
 
             telemetry.addData("claw state", claw.getClawServoState());
-            telemetry.addData("detected color", claw.getDetectedColor());
             telemetry.addData("claw alliance color", claw.getAllianceColor());
             telemetry.update();
 
