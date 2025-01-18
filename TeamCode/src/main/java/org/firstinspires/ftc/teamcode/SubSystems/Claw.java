@@ -16,9 +16,9 @@ public class Claw {
     //private NormalizedColorSensor colorSensor;
     public Headlights lights;
 
-    //public DistanceSensor distanceSensor;
+    public DistanceSensor distanceSensor;
 
-    //public double distanceFromSubmersible = 0;
+    public double distanceFromSubmersible = 0;
     private static final double CLAW_OPEN_POSITION = 0.28;
     private static final double CLAW_CLOSE_POSITION = 0.01;
 
@@ -56,7 +56,7 @@ public class Claw {
         // colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
         // colorSensor.setGain(COLOR_SENSOR_GAIN);
         lights = new Headlights(opMode);
-        //distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.DistanceSensor );
+        distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.DistanceSensor );
 
         clawServo.setDirection(Servo.Direction.FORWARD);
         clawServo.setPosition(CLAW_CLOSE_POSITION);
