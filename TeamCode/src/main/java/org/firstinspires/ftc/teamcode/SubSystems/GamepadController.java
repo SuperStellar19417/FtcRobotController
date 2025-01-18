@@ -125,7 +125,6 @@ public class GamepadController {
             claw.intakeClawOpen();
         } else if (gp2GetLeftTriggerPress()){
             arm.moveArmHighRungPosition();
-            arm.moveArmSpecimenIntakePosition();
         }
    }
 
