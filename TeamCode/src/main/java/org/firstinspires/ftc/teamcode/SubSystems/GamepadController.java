@@ -121,11 +121,10 @@ public class GamepadController {
             arm.moveArmHangingPosition();
         } else if(gp2GetRightTriggerPress()) {
             arm.moveArmSpecimenIntakePosition();;
-            claw.wristMid();
+            claw.wristUp();
             claw.intakeClawOpen();
-        } else if (gp2GetButtonXPress()) {
-            //Move the arm to specimen intake position
-            arm.moveArmSpecimenIntakePosition();
+        } else if (gp2GetLeftTriggerPress()){
+            arm.moveArmHighRungPosition();
             arm.moveArmSpecimenIntakePosition();
         }
    }

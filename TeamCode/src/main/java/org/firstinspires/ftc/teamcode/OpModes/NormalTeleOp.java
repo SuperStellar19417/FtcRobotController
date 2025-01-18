@@ -105,10 +105,6 @@ public class NormalTeleOp extends LinearOpMode {
         gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slide, climber);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
-        gamepadController.runSlides();
-        gamepadController.runArm();
-        gamepadController.runClimber();
-        gamepadController.runClaw();
 
 
         // Set the bulk mode to auto for control and expansion hubs
@@ -143,8 +139,8 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addData("Arm Motor Position: ", arm.getCurrentArmPosition());
         telemetry.addData("Arm Motor Encoder: ", arm.getCurrentArmEncoderValue());
         telemetry.addData("joystick position", gamepadController.gp2GetLeftStickY());
-        telemetry.addData("distance", claw.distanceSensor.getDistance(DistanceUnit.MM));
 
         telemetry.update();
     }
+
 }
