@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes.practiceOpmodes;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -22,21 +23,33 @@ public class LimelightOpmode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         waitForStart();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        telemetry.setMsTransmissionInterval(11);
         limelight.pipelineSwitch(0);
         limelight.start();
         while (opModeIsActive()) {
+            LLStatus status = limelight.getStatus();
+            telemetry.addData("Name", "%s",
+                    status.getName());
+            telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
+                    status.getTemp(), status.getCpu(),(int)status.getFps());
+            telemetry.addData("Pipeline", "Index: %d, Type: %s",
+                    status.getPipelineIndex(), status.getPipelineType());
+
+            LLResult result = limelight.getLatestResult();
 
             if (isStopRequested())
                 break;
-            LLResult result = limelight.getLatestResult();
             telemetry.addData("Recieve Result from limelight", "Red Result");
             if (result != null) {
                 //telemetry.addData("Result is",result.toString());
                 if (result.isValid()) {
+                    Pose3D botpose= result.getBotpose();
                     telemetry.addData("Result is valid","Red Result 3");
                     telemetry.addData("tx:",result.getTx());
                     telemetry.addData("ty:",result.getTy());
                     telemetry.addData("ta:",result.getTa());
+                    telemetry.addData("Botpose",botpose.toString());
+                    telemetry.addData("Position",botpose.getPosition());
 
                     // Access fiducial results
                     List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
