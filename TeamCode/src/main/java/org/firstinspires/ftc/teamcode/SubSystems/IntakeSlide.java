@@ -9,16 +9,18 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class IntakeSlide {
 
-    private final double POWER_LEVEL_RUN = 0.9;
-    private final double POWER_LEVEL_STOP = 0.0;
-    private final int SLIDE_POSITION_MIN = 0;
-    private final int SLIDE_POSITION_MAX = 1050;
-    private final int SLIDE_POSITION_DELTA = 260;
-    private final double MAX_VELOCITY = 2720*0.8;
+    public final double POWER_LEVEL_RUN = 0.9;
+    public final double POWER_LEVEL_STOP = 0.0;
 
-    private DcMotorEx slideMotor;
+    public final int SLIDE_POSITION_MIN = 0;
+    public final int SLIDE_POSITION_AUTO_SAMPLE_INTAKE = 250;
+    public final int SLIDE_POSITION_MAX = 1050;
+    public final int SLIDE_POSITION_DELTA = 260;
+    public final double MAX_VELOCITY = 2720*0.8;
+
+    public DcMotorEx slideMotor;
     public TouchSensor slideLimitSwitch;
-    private int slidePosition = SLIDE_POSITION_MIN;
+    public int slidePosition = SLIDE_POSITION_MIN;
 
     public IntakeSlide(OpMode opMode){
         slideMotor = opMode.hardwareMap.get(DcMotorEx.class,HardwareConstant.SlideMotor);
@@ -65,7 +67,8 @@ public class IntakeSlide {
         slidePosition = SLIDE_POSITION_MAX;
         runMotors();
     }
-    public void moveSlideLow() {
+
+     public void moveSlideLow() {
         slidePosition = SLIDE_POSITION_MIN;
         runMotors();
     }
@@ -102,7 +105,7 @@ public class IntakeSlide {
     }
 
     public void stopIntakeMotor() {
-        slideMotor.setPower(0);
+        slideMotor.setPower(POWER_LEVEL_STOP);
         slidePosition = SLIDE_POSITION_MIN;
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }

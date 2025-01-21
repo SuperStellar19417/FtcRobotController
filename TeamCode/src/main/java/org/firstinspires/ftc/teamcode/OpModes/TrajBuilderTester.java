@@ -13,17 +13,19 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Climber;
-import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
+import org.firstinspires.ftc.teamcode.SubSystems.Flag;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
+import org.firstinspires.ftc.teamcode.Utils;
 
 @Autonomous (name = "Scoring Auto 1st Ascent TEST", group = "01-Test")
 public class TrajBuilderTester extends LinearOpMode {
     private GamepadController gamepadController;
-    private DriveTrain driveTrain;
+    private MecanumDrive driveTrain;
 
     // We can transfer this from last autonomous op mode if needed,
     // but most the time we don't need to.
@@ -44,6 +46,7 @@ public class TrajBuilderTester extends LinearOpMode {
     private Arm arm;
     private IntakeSlide slide;
     private Climber climber;
+    private Flag flag;
 
     @Override
     public void runOpMode() {
@@ -111,7 +114,7 @@ public class TrajBuilderTester extends LinearOpMode {
         */
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
-        arm.moveArmLowBucketPosition();
+        arm.moveArmLowBasketPosition();
         Actions.runBlocking(new SequentialAction(basketAction));
         cycleToBasket();
         Actions.runBlocking(new SequentialAction(cycle1Action));
@@ -121,7 +124,7 @@ public class TrajBuilderTester extends LinearOpMode {
 
 
         Actions.runBlocking(new SequentialAction(basket2Action));
-        arm.moveArmLowBucketPosition();
+        arm.moveArmLowBasketPosition();
         slide.extendSlide();
         safeWaitSeconds(1);
         claw.wristMid();
@@ -170,16 +173,16 @@ public class TrajBuilderTester extends LinearOpMode {
         telemetry.update();
 
         // Initialize drive train
-        driveTrain = new DriveTrain(hardwareMap, startPose, this);
-        driveTrain.driveType = DriveTrain.DriveType.ROBOT_CENTRIC;
-        telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
+        driveTrain = new MecanumDrive(hardwareMap, startPose);
+        telemetry.addData("DriveTrain Initialized with Pose:",Utils.toStringPose2d(startPose));
         telemetry.update();
         arm = new Arm(this);
         claw = new Claw(this);
         climber = new Climber(this);
         slide = new IntakeSlide(this);
+        flag = new Flag(this);
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null, null);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null, null, flag);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
@@ -204,7 +207,7 @@ public class TrajBuilderTester extends LinearOpMode {
         telemetry.addLine("Running Normal TeleOp Mode");
 
         // Output telemetry messages for subsystems here
-        driveTrain.outputTelemetry();
+        Utils.outputDriveTelemetry(telemetry, gamepadController.driveType, driveTrain);
 
         telemetry.update();
     }

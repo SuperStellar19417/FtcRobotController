@@ -16,7 +16,7 @@ public class ClawTest extends LinearOpMode {
     Claw claw;
     @Override
     public void runOpMode() throws InterruptedException {
-        gamepad = new GamepadController(gamepad1, gamepad2, null, this, claw, null, null, null);
+        gamepad = new GamepadController(gamepad1, gamepad2, null, this, claw, null, null, null, null);
         claw = new Claw(this);
 
         waitForStart();

@@ -29,7 +29,7 @@ public class ClimberTest extends LinearOpMode {
         climber = new Climber(this);
 
         // climber = new Climber(this);
-        gamepad = new GamepadController(gamepad1, gamepad2, null, this, null, arm, null, null);
+        gamepad = new GamepadController(gamepad1, gamepad2, null, this, null, arm, null, null, null);
 
         waitForStart();
         while(!isStopRequested()) {
@@ -45,7 +45,7 @@ public class ClimberTest extends LinearOpMode {
                 }
 
                 if(gamepad.gp2GetButtonAPress()) {
-                    arm.moveArmLowBucketPosition();
+                    arm.moveArmLowBasketPosition();
                 } else if(gamepad.gp2GetButtonBPress()) {
                 //    arm.moveArmHighBucketPosition();
                 } else if(gamepad.gp2GetButtonXPress()) {
@@ -55,7 +55,7 @@ public class ClimberTest extends LinearOpMode {
                 }
 
                 if(gamepad.gp2GetButtonAPress()) {
-                    arm.moveArmLowBucketPosition();
+                    arm.moveArmLowBasketPosition();
                 } else if(gamepad.gp2GetButtonBPress()) {
           //          arm.moveArmHighBucketPosition();
                 } else if(gamepad.gp2GetButtonXPress()) {

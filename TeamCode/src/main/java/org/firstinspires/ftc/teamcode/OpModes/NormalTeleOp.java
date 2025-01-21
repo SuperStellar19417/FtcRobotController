@@ -5,20 +5,21 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Climber;
-import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
+import org.firstinspires.ftc.teamcode.SubSystems.Flag;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
+import org.firstinspires.ftc.teamcode.Utils;
 
 @TeleOp(name = "Normal TeleOp", group = "00-Teleop")
 public class NormalTeleOp extends LinearOpMode {
 
     private GamepadController gamepadController;
     // Declare subsystems here
-    private DriveTrain driveTrain;
+    private MecanumDrive driveTrain;
 
     private enum ALLIANCE {
         BLUE,
@@ -34,7 +35,7 @@ public class NormalTeleOp extends LinearOpMode {
     private Arm arm;
     private IntakeSlide slide;
     private Climber climber;
-
+    private Flag flag;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -86,10 +87,10 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.update();
 
         // Intialize drive train
-        driveTrain = new DriveTrain(hardwareMap, startPose, this);
-        driveTrain.driveType = DriveTrain.DriveType.ROBOT_CENTRIC;
+        driveTrain = new MecanumDrive(hardwareMap, startPose);
 
-        telemetry.addData("DriveTrain Initialized with Pose:", driveTrain.toStringPose2d(driveTrain.pose));
+
+        telemetry.addData("DriveTrain Initialized with Pose:", Utils.toStringPose2d(startPose));
         telemetry.update();
 
         // claw = new Claw(hardwareMap, telemetry);
@@ -97,12 +98,14 @@ public class NormalTeleOp extends LinearOpMode {
         climber = new Climber(this);
         slide = new IntakeSlide(this);
         claw = new Claw(this);
+        flag = new Flag(this);
         if (allianceSelection == ALLIANCE.RED) {
             //   claw.allianceColor = "RED";
         } else {
             //claw.allianceColor = "BLUE";
         }
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slide, climber);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slide, climber, flag);
+        gamepadController.driveType = GamepadController.DriveType.ROBOT_CENTRIC;
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
@@ -113,6 +116,9 @@ public class NormalTeleOp extends LinearOpMode {
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
+
+        // Init flag to down
+        flag.setFlagDown();
 
         telemetry.addLine("Robot Init Completed ");
         telemetry.addLine("====================");
@@ -129,16 +135,16 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addLine("Running Normal TeleOpMode");
 
         // Output telemetry messages for susbsystems here
-        driveTrain.outputTelemetry();
-        telemetry.addData("Climber Target Position: ", climber.getClimberTargetPosition());
-        telemetry.addData("Climber Motor Position: ", climber.getClimberMotorPosition());
+        Utils.outputDriveTelemetry(telemetry, gamepadController.driveType, driveTrain);
+      //  telemetry.addData("Climber Target Position: ", climber.getClimberTargetPosition());
+      //  telemetry.addData("Climber Motor Position: ", climber.getClimberMotorPosition());
         telemetry.addData("Claw state: ", claw.getClawServoState());
         telemetry.addData("Wrist state: ", claw.getWristServoState());
         telemetry.addData("Slides Target Position: ", slide.getTargetPosition());
         telemetry.addData("Slides Motor Position: ", slide.getMotorPosition());
         telemetry.addData("Arm Motor Position: ", arm.getCurrentArmPosition());
         telemetry.addData("Arm Motor Encoder: ", arm.getCurrentArmEncoderValue());
-        telemetry.addData("joystick position", gamepadController.gp2GetLeftStickY());
+        telemetry.addData("GP2 Left Stick Y", gamepadController.gp2GetLeftStickY());
 
         telemetry.update();
     }

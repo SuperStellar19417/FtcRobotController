@@ -20,7 +20,7 @@ public class MotorTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         //arm = new Arm(this);
         climber = new Climber(this);
-        gamepad = new GamepadController(gamepad1, gamepad2, null, this, null, arm, null, null);
+        gamepad = new GamepadController(gamepad1, gamepad2, null, this, null, arm, null, null, null);
 
         waitForStart();
         while(!isStopRequested()) {

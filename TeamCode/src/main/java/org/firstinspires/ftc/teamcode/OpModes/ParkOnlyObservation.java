@@ -9,9 +9,11 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
-import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
+import org.firstinspires.ftc.teamcode.SubSystems.Flag;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
+import org.firstinspires.ftc.teamcode.Utils;
 
 
 @Autonomous(name = "Park w/o Ascent", group = "01-Auto", preselectTeleOp = "Normal TeleOp")
@@ -19,7 +21,8 @@ public class ParkOnlyObservation extends LinearOpMode {
 
     private GamepadController gamepadController;
     private Arm arm;
-    private DriveTrain driveTrain;
+    private Flag flag;
+    private MecanumDrive driveTrain;
 
     // We can transfer this from last autonomous op mode if needed,
     // but most the time we don't need to.
@@ -82,16 +85,16 @@ public class ParkOnlyObservation extends LinearOpMode {
         telemetry.update();
 
         // Initialize drive train
-        driveTrain = new DriveTrain(hardwareMap, startPose, this);
+        driveTrain = new MecanumDrive(hardwareMap, startPose);
         arm = new Arm(this);
-        driveTrain.driveType = DriveTrain.DriveType.ROBOT_CENTRIC;
-        telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
+        flag = new Flag(this);
+        telemetry.addData("DriveTrain Initialized with Pose:", Utils.toStringPose2d(startPose));
         telemetry.update();
 
         //Aarushi-initialize claw and arm
 
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, arm, null, null);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, arm, null, null, flag);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
@@ -116,7 +119,7 @@ public class ParkOnlyObservation extends LinearOpMode {
         telemetry.addLine("Running Normal TeleOp Mode");
 
         // Output telemetry messages for subsystems here
-        driveTrain.outputTelemetry();
+        Utils.outputDriveTelemetry(telemetry, gamepadController.driveType, driveTrain);
 
         telemetry.update();
     }

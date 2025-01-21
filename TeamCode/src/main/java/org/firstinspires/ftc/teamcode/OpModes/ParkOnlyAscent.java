@@ -10,19 +10,19 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.Climber;
-import org.firstinspires.ftc.teamcode.SubSystems.DriveTrain;
+import org.firstinspires.ftc.teamcode.SubSystems.Flag;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
-import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
-import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
+import org.firstinspires.ftc.teamcode.Utils;
 
 
 @Autonomous(name = "Park with Ascent", group = "01-Auto", preselectTeleOp = "Normal TeleOp")
 public class ParkOnlyAscent extends LinearOpMode {
 
     private GamepadController gamepadController;
-    private DriveTrain driveTrain;
+    private MecanumDrive driveTrain;
 
     // We can transfer this from last autonomous op mode if needed,
     // but most the time we don't need to.
@@ -30,6 +30,7 @@ public class ParkOnlyAscent extends LinearOpMode {
 
     private Climber climber;
     private Arm arm;
+    private Flag flag;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -90,17 +91,17 @@ public class ParkOnlyAscent extends LinearOpMode {
         telemetry.update();
 
         // Initialize drive train
-        driveTrain = new DriveTrain(hardwareMap, startPose, this);
-        driveTrain.driveType = DriveTrain.DriveType.ROBOT_CENTRIC;
-        telemetry.addData("DriveTrain Initialized with Pose:",driveTrain.toStringPose2d(driveTrain.pose));
+        driveTrain = new MecanumDrive(hardwareMap, startPose);
+        telemetry.addData("DriveTrain Initialized with Pose:",Utils.toStringPose2d(startPose));
         telemetry.update();
 
         //Aarushi-initialize claw and arm
         arm = new Arm(this);
         climber = new Climber(this);
+        flag = new Flag(this);
         telemetry.addLine("Arm initialized");
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, arm, null, climber);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, arm, null, climber, flag);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
@@ -125,7 +126,7 @@ public class ParkOnlyAscent extends LinearOpMode {
         telemetry.addLine("Running Normal TeleOp Mode");
 
         // Output telemetry messages for subsystems here
-        driveTrain.outputTelemetry();
+        Utils.outputDriveTelemetry(telemetry, gamepadController.driveType, driveTrain);
 
         telemetry.update();
     }

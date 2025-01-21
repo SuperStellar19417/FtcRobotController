@@ -34,7 +34,7 @@ public class PracticeServoOpmode extends LinearOpMode {
     public void runOpMode() {
         servo = hardwareMap.get(Servo.class, "testServo");
         servo.setDirection(Servo.Direction.FORWARD);
-        gamepad = new GamepadController(gamepad1, null, null, this, null, null, null, null);
+        gamepad = new GamepadController(gamepad1, null, null, this, null, null, null, null, null);
         if (isStopRequested()) {
             return;
         }

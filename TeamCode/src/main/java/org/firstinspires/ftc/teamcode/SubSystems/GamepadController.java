@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 
 /**
@@ -16,14 +16,24 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 public class GamepadController {
 
+    public enum DriveType {
+        ROBOT_CENTRIC,
+        FIELD_CENTRIC,
+    }
+
+    public DriveType driveType = DriveType.ROBOT_CENTRIC;
+
     // References to hardware components and subsystems
     private Gamepad gamepad1, gamepad2;
-    private DriveTrain driveTrain;
+    private MecanumDrive driveTrain;
+    Vector2d gamepadInput;
+    double gamepadInputTurn;
     private LinearOpMode opMode;
     private Claw claw;
     private Arm arm;
     private IntakeSlide slide;
     private Climber climber;
+    private Flag flag;
     private boolean endgame = false;
     boolean runToClimberLimitSwitch = false;
     boolean runToIntakeLimitSwitch = false;
@@ -50,12 +60,13 @@ public class GamepadController {
      */
     public GamepadController(Gamepad gamepad1,
                              Gamepad gamepad2,
-                             DriveTrain driveTrain,
+                             MecanumDrive driveTrain,
                              LinearOpMode opMode,
                              Claw claw,
                              Arm arm,
                              IntakeSlide slide,
-                             Climber climber
+                             Climber climber,
+                             Flag flag
     ) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
@@ -65,6 +76,7 @@ public class GamepadController {
         this.arm = arm;
         this.slide = slide;
         this.climber = climber;
+        this.flag = flag;
     }
 
 
@@ -73,12 +85,15 @@ public class GamepadController {
         runDriveTrain();
         runClaw();
         runArm();
-        runClimber();
         runSlides();
-        checkClimberMode();
-
+        runFlag();
     }
 
+    public void runFlag() throws InterruptedException {
+        if(gp1GetRightTriggerPress()) {
+            flag.toggleFlag();
+        }
+    }
 
     public void runArm() throws InterruptedException {
 
@@ -98,13 +113,13 @@ public class GamepadController {
         }
 
         if (gp2GetButtonAPress()) {
-            arm.moveArmLowBucketPosition();
+            arm.moveArmLowBasketPosition();
         } else if (gp2GetButtonYPress()) {
 
             arm.moveArmHighRungPosition();
         } else if (gp2GetButtonAPress()) {
 
-            arm.moveArmLowBucketPosition();
+            arm.moveArmLowBasketPosition();
         } else if (gp2GetButtonBPress()) {
 
            // arm.move();
@@ -127,16 +142,6 @@ public class GamepadController {
             arm.moveArmHighRungPosition();
         }
    }
-
-    public void checkClimberMode() {
-  /*      if(gp1GetRightTriggerPress()) {
-            if(endgame){
-                endgame = false;
-            } else {
-                endgame = true;
-            }
-        } */
-    }
 
     public void runClimber() {
         // If we have to move down, use encoder to move down
@@ -255,10 +260,10 @@ public class GamepadController {
      */
     public void runDriveTrain() {
 
-        driveTrain.gamepadInputTurn = gp1TurboMode(-gp1GetRightStickX());
+        gamepadInputTurn = gp1TurboMode(-gp1GetRightStickX());
 
-        if (driveTrain.driveType == DriveTrain.DriveType.ROBOT_CENTRIC) {
-            driveTrain.gamepadInput = new Vector2d(
+        if (driveType == DriveType.ROBOT_CENTRIC) {
+            gamepadInput = new Vector2d(
                     -gp1TurboMode(gp1GetLeftStickY()),
                     -gp1TurboMode(gp1GetLeftStickX()));
         }
@@ -289,10 +294,25 @@ public class GamepadController {
         }
         */
 
-        driveTrain.driveNormal();
+
+        driveTrain.setDrivePowers(new PoseVelocity2d(
+                new Vector2d(
+                        gamepadInput.x,
+                        gamepadInput.y),
+                gamepadInputTurn
+        ));
+
+        driveTrain.updatePoseEstimate();
     }
 
-    //*********** KEY PAD MODIFIERS BELOW ***********
+    public Vector2d rotateFieldCentric(double x, double y, double angle){
+        double newX, newY;
+        newX = x * Math.cos(angle) - y * Math.sin(angle);
+        newY = x * Math.sin(angle) + y * Math.cos(angle);
+        return new Vector2d(newX, newY);
+    }
+
+     //*********** KEY PAD MODIFIERS BELOW ***********
 
     //**** Gamepad buttons
 
@@ -652,7 +672,7 @@ public class GamepadController {
         return gamepad2.a;
     }
 
-    public GamepadController(Gamepad gamepad1, Gamepad gamepad2, DriveTrain driveTrain) {
+    public GamepadController(Gamepad gamepad1, Gamepad gamepad2, MecanumDrive driveTrain) {
     }
 
     /**
@@ -928,7 +948,7 @@ public class GamepadController {
 
       if ( gp2GetButtonAPress()){
 
-          arm.moveArmLowBucketPosition();
+          arm.moveArmLowBasketPosition();
       }
       if (gp2GetButtonYPress()){
 

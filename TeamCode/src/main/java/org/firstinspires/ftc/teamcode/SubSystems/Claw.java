@@ -20,7 +20,7 @@ public class Claw {
 
     public double distanceFromSubmersible = 0;
     private static final double CLAW_OPEN_POSITION = 0.28;
-    private static final double CLAW_CLOSE_POSITION = 0.01;
+    private static final double CLAW_CLOSE_POSITION = 0.05;
 
     private static final double WRIST_MIN_POSITION = 1;
     private static final double WRIST_MAX_POSITION = 0.3;
@@ -40,6 +40,19 @@ public class Claw {
         YELLOW,
         UNKNOWN
     }
+    // creates two states in which the claw opens and closes
+    public enum CLAW_SERVO_STATE {
+        CLAW_OPEN,
+        CLAW_CLOSE,
+    }
+    public enum WRIST_SERVO_STATE {
+        WRIST_UP,
+        WRIST_MID,
+        WRIST_DOWN,
+    }
+
+    public CLAW_SERVO_STATE clawServoState;
+    public WRIST_SERVO_STATE wristServoState;
 
     // private DETECTED_COLOR detectedColor = DETECTED_COLOR.UNKNOWN;
 
@@ -59,26 +72,14 @@ public class Claw {
         distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.DistanceSensor );
 
         clawServo.setDirection(Servo.Direction.FORWARD);
-        clawServo.setPosition(CLAW_CLOSE_POSITION);
+      //  clawServo.setPosition(CLAW_CLOSE_POSITION);
         wristServo.setDirection(Servo.Direction.REVERSE);
 
-        clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
+        clawServoState = CLAW_SERVO_STATE.CLAW_OPEN;
         wristServoState = WRIST_SERVO_STATE.WRIST_UP;
     }
 
-    // creates two states in which the claw opens and closes
-    public enum CLAW_SERVO_STATE {
-        CLAW_OPEN,
-        CLAW_CLOSE,
-    }
-    public enum WRIST_SERVO_STATE {
-        WRIST_UP,
-        WRIST_MID,
-        WRIST_DOWN,
-    }
 
-    public CLAW_SERVO_STATE clawServoState;
-    public WRIST_SERVO_STATE wristServoState;
 
     public void UpdateColorSensor() {
         // If the claw is closed, we will not detect colors because the claw is covering the sensor

@@ -1,23 +1,21 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
-import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
-
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.SubSystems.Arm;
+import org.firstinspires.ftc.teamcode.SubSystems.Flag;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
+import org.firstinspires.ftc.teamcode.SubSystems.Arm;
+import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 import org.firstinspires.ftc.teamcode.Utils;
 
-@Autonomous(name = "Observation Park Only", group = "01-Auto", preselectTeleOp = "Normal TeleOp")
-public class SimplePathTestAuto extends LinearOpMode {
+
+@Autonomous(name = "High Bucket Ascent", group = "01-Test")
+public class HighBucketAscent extends LinearOpMode {
 
     private GamepadController gamepadController;
     private MecanumDrive driveTrain;
@@ -28,6 +26,10 @@ public class SimplePathTestAuto extends LinearOpMode {
 
     private Claw claw;
     private Arm arm;
+    private Flag flag;
+
+    private IntakeSlide linearSlide;
+
     @Override
     public void runOpMode() {
         // See https://rr.brott.dev/docs/v1-0/guides/centerstage-auto/
@@ -47,15 +49,21 @@ public class SimplePathTestAuto extends LinearOpMode {
 
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
-        TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
-                .turn(Math.toRadians(90))
-                .lineToX(10);
+       // TrajectoryActionBuilder tab1 = driveTrain.actionBuilder(startPose)
+               // .turn(Math.toRadians(-90))
+               // .lineToX(5);
+               // arm.runArmToLevel(5)
+                //.turn(Math.toRadians(90))
+                        //.lineToX(10)
+               // .turn(Math.toRadians(90))
+                //.lineToX(10);
+               // arm.runArmToLevel(5);
 
 
 
 
         // Create an action that will be run
-        Action followPathAction = tab1.build();
+        //Action followPathAction = tab1.build();
 
         // Run the action (s)
         // You can run multiple actions to execute a complex auto. For example :
@@ -71,12 +79,14 @@ public class SimplePathTestAuto extends LinearOpMode {
         */
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
+       // Actions.runBlocking( new SequentialAction(followPathAction));
 
     }
 
     private void initSubsystems() {
         // Initialize all subsystems here
         telemetry.setAutoClear(false);
+
 
         // Init Pressed
         telemetry.addLine("Robot Init Pressed");
@@ -88,7 +98,15 @@ public class SimplePathTestAuto extends LinearOpMode {
         telemetry.addData("DriveTrain Initialized with Pose:", Utils.toStringPose2d(startPose));
         telemetry.update();
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null, null, null);
+        //Aarushi-initialize claw and arm
+       arm = new Arm( this);
+        telemetry.addLine("Arm initialized");
+       claw = new Claw(this);
+       linearSlide = new IntakeSlide( this);
+        flag = new Flag(this);
+
+
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, linearSlide, null, flag);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
@@ -110,19 +128,11 @@ public class SimplePathTestAuto extends LinearOpMode {
     public void outputTelemetry(){
 
         telemetry.setAutoClear(true);
-        telemetry.addLine("Running Normal TeleOp Mode");
+        telemetry.addLine("Running High Bucket Ascent");
 
         // Output telemetry messages for subsystems here
         Utils.outputDriveTelemetry(telemetry, gamepadController.driveType, driveTrain);
-
         telemetry.update();
     }
-
-    public void safeWaitSeconds(double time) {
-        ElapsedTime timer = new ElapsedTime(SECONDS);
-        timer.reset();
-        while (!isStopRequested() && timer.time() < time) {
-            //don't even worry about it
-        }
-    }
 }
+
