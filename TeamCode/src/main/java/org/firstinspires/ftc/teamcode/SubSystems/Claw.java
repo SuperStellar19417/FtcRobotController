@@ -19,7 +19,7 @@ public class Claw {
     public DistanceSensor distanceSensor;
 
     public double distanceFromSubmersible = 0;
-    private static final double CLAW_OPEN_POSITION = 0.28;
+    private static final double CLAW_OPEN_POSITION = 0.31;
     private static final double CLAW_CLOSE_POSITION = 0.05;
 
     private static final double WRIST_MIN_POSITION = 1;

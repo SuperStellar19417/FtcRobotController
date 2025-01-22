@@ -15,8 +15,8 @@ public class IntakeSlide {
     public final int SLIDE_POSITION_MIN = 0;
     public final int SLIDE_POSITION_AUTO_SAMPLE_INTAKE = 250;
     public final int SLIDE_POSITION_MAX = 1050;
-    public final int SLIDE_POSITION_DELTA = 260;
-    public final double MAX_VELOCITY = 2720*0.8;
+    public final int SLIDE_POSITION_DELTA = 310;
+    public final double MAX_VELOCITY = 2720*0.9;
 
     public DcMotorEx slideMotor;
     public TouchSensor slideLimitSwitch;
