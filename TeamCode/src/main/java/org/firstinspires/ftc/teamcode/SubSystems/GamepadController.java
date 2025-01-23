@@ -90,7 +90,7 @@ public class GamepadController {
     }
 
     public void runFlag() throws InterruptedException {
-        if(gp1GetRightTriggerPress()) {
+        if(gp1GetRightBumper()) {
             flag.toggleFlag();
         }
     }

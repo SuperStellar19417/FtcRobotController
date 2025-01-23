@@ -27,7 +27,7 @@ public class Arm {
     public final int ARM_POSITION_TICKS_HANGING = 3000;
     //someone ass here
 
-    public final int ARM_POSITION_SPECIMEN_INTAKE = 202;
+    public final int ARM_POSITION_SPECIMEN_INTAKE = 250;
     public static int ARM_MAX_POSITION_COUNT = 1100;
 //    public static int ARM_MIN_POSITION_COUNT = 0;
 
@@ -95,7 +95,6 @@ public class Arm {
         armMotor.setTargetPosition(armPositionTicks);
         currentArmPosition = ARM_POSITION.ARM_POSITION_SPECIMEN_INTAKE;
         runMotors();
-
     }
 
     public void moveArmHangingPosition() {
