@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 import org.firstinspires.ftc.teamcode.Utils;
 
-// @Aarushi - we need to review these steps and then fill in the movement coordinates
+// we need to review these steps and then fill in the movement coordinates
 // Our auto steps for 1 specimen on run and park are:
 // 0. Start with claw closed and wrist up with specimen loaded
 // 1. Move forward a bit (to get out of the way of other robot)
