@@ -112,14 +112,13 @@ public class GamepadController {
             arm.setNormalMode();
         }
 
-        if (gp2GetButtonAPress()) {
-            arm.moveArmLowBasketPosition();
-        } else if (gp2GetButtonYPress()) {
+        if (gp2GetButtonYPress()) {
 
             arm.moveArmHighRungPosition();
         } else if (gp2GetButtonAPress()) {
 
             arm.moveArmLowBasketPosition();
+            slide.moveSlideHigh();
         } else if (gp2GetButtonBPress()) {
 
            // arm.move();
