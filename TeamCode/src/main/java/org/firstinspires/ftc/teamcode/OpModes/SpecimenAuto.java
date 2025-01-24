@@ -112,7 +112,7 @@ public class SpecimenAuto extends LinearOpMode {
             intakeSlide.moveSlideLow();
 
             // Wait a little bit and open the claw
-            safeWaitSeconds(2);
+            safeWaitSeconds(1);
             Actions.runBlocking(
                     new SequentialAction(
                             moveBackABitAction()
@@ -182,7 +182,7 @@ public class SpecimenAuto extends LinearOpMode {
         //Vector2d headingVector = new Vector2d(0,8);
 
         TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
-                .lineToX(20); // 10 inches forward
+                .lineToX(21); // 10 inches forward
 
         return tab.build();
     }
@@ -192,11 +192,12 @@ public class SpecimenAuto extends LinearOpMode {
      * @return
      */
     private Action moveToParkPostion() {
-        Vector2d headingVector = new Vector2d(0,-40);
+        Vector2d headingVector = new Vector2d(0,-44);
 
         TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
-                .lineToX(-26) // 10 inches forward
-                .strafeToConstantHeading(headingVector);
+                .lineToX(-19) //
+                .strafeToConstantHeading(headingVector)
+                .lineToX(4);
 
         return tab.build();
     }
@@ -210,7 +211,7 @@ public class SpecimenAuto extends LinearOpMode {
 
     private Action moveForwardABitAction() {
         TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
-                .lineToX(5) ;
+                .lineToX(3) ;
 
         return tab.build();
     }

@@ -23,7 +23,7 @@ public class Arm {
     public final int ARM_POSITION_TICKS_LOW_BASKET = 1000;
     public final int ARM_POSITION_TICKS_HIGH_BASKET = 1100;
     public final int ARM_POSITION_TICKS_LOW_RUNG = 1600;
-    public final int ARM_POSITION_TICKS_HIGH_RUNG = 1050;
+    public final int ARM_POSITION_TICKS_HIGH_RUNG = 850;
     public final int ARM_POSITION_TICKS_HANGING = 3000;
     //someone ass here
 
