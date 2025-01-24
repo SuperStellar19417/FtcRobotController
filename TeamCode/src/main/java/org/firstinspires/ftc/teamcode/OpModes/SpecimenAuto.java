@@ -85,16 +85,19 @@ public class SpecimenAuto extends LinearOpMode {
             //telemetry.setAutoClear(true);
 
             // Get close to submersible
+            arm.moveArmHighRungPosition();
+            intakeSlide.moveSlideHigh();
+            intakeSlide.retractSlide(false);
+
             Actions.runBlocking(
                 new SequentialAction(
                         driveToSubmersibleAction()
                     ));
 
             // Raise arms and slides
-            arm.moveArmHighRungPosition();
-            intakeSlide.moveSlideHigh();
+
             claw.wristMid();
-            safeWaitSeconds(2);
+            safeWaitSeconds(1);
 
             // Move closer to submersible
             Actions.runBlocking(
@@ -109,7 +112,11 @@ public class SpecimenAuto extends LinearOpMode {
             intakeSlide.moveSlideLow();
 
             // Wait a little bit and open the claw
-            safeWaitSeconds(1);
+            safeWaitSeconds(2);
+            Actions.runBlocking(
+                    new SequentialAction(
+                            moveBackABitAction()
+                    ));
             claw.intakeClawOpen();
             safeWaitSeconds(2);
 
@@ -175,7 +182,7 @@ public class SpecimenAuto extends LinearOpMode {
         //Vector2d headingVector = new Vector2d(0,8);
 
         TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
-                .lineToX(28); // 10 inches forward
+                .lineToX(20); // 10 inches forward
 
         return tab.build();
     }
@@ -188,7 +195,7 @@ public class SpecimenAuto extends LinearOpMode {
         Vector2d headingVector = new Vector2d(0,-40);
 
         TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
-                .lineToX(-15) // 10 inches forward
+                .lineToX(-26) // 10 inches forward
                 .strafeToConstantHeading(headingVector);
 
         return tab.build();
@@ -203,14 +210,16 @@ public class SpecimenAuto extends LinearOpMode {
 
     private Action moveForwardABitAction() {
         TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
-                .lineToX(8) ;
+                .lineToX(5) ;
 
         return tab.build();
     }
 
+
+
     private Action moveBackABitAction() {
         TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
-                .lineToX(-10) ;
+                .lineToX(-5) ;
 
         return tab.build();
     }
