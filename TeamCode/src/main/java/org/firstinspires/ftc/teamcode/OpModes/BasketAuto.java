@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -76,19 +77,28 @@ public class BasketAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             moveForwardABitAction(),
-                            turnAction(45)
+                            turnAction(55)
                     ));
 
             claw.intakeClawOpen();
             safeWaitSeconds(2);
 
-           /* Actions.runBlocking(
+            Actions.runBlocking(
                     new SequentialAction(
                             moveBackABitAction(),
-                            turnAction(-120),
-                            moveToFirstSampleAction()
+                            turnAction(-35),
+                            moveToAscentLocation(),
+                            moveBackwardsToAscent()
                     ));
 
+            flag.setFlagUp();
+            intakeSlide.moveSlideLow();
+            safeWaitSeconds(1);
+            arm.moveArmIntakePosition();
+            arm.stopMotors();
+            safeWaitSeconds(10); // let the op mode expire so flag stays up
+
+/*
             intakeSlide.moveSlideLow();
             arm.moveArmToAutoSamplePickupPosition();
             safeWaitSeconds(3);
@@ -182,9 +192,9 @@ public class BasketAuto extends LinearOpMode {
 
     private Action driveToBucketAction() {
         TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
-                .lineToX(4) // 4 inches forward
+                .lineToX(5) // 4 inches forward
                 .turn(Math.toRadians(90))
-                .lineToY(30);
+                .lineToY(31);
 
         return tab.build();
     }
@@ -198,14 +208,14 @@ public class BasketAuto extends LinearOpMode {
 
     private Action moveForwardABitAction() {
         TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
-                .lineToX(8) ;
+                .lineToX(7) ;
 
         return tab.build();
     }
 
     private Action moveBackABitAction() {
         TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
-                .lineToX(-10) ;
+                .lineToX(-24) ;
 
         return tab.build();
     }
@@ -224,9 +234,18 @@ public class BasketAuto extends LinearOpMode {
         return tab.build();
     }
 
-  /*  private Action moveToChamberAction(){
+    private Action moveToAscentLocation() {
+        Vector2d ascentPos = new Vector2d(0,-29);
         TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
-                .turn(Math.toRadians(90))
+                .strafeToConstantHeading(ascentPos);
+
         return tab.build();
-    } */
+    }
+    
+    private Action moveBackwardsToAscent() {
+        TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
+                .lineToX(-14) ;
+
+        return tab.build();
+    }
 }
