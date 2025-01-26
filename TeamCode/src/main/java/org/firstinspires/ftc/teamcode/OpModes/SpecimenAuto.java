@@ -123,9 +123,13 @@ public class SpecimenAuto extends LinearOpMode {
             // Lets go park
             Actions.runBlocking(
                     new SequentialAction(
-                            moveToParkPostion()
+                            moveToParkPostion(),
+                            moveBackParkAction()
                     )
             );
+            claw.wristUp();
+            safeWaitSeconds(1);
+
 
             telemetry.addLine("Done");
             telemetry.update();
@@ -221,6 +225,13 @@ public class SpecimenAuto extends LinearOpMode {
     private Action moveBackABitAction() {
         TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
                 .lineToX(-5) ;
+
+        return tab.build();
+    }
+
+    private Action moveBackParkAction() {
+        TrajectoryActionBuilder tab = driveTrain.actionBuilder(startPose)
+                .lineToX(-10) ;
 
         return tab.build();
     }
