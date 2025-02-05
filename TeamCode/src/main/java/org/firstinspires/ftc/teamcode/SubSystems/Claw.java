@@ -6,6 +6,8 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Claw {
@@ -13,7 +15,7 @@ public class Claw {
     private Servo clawServo;
 
     private Servo wristServo;
-    //private NormalizedColorSensor colorSensor;
+    private NormalizedColorSensor colorSensor;
     public Headlights lights;
 
     public DistanceSensor distanceSensor;
@@ -54,7 +56,7 @@ public class Claw {
     public CLAW_SERVO_STATE clawServoState;
     public WRIST_SERVO_STATE wristServoState;
 
-    // private DETECTED_COLOR detectedColor = DETECTED_COLOR.UNKNOWN;
+    private DETECTED_COLOR detectedColor = DETECTED_COLOR.UNKNOWN;
 
     private Action action = new Action() {
         @Override
@@ -66,8 +68,8 @@ public class Claw {
     public Claw(OpMode opMode) {
         clawServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.ClawServo); // 4 control hub
         wristServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.WristServo);
-        // colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
-        // colorSensor.setGain(COLOR_SENSOR_GAIN);
+        colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
+        //colorSensor.setGain(COLOR_SENSOR_GAIN);
         lights = new Headlights(opMode);
         distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.DistanceSensor );
 
@@ -81,7 +83,7 @@ public class Claw {
 
 
 
-    public void UpdateColorSensor() {
+    public void updateColorSensor() {
         // If the claw is closed, we will not detect colors because the claw is covering the sensor
         // and we will always get blue
 
@@ -91,23 +93,23 @@ public class Claw {
         }
 
         // Get the normalized colors from the sensor
-//        NormalizedRGBA colors = colorSensor.getNormalizedColors();
+       NormalizedRGBA colors = colorSensor.getNormalizedColors();
 //
 //        // Based on the ratio (or you can use the raw values) of the colors, determine the detected color
-//        if (colors.red > colors.blue && colors.red > colors.green) {
-//            detectedColor = DETECTED_COLOR.RED;
-//        } else if (colors.blue > colors.red && colors.blue > colors.green) {
-//            detectedColor = DETECTED_COLOR.BLUE;
-//        } else {
-//            detectedColor = DETECTED_COLOR.YELLOW;
-//        }
+        if (colors.red > colors.blue && colors.red > colors.green) {
+            detectedColor = DETECTED_COLOR.RED;
+        } else if (colors.blue > colors.red && colors.blue > colors.green) {
+           detectedColor = DETECTED_COLOR.BLUE;
+        } else {
+            detectedColor = DETECTED_COLOR.YELLOW;
+       }
     }
 
 
 
-    // public DETECTED_COLOR getDetectedColor() {
-//        return detectedColor;
-//    }
+    public DETECTED_COLOR getDetectedColor() {
+      return detectedColor;
+    }
 
     public CLAW_SERVO_STATE getClawServoState() {
         return clawServoState;
@@ -162,6 +164,18 @@ public class Claw {
         clawServo.setPosition(CLAW_OPEN_POSITION);
         clawServoState = CLAW_SERVO_STATE.CLAW_OPEN;
         lights.headlightOff();
+        updateColorSensor();
+        double colorDetected = 0.0;
+        if(getDetectedColor() == DETECTED_COLOR.RED){
+            colorDetected = 0.3;
+        }
+        if(getDetectedColor() == DETECTED_COLOR.BLUE){
+            colorDetected = 0.6;
+        }
+        if(getDetectedColor() == DETECTED_COLOR.YELLOW){
+            colorDetected = 0.35;
+        }
+        lights.topHeadLightOn(colorDetected);
         return action;
     }
 
