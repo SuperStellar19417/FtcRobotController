@@ -118,7 +118,7 @@ public class GamepadController {
         } else if (gp2GetButtonAPress()) {
 
             arm.moveArmLowBasketPosition();
-            slide.moveSlideHigh();
+            slide.moveSlideMid();
         } else if (gp2GetButtonBPress()) {
 
            // arm.move();
