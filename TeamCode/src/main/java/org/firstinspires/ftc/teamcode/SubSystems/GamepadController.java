@@ -122,6 +122,7 @@ public class GamepadController {
         } else if (gp2GetButtonBPress()) {
             arm.moveArmHighBasketPosition();
             slide.moveSlideHigh();
+            claw.wristUp();
            // arm.move();
         } else if (gp2GetLeftStickY() > 0.3) {
 

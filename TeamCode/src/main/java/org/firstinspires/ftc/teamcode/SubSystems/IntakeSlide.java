@@ -15,7 +15,7 @@ public class IntakeSlide {
     public final int SLIDE_POSITION_MIN = 0;
     public final int SLIDE_POSITION_AUTO_SAMPLE_INTAKE = 250;
     public final int SLIDE_POSITION_MID = 1050;
-    public final int SLIDE_POSITION_MAX = 0/*???*/;
+    public final int SLIDE_POSITION_MAX = 1670;
     public final int SLIDE_POSITION_DELTA = 310;
     public final double MAX_VELOCITY = 2720*0.9;
 
@@ -53,8 +53,8 @@ public class IntakeSlide {
         // Do not let slide go below minimum position and above maximum position
         if (slidePosition < SLIDE_POSITION_MIN) {
             slidePosition = SLIDE_POSITION_MIN;
-        } else if (slidePosition >= SLIDE_POSITION_MID) {
-            slidePosition = SLIDE_POSITION_MID;
+        } else if (slidePosition >= SLIDE_POSITION_MAX) {
+            slidePosition = SLIDE_POSITION_MAX;
         }
 
         slideMotor.setTargetPosition(slidePosition);

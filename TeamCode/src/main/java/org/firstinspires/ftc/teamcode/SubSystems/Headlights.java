@@ -13,10 +13,10 @@ public class Headlights {
     public Headlights(OpMode opmode) {
         hlLeft = opmode.hardwareMap.get(Servo.class, HardwareConstant.HeadlightLeft);
         hlRight = opmode.hardwareMap.get(Servo.class, HardwareConstant.HeadlightRight);
-        hlTop = opmode.hardwareMap.get(Servo.class, HardwareConstant.HeadlightTop);
+      //  hlTop = opmode.hardwareMap.get(Servo.class, HardwareConstant.HeadlightTop);
         hlRight.setPosition(0);
         hlLeft.setPosition(0);
-        hlTop.setPosition(0);
+    //    hlTop.setPosition(0);
     }
 
     public void headlightOn(){
@@ -34,6 +34,6 @@ public class Headlights {
     }
 
     public void topHeadLightOff(){
-        hlTop.setPosition(0);
+     //   hlTop.setPosition(0);
     }
 }
