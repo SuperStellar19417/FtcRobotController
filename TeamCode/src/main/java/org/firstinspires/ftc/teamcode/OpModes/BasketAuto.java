@@ -62,6 +62,7 @@ public class BasketAuto extends LinearOpMode {
             telemetry.addLine("Running actions");
             telemetry.update();
 
+
             //telemetry.setAutoClear(true);
 
             Actions.runBlocking(
