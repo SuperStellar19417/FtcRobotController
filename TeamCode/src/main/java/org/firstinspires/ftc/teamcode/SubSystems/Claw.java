@@ -15,7 +15,7 @@ public class Claw {
     private Servo clawServo;
 
     private Servo wristServo;
-    private NormalizedColorSensor colorSensor;
+   /* private NormalizedColorSensor colorSensor;*/
     public Headlights lights;
 
     public DistanceSensor distanceSensor;
@@ -36,12 +36,12 @@ public class Claw {
 
     private String allianceColor = "RED";
 
-    public enum DETECTED_COLOR {
+   /* public enum DETECTED_COLOR {
         RED,
         BLUE,
         YELLOW,
         UNKNOWN
-    }
+    }*/
     // creates two states in which the claw opens and closes
     public enum CLAW_SERVO_STATE {
         CLAW_OPEN,
@@ -56,7 +56,7 @@ public class Claw {
     public CLAW_SERVO_STATE clawServoState;
     public WRIST_SERVO_STATE wristServoState;
 
-    private DETECTED_COLOR detectedColor = DETECTED_COLOR.UNKNOWN;
+    /*private DETECTED_COLOR detectedColor = DETECTED_COLOR.UNKNOWN;*/
 
     private Action action = new Action() {
         @Override
@@ -68,10 +68,9 @@ public class Claw {
     public Claw(OpMode opMode) {
         clawServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.ClawServo); // 4 control hub
         wristServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.WristServo);
-        colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
         //colorSensor.setGain(COLOR_SENSOR_GAIN);
         lights = new Headlights(opMode);
-        distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.DistanceSensor );
+      /*distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.DistanceSensor );*/
 
         clawServo.setDirection(Servo.Direction.FORWARD);
       //  clawServo.setPosition(CLAW_CLOSE_POSITION);
@@ -83,7 +82,7 @@ public class Claw {
 
 
 
-    public void updateColorSensor() {
+    /*public void updateColorSensor() {
         // If the claw is closed, we will not detect colors because the claw is covering the sensor
         // and we will always get blue
 
@@ -103,13 +102,13 @@ public class Claw {
         } else {
             detectedColor = DETECTED_COLOR.YELLOW;
        }
-    }
+    }*/
 
 
 
-    public DETECTED_COLOR getDetectedColor() {
+   /* public DETECTED_COLOR getDetectedColor() {
       return detectedColor;
-    }
+    }*/
 
     public CLAW_SERVO_STATE getClawServoState() {
         return clawServoState;
@@ -164,18 +163,7 @@ public class Claw {
         clawServo.setPosition(CLAW_OPEN_POSITION);
         clawServoState = CLAW_SERVO_STATE.CLAW_OPEN;
         lights.headlightOff();
-        updateColorSensor();
-        double colorDetected = 0.0;
-        if(getDetectedColor() == DETECTED_COLOR.RED){
-            colorDetected = 0.3;
-        }
-        if(getDetectedColor() == DETECTED_COLOR.BLUE){
-            colorDetected = 0.6;
-        }
-        if(getDetectedColor() == DETECTED_COLOR.YELLOW){
-            colorDetected = 0.35;
-        }
-        lights.topHeadLightOn(colorDetected);
+
         return action;
     }
 
