@@ -6,14 +6,13 @@ public class HardwareConstant {
     public static String RightFrontMotor = "rightFront"; // Control Hub motor Port 0
 
     // Odometry pods (these do Not need to be defined in the config)
-    public static String LeftOdoPod = "leftFront"; // Expansion Hub Port 0 encoder slot
-    public static String RightOdoPod = "rightFront"; // Control Hub Port 0 encoder slot
-    public static String LateralOdoPod = "rightBack"; // Control Hub Port 1 encoder slot
+    public static String Par0 = "leftFront"; // Expansion Hub Port 0 encoder slot
+    public static String Par1 = "rightFront"; // Control Hub Port 0 encoder slot
+    public static String Perp = "rightBack"; // Control Hub Port 1 encoder slot
 
     public static String HeadlightLeft = "leftHeadlight";  //expansion hub servo port 0
     public static String HeadlightRight = "rightHeadlight"; //control hub servo port 5
     public static String HeadlightTop = "topHeadlight"; //
-
 
     public static String SlideMotor = "linearSlideMotor"; // control hub motor port 2
     public static String ClawServo = "clawServo"; //expansion hub servo port 0
