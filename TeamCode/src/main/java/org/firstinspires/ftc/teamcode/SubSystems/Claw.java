@@ -22,7 +22,7 @@ public class Claw {
 
     public double distanceFromSubmersible = 0;
     private static final double CLAW_OPEN_POSITION = 0.31;
-    private static final double CLAW_CLOSE_POSITION = 0.045;
+    private static final double CLAW_CLOSE_POSITION = 0.04;
 
     private static final double WRIST_MIN_POSITION = 1;
     private static final double WRIST_MAX_POSITION = 0.3;
@@ -68,7 +68,7 @@ public class Claw {
     public Claw(OpMode opMode) {
         clawServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.ClawServo); // 4 control hub
         wristServo = opMode.hardwareMap.get(Servo.class, HardwareConstant.WristServo);
-    //    colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
+        colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
         //colorSensor.setGain(COLOR_SENSOR_GAIN);
         lights = new Headlights(opMode);
         distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.DistanceSensor );
@@ -88,7 +88,7 @@ public class Claw {
         // and we will always get blue
 
         if (clawServoState == CLAW_SERVO_STATE.CLAW_CLOSE) {
-            //detectedColor = DETECTED_COLOR.UNKNOWN;
+            detectedColor = DETECTED_COLOR.UNKNOWN;
             return;
         }
 
