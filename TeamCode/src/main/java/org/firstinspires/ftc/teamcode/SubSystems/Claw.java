@@ -22,7 +22,7 @@ public class Claw {
 
     public double distanceFromSubmersible = 0;
     private static final double CLAW_OPEN_POSITION = 0.31;
-    private static final double CLAW_CLOSE_POSITION = 0.045;
+    private static final double CLAW_CLOSE_POSITION = 0.04; //0.045;
 
     private static final double WRIST_MIN_POSITION = 1;
     private static final double WRIST_MAX_POSITION = 0.3;
