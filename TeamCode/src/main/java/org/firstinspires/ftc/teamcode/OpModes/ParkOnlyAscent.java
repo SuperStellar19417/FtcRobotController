@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.Flag;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
+import org.firstinspires.ftc.teamcode.SubSystems.SampleColorLight;
 import org.firstinspires.ftc.teamcode.Utils;
 
 
@@ -31,6 +32,7 @@ public class ParkOnlyAscent extends LinearOpMode {
     private Climber climber;
     private Arm arm;
     private Flag flag;
+    private SampleColorLight sampleColorLight;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -99,9 +101,10 @@ public class ParkOnlyAscent extends LinearOpMode {
         arm = new Arm(this);
         climber = new Climber(this);
         flag = new Flag(this);
+        sampleColorLight = new SampleColorLight(this);
         telemetry.addLine("Arm initialized");
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, arm, null, climber, flag);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, arm, null, climber, flag, sampleColorLight);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 

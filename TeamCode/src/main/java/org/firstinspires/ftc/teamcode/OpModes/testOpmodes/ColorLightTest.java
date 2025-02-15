@@ -2,21 +2,20 @@ package org.firstinspires.ftc.teamcode.OpModes.testOpmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.SubSystems.ColorLights;
-import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
+import org.firstinspires.ftc.teamcode.SubSystems.SampleColorLight;
 
 public class ColorLightTest extends LinearOpMode {
-    private ColorLights colorLights;
+    private SampleColorLight colorLights;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        colorLights = new ColorLights(this);
+        colorLights = new SampleColorLight(this);
 
         waitForStart();
         while(!isStopRequested()) {
             telemetry.update();
             while(opModeIsActive()) {
-                colorLights.setHlTopColor();
+                colorLights.runSampleColorDetection();
             }
         }
     }

@@ -91,7 +91,7 @@ public class PracticeAuto extends LinearOpMode {
         //Aarushi-initialize claw and arm
 
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, null, null, null, null);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, null, null, null, null, null);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 

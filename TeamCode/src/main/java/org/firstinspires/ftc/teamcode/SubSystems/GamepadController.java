@@ -34,6 +34,7 @@ public class GamepadController {
     private IntakeSlide slide;
     private Climber climber;
     private Flag flag;
+    private SampleColorLight sampleColorLight;
     private boolean endgame = false;
     boolean runToClimberLimitSwitch = false;
     boolean runToIntakeLimitSwitch = false;
@@ -66,7 +67,8 @@ public class GamepadController {
                              Arm arm,
                              IntakeSlide slide,
                              Climber climber,
-                             Flag flag
+                             Flag flag,
+                             SampleColorLight sampleColorLight
     ) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
@@ -77,6 +79,7 @@ public class GamepadController {
         this.slide = slide;
         this.climber = climber;
         this.flag = flag;
+        this.sampleColorLight = sampleColorLight;
     }
 
 
@@ -945,7 +948,8 @@ public class GamepadController {
     }
 
     private void runSubsystems() throws InterruptedException { //Creating another opmode to write gamepad mappings
-        // gamepad 2 functions
+        // gamepad 2
+        sampleColorLight.runSampleColorDetection();
 
       if ( gp2GetButtonAPress()){
 

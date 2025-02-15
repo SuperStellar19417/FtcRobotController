@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.Flag;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
+import org.firstinspires.ftc.teamcode.SubSystems.SampleColorLight;
 import org.firstinspires.ftc.teamcode.Utils;
 
 @TeleOp(name = "Normal TeleOp", group = "00-Teleop")
@@ -36,6 +37,7 @@ public class NormalTeleOp extends LinearOpMode {
     private IntakeSlide slide;
     private Climber climber;
     private Flag flag;
+    private SampleColorLight sampleColorLight;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -99,12 +101,16 @@ public class NormalTeleOp extends LinearOpMode {
         slide = new IntakeSlide(this);
         claw = new Claw(this);
         flag = new Flag(this);
+        sampleColorLight = new SampleColorLight(this);
+
         if (allianceSelection == ALLIANCE.RED) {
             //   claw.allianceColor = "RED";
         } else {
             //claw.allianceColor = "BLUE";
         }
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, slide, climber, flag);
+        gamepadController = new GamepadController(gamepad1, gamepad2,
+                driveTrain, this, claw, arm, slide, climber, flag, sampleColorLight);
+
         gamepadController.driveType = GamepadController.DriveType.ROBOT_CENTRIC;
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
@@ -144,7 +150,8 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addData("Slides Motor Position: ", slide.getMotorPosition());
         telemetry.addData("Arm Motor Position: ", arm.getCurrentArmPosition());
         telemetry.addData("Arm Motor Encoder: ", arm.getCurrentArmEncoderValue());
-        telemetry.addData("GP2 Left Stick Y", gamepadController.gp2GetLeftStickY());
+        telemetry.addData("Detected Sample Color: ", sampleColorLight.getDetectedColor());
+        telemetry.addData("Sample Distance: ", sampleColorLight.getDistance());
 
         telemetry.update();
     }

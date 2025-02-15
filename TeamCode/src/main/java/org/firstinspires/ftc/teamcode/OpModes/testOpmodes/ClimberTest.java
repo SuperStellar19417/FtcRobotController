@@ -29,7 +29,7 @@ public class ClimberTest extends LinearOpMode {
         climber = new Climber(this);
 
         // climber = new Climber(this);
-        gamepad = new GamepadController(gamepad1, gamepad2, null, this, null, arm, null, null, null);
+        gamepad = new GamepadController(gamepad1, gamepad2, null, this, null, arm, null, null, null, null);
 
         waitForStart();
         while(!isStopRequested()) {

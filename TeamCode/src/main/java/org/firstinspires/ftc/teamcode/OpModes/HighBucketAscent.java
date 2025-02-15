@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
+import org.firstinspires.ftc.teamcode.SubSystems.SampleColorLight;
 import org.firstinspires.ftc.teamcode.Utils;
 
 
@@ -27,6 +28,7 @@ public class HighBucketAscent extends LinearOpMode {
     private Claw claw;
     private Arm arm;
     private Flag flag;
+    private SampleColorLight sampleColorLight;
 
     private IntakeSlide linearSlide;
 
@@ -104,9 +106,10 @@ public class HighBucketAscent extends LinearOpMode {
        claw = new Claw(this);
        linearSlide = new IntakeSlide( this);
         flag = new Flag(this);
+        sampleColorLight = new SampleColorLight(this);
 
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, linearSlide, null, flag, sampleColorLight);
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, linearSlide, null, flag);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 
