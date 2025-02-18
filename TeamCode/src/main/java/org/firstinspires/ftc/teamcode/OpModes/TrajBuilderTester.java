@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.Flag;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
+import org.firstinspires.ftc.teamcode.SubSystems.SampleColorLight;
 import org.firstinspires.ftc.teamcode.Utils;
 
 @Autonomous (name = "Scoring Auto 1st Ascent TEST", group = "01-Test")
@@ -47,6 +48,7 @@ public class TrajBuilderTester extends LinearOpMode {
     private IntakeSlide slide;
     private Climber climber;
     private Flag flag;
+    private SampleColorLight sampleColorLight;
 
     @Override
     public void runOpMode() {
@@ -193,7 +195,7 @@ public class TrajBuilderTester extends LinearOpMode {
         slide = new IntakeSlide(this);
         flag = new Flag(this);
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null, null, flag);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null, null, flag, sampleColorLight);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 

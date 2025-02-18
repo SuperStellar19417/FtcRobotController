@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Flag;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
+import org.firstinspires.ftc.teamcode.SubSystems.SampleColorLight;
 import org.firstinspires.ftc.teamcode.Utils;
 
 // we need to review these steps and then fill in the movement coordinates
@@ -47,7 +48,7 @@ public class SpecimenAuto extends LinearOpMode {
     private Arm arm;
     private IntakeSlide intakeSlide;
     private Flag flag;
-
+    private SampleColorLight sampleColorLight;
 
     private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
 
@@ -153,8 +154,8 @@ public class SpecimenAuto extends LinearOpMode {
         claw = new Claw(this);
         intakeSlide = new IntakeSlide(this);
         flag = new Flag(this);
-
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, intakeSlide, null, flag);
+        sampleColorLight = new SampleColorLight(this);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, intakeSlide, null, flag, sampleColorLight);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 

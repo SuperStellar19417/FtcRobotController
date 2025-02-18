@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Flag;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
+import org.firstinspires.ftc.teamcode.SubSystems.SampleColorLight;
 import org.firstinspires.ftc.teamcode.Utils;
 
 
@@ -22,6 +23,7 @@ public class ParkOnlyObservation extends LinearOpMode {
     private GamepadController gamepadController;
     private Arm arm;
     private Flag flag;
+    private SampleColorLight sampleColorLight;
     private MecanumDrive driveTrain;
 
     // We can transfer this from last autonomous op mode if needed,
@@ -88,13 +90,14 @@ public class ParkOnlyObservation extends LinearOpMode {
         driveTrain = new MecanumDrive(hardwareMap, startPose);
         arm = new Arm(this);
         flag = new Flag(this);
+        sampleColorLight = new SampleColorLight(this);
         telemetry.addData("DriveTrain Initialized with Pose:", Utils.toStringPose2d(startPose));
         telemetry.update();
 
         //Aarushi-initialize claw and arm
 
 
-        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, arm, null, null, flag);
+        gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, null, arm, null, null, flag, sampleColorLight);
         telemetry.addLine("Gamepad Initialized");
         telemetry.update();
 

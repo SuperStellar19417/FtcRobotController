@@ -12,7 +12,7 @@ public class HardwareConstant {
 
     public static String HeadlightLeft = "leftHeadlight";  //expansion hub servo port 0
     public static String HeadlightRight = "rightHeadlight"; //control hub servo port 5
-    public static String HeadlightTop = "topHeadlight"; //
+    public static String SampleColorLight = "sampleColorLight"; //
 
     public static String SlideMotor = "linearSlideMotor"; // control hub motor port 2
     public static String ClawServo = "clawServo"; //expansion hub servo port 0
