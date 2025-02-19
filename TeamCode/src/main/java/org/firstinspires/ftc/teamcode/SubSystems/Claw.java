@@ -21,15 +21,15 @@ public class Claw {
 
     //
     public double distanceFromSubmersible = 0;
-    private static final double CLAW_OPEN_POSITION = 0.3;
-    private static final double CLAW_CLOSE_POSITION = 0.08;
+    private static final double CLAW_OPEN_POSITION = 0.45;
+    private static final double CLAW_CLOSE_POSITION = 0.18;
 
-    private static final double WRIST_MIN_POSITION = 1;
-    private static final double WRIST_MAX_POSITION = 0.3;
+    private static final double WRIST_MIN_POSITION = 0;
+    private static final double WRIST_MAX_POSITION = 0.59;
     private static final double WRIST_DELTA = 0.01;
 
     private static final double WRIST_UP_POSITION = WRIST_MIN_POSITION;
-    private static final double WRIST_MID_POSITION = .6;
+    private static final double WRIST_MID_POSITION = .6; // Position for pickup
     private static final double WRIST_DOWN_POSITION = WRIST_MAX_POSITION;
 
     public static double WRIST_CURRENT_POSITION = WRIST_UP_POSITION;
@@ -64,9 +64,11 @@ public class Claw {
         lights = new Headlights(opMode);
         distanceSensor = opMode.hardwareMap.get(DistanceSensor.class, HardwareConstant.DistanceSensor );
 
-        clawServo.setDirection(Servo.Direction.FORWARD);
+       // clawServo.setDirection(Servo.Direction.FORWARD);
       //  clawServo.setPosition(CLAW_CLOSE_POSITION);
-        wristServo.setDirection(Servo.Direction.REVERSE);
+       // wristServo.setDirection(Servo.Direction.REVERSE);
+
+        wristServo.setPosition(WRIST_UP_POSITION);
 
         clawServoState = CLAW_SERVO_STATE.CLAW_OPEN;
         wristServoState = WRIST_SERVO_STATE.WRIST_UP;
