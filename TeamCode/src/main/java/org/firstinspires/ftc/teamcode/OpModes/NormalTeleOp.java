@@ -150,8 +150,7 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addData("Slides Motor Position: ", slide.getMotorPosition());
         telemetry.addData("Arm Motor Position: ", arm.getCurrentArmPosition());
         telemetry.addData("Arm Motor Encoder: ", arm.getCurrentArmEncoderValue());
-        telemetry.addData("Detected Sample Color: ", sampleColorLight.getDetectedColor());
-        telemetry.addData("Sample Distance: ", sampleColorLight.getDistance());
+        sampleColorLight.outputTelemetry();
 
         telemetry.update();
     }
