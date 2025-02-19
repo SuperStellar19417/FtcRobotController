@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
@@ -27,8 +28,11 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Autonomous (name = "Scoring Auto 1st Ascent TEST", group = "01-Test")
-public class TrajBuilderTester extends LinearOpMode {
+public class HighBucketAprilTag extends LinearOpMode {
     private GamepadController gamepadController;
     private MecanumDrive driveTrain;
 
@@ -45,7 +49,10 @@ public class TrajBuilderTester extends LinearOpMode {
     private final Vector2d midPoseSub = new Vector2d(55, 47); //90
     private final Vector2d parkPose = new Vector2d(68, 15); //90
 
-    private AprilTagProcessor aprilTagProcessor;
+    private AprilTagProcessor aprilTag;
+
+
+
 
     /**
      * The variable to store our instance of the vision portal.
@@ -57,7 +64,7 @@ public class TrajBuilderTester extends LinearOpMode {
     private Claw claw;
     private Arm arm;
     private IntakeSlide slide;
-    private Climber climber;
+    //private Climber climber;
     private Flag flag;
     private SampleColorLight sampleColorLight;
 
@@ -202,10 +209,11 @@ public class TrajBuilderTester extends LinearOpMode {
         telemetry.update();
         arm = new Arm(this);
         claw = new Claw(this);
-        climber = new Climber(this);
+   //     climber = new Climber(this);
         slide = new IntakeSlide(this);
         flag = new Flag(this);
-
+        visionPortal = VisionPortal.easyCreateWithDefaults(
+                hardwareMap.get(WebcamName.class, "webcam"), aprilTag);
 
 
         gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null, null, flag, sampleColorLight);
@@ -221,6 +229,7 @@ public class TrajBuilderTester extends LinearOpMode {
 
         telemetry.addLine("Robot Init Completed");
         telemetry.addLine("====================");
+        getPose();
         telemetry.update();
         claw.wristUp();
     }
@@ -239,8 +248,43 @@ public class TrajBuilderTester extends LinearOpMode {
         telemetry.update();
     }
 
-    private void getPose() {
-      //  return new Pose2d(new Vector2d(detector.robotPose.getPosition().x, detector.robotPose.getPosition().y), detector.ftcPose.bearing);
+    private Pose2d getPose() {
+        List<AprilTagDetection> detectionList = aprilTag.getDetections();
+        ArrayList xList = new ArrayList<Double>(50);
+        for (AprilTagDetection detection : detectionList) {
+             for(int i = 0; i < 50; i++) {
+                 xList.set(i, detection.ftcPose.x);
+             }
+        }
+
+        ArrayList yList = new ArrayList<Double>(50);
+        for (AprilTagDetection detection : detectionList) {
+            for(int i = 0; i < 50; i++) {
+                yList.set(i, detection.ftcPose.y);
+            }
+        }
+
+
+        ArrayList bearingList = new ArrayList<Double>(50);
+        for (AprilTagDetection detection : detectionList) {
+            for(int i = 0; i < 50; i++) {
+                bearingList.set(i, detection.ftcPose.bearing);
+            }
+
+            telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+            telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
+                    detection.robotPose.getPosition().x,
+                    detection.robotPose.getPosition().y,
+                    detection.robotPose.getPosition().z));
+            telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)",
+                    detection.robotPose.getOrientation().getPitch(AngleUnit.DEGREES),
+                    detection.robotPose.getOrientation().getRoll(AngleUnit.DEGREES),
+                    detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
+        }
+
+
+
+        return new Pose2d(new Vector2d(calculateMean(xList), calculateMean(yList)), calculateMean(bearingList));
     }
 
     public void safeWaitSeconds(double time) {
@@ -249,6 +293,14 @@ public class TrajBuilderTester extends LinearOpMode {
         while (!isStopRequested() && timer.time() < time) {
             //don't even worry about it
         }
+    }
+
+    private double calculateMean(ArrayList<Double> list) {
+        double sum = 0;
+        for(double values : list) {
+            sum += values;
+        }
+        return sum/list.size();
     }
 
 
