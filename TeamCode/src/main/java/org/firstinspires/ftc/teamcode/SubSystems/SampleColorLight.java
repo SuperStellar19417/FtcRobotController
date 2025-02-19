@@ -14,12 +14,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 public class SampleColorLight {
+    public enum DETECTED_COLOR {
+        RED,
+        BLUE,
+        YELLOW,
+        UNKNOWN
+    }
+
     private NormalizedColorSensor colorSensor;
     private Servo colorLedLight;
-    LinearOpMode opMode;
-    float hsvValues[] = {0F, 0F, 0F};
-    float gain = 2.0f;
-    NormalizedRGBA colors = new NormalizedRGBA();
+    private DETECTED_COLOR detectedColor = DETECTED_COLOR.UNKNOWN;
+    private LinearOpMode opMode;
+    private float[] hsvValues = {0F, 0F, 0F};
+    private float gain = 2.0f;
+    private NormalizedRGBA colors = new NormalizedRGBA();
+    private double distance = 0;
 
     public SampleColorLight(LinearOpMode opMode) {
         colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, HardwareConstant.ClawColorSensor);
@@ -38,64 +47,79 @@ public class SampleColorLight {
         this.opMode = opMode;
     }
 
-
-    public enum DETECTED_COLOR {
-        RED,
-        BLUE,
-        YELLOW,
-        UNKNOWN
-    }
-
-    private DETECTED_COLOR detectedColor = DETECTED_COLOR.UNKNOWN;
-
     public DETECTED_COLOR getDetectedColor() {
         return detectedColor;
     }
 
-    public  DETECTED_COLOR detectColor() {
-        detectedColor = DETECTED_COLOR.UNKNOWN;
+    public void runSampleColorDetection() {
+        // Detect the color and set the LED light accordingly
 
-        // get the normalized colors from the sensor
-        colors= colorSensor.getNormalizedColors();
-        Color.colorToHSV(colors.toColor(), hsvValues);
-//
-//        // Based on the ratio (or you can use the raw values) of the colors, determine the detected color
-        if (colors.red > colors.blue && colors.red > colors.green) {
-            detectedColor = DETECTED_COLOR.RED;
-        } else if (colors.blue > colors.red && colors.blue > colors.green) {
-            detectedColor = DETECTED_COLOR.BLUE;
-        } else {
-            detectedColor = DETECTED_COLOR.YELLOW;
-        }
-        return detectedColor;
-    }
-
-    public void runSampleColorDetection(){
-        DETECTED_COLOR currentColor = detectColor();
-
-        if (currentColor == DETECTED_COLOR.RED){
-            colorLedLight.setPosition(0.3);
-        }
-        if (currentColor == DETECTED_COLOR.BLUE){
-            colorLedLight.setPosition(0.6);
-        }
-        if (currentColor == DETECTED_COLOR.YELLOW){
-            colorLedLight.setPosition(0.35);
-        }
-
-    }
-    public double getDistance(){
-        double distance = 0;
         if (colorSensor instanceof DistanceSensor) {
             distance = ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM);
         }
+
+        // get the normalized colors from the sensor
+        colors = colorSensor.getNormalizedColors();
+        Color.colorToHSV(colors.toColor(), hsvValues);
+
+        // Use HSV values to determine the color
+        // For example, to get the hue value (which is a value from 0 to 360), you can do the following:
+        float hue = hsvValues[0];
+        // The hue value is a value from 0 to 360. The red color is at the lower end (0) and at the higher end (360). It is a circle/
+        // We can use this to determine the color detected by the sensor.
+        // For example, if the hue value is between 0 and 60, we can say that the detected color is red.
+        // If the hue value is between 210 and 270, we can say that the detected color is blue.
+        // If the hue value is between 30 and 90, we can say that the detected color is yellow.
+        // These values are just approximations and you can adjust them based on your sensor and lighting conditions.
+
+        detectedColor = DETECTED_COLOR.UNKNOWN;
+
+        // Only set color if we are close to a sample (3 cm)
+        if (distance <= 3.0) {
+            if (hue < 60) {
+                detectedColor = DETECTED_COLOR.RED;
+            } else if (hue < 210) {
+                detectedColor = DETECTED_COLOR.YELLOW;
+            } else if (hue < 270) {
+                detectedColor = DETECTED_COLOR.BLUE;
+            }
+        }
+////        // Based on the ratio (or you can use the raw values) of the colors, determine the detected color
+//        if (colors.red > colors.blue && colors.red > colors.green) {
+//            detectedColor = DETECTED_COLOR.RED;
+//        } else if (colors.blue > colors.red && colors.blue > colors.green) {
+//            detectedColor = DETECTED_COLOR.BLUE;
+//        } else {
+//            detectedColor = DETECTED_COLOR.YELLOW;
+//        }
+
+        setLightColor();
+
+    }
+
+    private void setLightColor() {
+        if (detectedColor == DETECTED_COLOR.RED){
+            colorLedLight.setPosition(0.3);
+        }
+        if (detectedColor == DETECTED_COLOR.BLUE){
+            colorLedLight.setPosition(0.6);
+        }
+        if (detectedColor == DETECTED_COLOR.YELLOW){
+            colorLedLight.setPosition(0.35);
+        }
+        if (detectedColor == DETECTED_COLOR.UNKNOWN){
+            colorLedLight.setPosition(0.0);
+        }
+    }
+
+    public double getDistance(){
         return distance;
     }
 
     public void outputTelemetry() {
         opMode.telemetry.addData("Detected Color", detectedColor);
-        opMode.telemetry.addData("Distance (cm)", getDistance());
-        opMode.telemetry.addData("RGB", "%6.2f : %6.2f : %6.2f", colors.red, colors.green, colors.blue);
-        opMode.telemetry.addData("HSV", "%6.2f : %6.2f : %6.2f", hsvValues[0],  hsvValues[1] , hsvValues[2]);
+        opMode.telemetry.addData("Distance (cm)", distance);
+       // opMode.telemetry.addData("RGB", "%.2f : %.2f : %.2f", colors.red, colors.green, colors.blue);
+       // opMode.telemetry.addData("HSV", "%.2f : %.2f : %.2f", hsvValues[0],  hsvValues[1] , hsvValues[2]);
     }
 }

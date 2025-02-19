@@ -85,6 +85,8 @@ public class GamepadController {
 
 
     public void runSubSystems() throws InterruptedException {
+
+        sampleColorLight.runSampleColorDetection();
         runDriveTrain();
         runClaw();
         runArm();
@@ -945,49 +947,6 @@ public class GamepadController {
 
     public boolean gp2GetStart() {
         return gamepad2.start;
-    }
-
-    private void runSubsystems() throws InterruptedException { //Creating another opmode to write gamepad mappings
-        // gamepad 2
-        sampleColorLight.runSampleColorDetection();
-
-      if ( gp2GetButtonAPress()){
-
-          arm.moveArmLowBasketPosition();
-      }
-      if (gp2GetButtonYPress()){
-
-          arm.moveArmHighRungPosition();
-      }
-      if ( gp2GetDpad_upPress()) {
-
-          runSlides(); //logic?
-
-      }
-      if ( gp2GetLeftBumperPress()){
-
-          claw.intakeClawOpen();
-      } else {
-          claw.intakeClawClose();
-      }
-      if (gp2GetRightBumperPress()){
-
-          claw.wristUp();
-      } else {
-          claw.wristDown();
-      }
-
-      //gamepad 1
-
-        if (gp1GetButtonXPress()){
-            arm.moveArmHangingPosition();
-        }
-        if (gp1GetDpad_upPress()){
-
-            runClimber(); //logic?
-
-        }
-
     }
 
 }
