@@ -27,6 +27,7 @@ public class SampleColorLight {
     private LinearOpMode opMode;
     private float[] hsvValues = {0F, 0F, 0F};
     private float gain = 2.0f;
+    private static final double DISTANCE_THRESHOLD = 2.5;
     private NormalizedRGBA colors = new NormalizedRGBA();
     private double distance = 0;
 
@@ -74,8 +75,8 @@ public class SampleColorLight {
 
         detectedColor = DETECTED_COLOR.UNKNOWN;
 
-        // Only set color if we are close to a sample (3 cm)
-        if (distance <= 3.0) {
+        // Only set color if we are close to a sample (DISTANCE_THRESHOLD cm)
+        if (distance <= DISTANCE_THRESHOLD) {
             if (hue < 60) {
                 detectedColor = DETECTED_COLOR.RED;
             } else if (hue < 210) {
