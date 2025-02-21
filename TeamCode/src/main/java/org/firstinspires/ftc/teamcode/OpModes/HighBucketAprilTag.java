@@ -31,7 +31,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous (name = "Scoring Auto 1st Ascent TEST", group = "01-Test")
+@Autonomous (name = "Scoring Auto 1st Ascent APRILTAG", group = "01-Test")
 public class HighBucketAprilTag extends LinearOpMode {
     private GamepadController gamepadController;
     private MecanumDrive driveTrain;
@@ -39,15 +39,17 @@ public class HighBucketAprilTag extends LinearOpMode {
     // We can transfer this from last autonomous op mode if needed,
     // but most the time we don't need to.
   //  private final Pose2d startPose = new Pose2d(-59.7, 11.16,  Math.toRadians(0));
-    private final Pose2d startPose = new Pose2d(0, 0,  Math.toRadians(0));
-    private final Vector2d dropPose = new Vector2d(7.25, 37); //132
-    private final Vector2d dropPoseAdjust = new Vector2d(10, 33.5); //132
-    private final Vector2d dropPoseAdjust2 = new Vector2d(17, 30);
-    private final Vector2d midPoseCycle = new Vector2d(17, 35); //90
-    private final Vector2d cycle1 = new Vector2d(25.75, 33.5); //50
-    private final Vector2d cycle2 = new Vector2d(25.25, 39); //40
-    private final Vector2d midPoseSub = new Vector2d(55, 47); //90
-    private final Vector2d parkPose = new Vector2d(68, 15); //90
+    private final Pose2d startPose = getPose();
+    private final Vector2d dropPose = new Vector2d(-60, -52); //132
+  //  private final Vector2d dropPoseAdjust = new Vector2d(10, 33.5); //132
+   // private final Vector2d dropPoseAdjust2 = new Vector2d(17, 30);
+    private final Vector2d midPoseCycle = new Vector2d(-46, -50); //90
+    private final Vector2d cycle1 = new Vector2d(-60, -28); //50
+    private final Vector2d cycle2 = new Vector2d(-68, -25); //40
+    private final Vector2d midPoseSub = new Vector2d(-52, -45); //90
+    private final Vector2d parkPose = new Vector2d(-10, -16); //90
+
+    private Pose2d lastPose = new Pose2d(new Vector2d(-60, 12), 90);
 
     private AprilTagProcessor aprilTag;
 
@@ -87,37 +89,18 @@ public class HighBucketAprilTag extends LinearOpMode {
 
         // Create a simple path here
         // We are using RoadRunner's TrajectoryBuilder to create a simple path with a 0,0,0 start pose
-        TrajectoryActionBuilder toBasket = driveTrain.actionBuilder(startPose)
-                .splineTo(dropPose, Math.toRadians(134));
+
         //new Vector2d(5,35.5), Math.toRadians(125));
-        TrajectoryActionBuilder cyclePartOne = driveTrain.actionBuilder(new Pose2d(dropPose, Math.toRadians(134)))
-                .strafeToLinearHeading(midPoseCycle, Math.toRadians(0))
-                .strafeToLinearHeading(cycle1, Math.toRadians(0));
-
-        TrajectoryActionBuilder toBasket2 = driveTrain.actionBuilder(new Pose2d(cycle1, Math.toRadians(0)))
-                .splineTo(dropPoseAdjust, Math.toRadians(140));
-
-        TrajectoryActionBuilder cyclePartTwo = driveTrain.actionBuilder(new Pose2d(dropPoseAdjust, Math.toRadians(140)))
-                .strafeToLinearHeading(midPoseCycle, Math.toRadians(40))
-                .strafeToLinearHeading(cycle2, Math.toRadians(0));
-
-        TrajectoryActionBuilder toBasket3 = driveTrain.actionBuilder(new Pose2d(cycle2, Math.toRadians(90)))
-                .splineTo(dropPoseAdjust2, Math.toRadians(130));
-
-
-        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(new Pose2d(dropPoseAdjust2, Math.toRadians(130)))
-                .strafeToLinearHeading(midPoseSub, Math.toRadians(100))
-                .strafeToLinearHeading(parkPose, Math.toRadians(100));
 
 
 
         // Create an action that will be run
-        Action basketAction = toBasket.build();
+      /*  Action basketAction = toBasket.build();
         Action submersibleAction = toSub.build();
         Action cycle1Action = cyclePartOne.build();
         Action basket2Action = toBasket2.build();
         Action cycle2Action = cyclePartTwo.build();
-        Action basket3Action = toBasket3.build();
+        Action basket3Action = toBasket3.build(); */
 
 
         // Run the action (s)
@@ -134,10 +117,31 @@ public class HighBucketAprilTag extends LinearOpMode {
         */
         // TrajectoryActionBuilder creates the path you want to follow and actions are subsystem actions
         // that should be executed once that path is completed.
-        arm.moveArmLowBasketPosition();
-        Actions.runBlocking(new SequentialAction(basketAction));
+        //new Vector2d(5,35.5), Math.toRadians(125));
+
+
+
+    //    arm.moveArmLowBasketPosition();
+     //   slide.moveSlideMid();
+        TrajectoryActionBuilder toBasket = driveTrain.actionBuilder(lastPose)
+                .splineTo(dropPose, Math.toRadians(134));
+      //  telemetry.addLine(getPose().toString());
+     //   telemetry.update();
+        safeWaitSeconds(1);
+        Actions.runBlocking(toBasket.build());
         cycleToBasket();
-        Actions.runBlocking(new SequentialAction(cycle1Action));
+
+        TrajectoryActionBuilder midPose1 = driveTrain.actionBuilder(getPose())
+                .strafeToLinearHeading(midPoseCycle, Math.toRadians(0));
+        telemetry.addLine(getPose().toString());
+        telemetry.update();
+        safeWaitSeconds(1);
+        Actions.runBlocking(midPose1.build());
+
+        TrajectoryActionBuilder toCycle1 = driveTrain.actionBuilder(getPose())
+                .strafeToLinearHeading(cycle1, Math.toRadians(0));
+        Actions.runBlocking(toCycle1.build());
+
         claw.intakeClawOpen();
         safeWaitSeconds(.5);
         claw.wristMid();
@@ -147,43 +151,63 @@ public class HighBucketAprilTag extends LinearOpMode {
         claw.wristUp();
 
         arm.moveArmLowBasketPosition();
-        slide.moveSlideHigh();
+        slide.moveSlideMid();
         safeWaitSeconds(.5);
-        Actions.runBlocking(new SequentialAction(basket2Action));
+
+        TrajectoryActionBuilder toBasket2 = driveTrain.actionBuilder(getPose())
+                .splineTo(dropPose, Math.toRadians(140));
+        Actions.runBlocking(toBasket2.build());
         safeWaitSeconds(1);
         claw.wristMid();
         claw.intakeClawOpen();
         safeWaitSeconds(1);
         slide.moveSlideLow();
 
-        Actions.runBlocking(cycle2Action);
+        TrajectoryActionBuilder midPose2 = driveTrain.actionBuilder(getPose())
+                .strafeToLinearHeading(midPoseCycle, Math.toRadians(40));
+        Actions.runBlocking(midPose2.build());
+
+        TrajectoryActionBuilder toCycle2 = driveTrain.actionBuilder(getPose())
+                .strafeToLinearHeading(cycle2, Math.toRadians(0));
+        Actions.runBlocking(toCycle2.build());
         claw.intakeClawOpen();
         safeWaitSeconds(.5);
         claw.wristMid();
         safeWaitSeconds(1);
         claw.intakeClawClose();
-        safeWaitSeconds(1.5);
-        claw.wristUp();
-    //    arm.moveArmIntakePosition();
-   //     claw.intakeClawClose();
-
-        Actions.runBlocking(basket3Action);
-    //    arm.moveArmLowBucketPosition();
         safeWaitSeconds(1);
-    //    claw.intakeClawOpen();
-        safeWaitSeconds(0.5);
+        claw.wristUp();
 
-        Actions.runBlocking(new SequentialAction(submersibleAction));
+
+        arm.moveArmLowBasketPosition();
+        slide.moveSlideMid();
+
+        TrajectoryActionBuilder toBasket3 = driveTrain.actionBuilder(getPose())
+                .splineTo(dropPose, Math.toRadians(130));
+        Actions.runBlocking(toBasket3.build());
+        safeWaitSeconds(1);
+        claw.intakeClawOpen();
+        safeWaitSeconds(0.5);
+        slide.moveSlideLow();
+
+        TrajectoryActionBuilder midPose3 = driveTrain.actionBuilder(getPose())
+                .strafeToLinearHeading(midPoseSub, Math.toRadians(100));
+        Actions.runBlocking(new SequentialAction(midPose3.build()));
+
+        TrajectoryActionBuilder toSub = driveTrain.actionBuilder(getPose())
+                .strafeToLinearHeading(parkPose, Math.toRadians(100));
+        Actions.runBlocking(toSub.build());
      //   slide.retractSlide(false);
      //   arm.moveArmIntakePosition();
-        safeWaitSeconds(1);
+        safeWaitSeconds(0.5);
+        flag.setFlagUp();
+        safeWaitSeconds(0.5);
      //   climber.runMotorToPosition(700);
         //climber.moveClimberUp();
 
     }
 
     private void cycleToBasket() {
-        slide.moveSlideHigh();
         claw.wristMid();
         safeWaitSeconds(1);
         claw.intakeClawOpen();
@@ -212,8 +236,9 @@ public class HighBucketAprilTag extends LinearOpMode {
    //     climber = new Climber(this);
         slide = new IntakeSlide(this);
         flag = new Flag(this);
+        aprilTag = AprilTagProcessor.easyCreateWithDefaults();
         visionPortal = VisionPortal.easyCreateWithDefaults(
-                hardwareMap.get(WebcamName.class, "webcam"), aprilTag);
+                hardwareMap.get(WebcamName.class, "Webcam 1"), aprilTag);
 
 
         gamepadController = new GamepadController(gamepad1, gamepad2, driveTrain, this, claw, arm, null, null, flag, sampleColorLight);
@@ -249,42 +274,51 @@ public class HighBucketAprilTag extends LinearOpMode {
     }
 
     private Pose2d getPose() {
+
+        double tempX = 0;
+
         List<AprilTagDetection> detectionList = aprilTag.getDetections();
-        ArrayList xList = new ArrayList<Double>(50);
+
+        ArrayList<Double> xList = new ArrayList<>(50);
         for (AprilTagDetection detection : detectionList) {
-             for(int i = 0; i < 50; i++) {
-                 xList.set(i, detection.ftcPose.x);
-             }
+            if (detection.metadata != null) {
+                for (int i = 0; i < 50; i++) {
+                    xList.set(i, detection.ftcPose.x);
+                    tempX = detection.ftcPose.x;
+                }
+            }
         }
 
-        ArrayList yList = new ArrayList<Double>(50);
+        ArrayList<Double> yList = new ArrayList<>(50);
         for (AprilTagDetection detection : detectionList) {
-            for(int i = 0; i < 50; i++) {
-                yList.set(i, detection.ftcPose.y);
+            if (detection.metadata != null) {
+                for (int i = 0; i < 50; i++) {
+                    yList.set(i, detection.ftcPose.y);
+                }
             }
         }
 
 
-        ArrayList bearingList = new ArrayList<Double>(50);
+        ArrayList<Double> bearingList = new ArrayList<>(50);
         for (AprilTagDetection detection : detectionList) {
-            for(int i = 0; i < 50; i++) {
-                bearingList.set(i, detection.ftcPose.bearing);
+            if (detection.metadata != null) {
+                for (int i = 0; i < 50; i++) {
+                    bearingList.set(i, detection.ftcPose.bearing);
+                }
             }
-
-            telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-            telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
-                    detection.robotPose.getPosition().x,
-                    detection.robotPose.getPosition().y,
-                    detection.robotPose.getPosition().z));
-            telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)",
-                    detection.robotPose.getOrientation().getPitch(AngleUnit.DEGREES),
-                    detection.robotPose.getOrientation().getRoll(AngleUnit.DEGREES),
-                    detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
         }
+
+
+        telemetry.addData("X VALUE RIGHT NOW THIS SECOND", tempX);
+        telemetry.addData("X POSITION", calculateMean(xList));
+        telemetry.addData("Y POSITION", calculateMean(yList));
+        telemetry.addData("BEARING POSITION", calculateMean(bearingList));
+        telemetry.update();
 
 
 
         return new Pose2d(new Vector2d(calculateMean(xList), calculateMean(yList)), calculateMean(bearingList));
+
     }
 
     public void safeWaitSeconds(double time) {
