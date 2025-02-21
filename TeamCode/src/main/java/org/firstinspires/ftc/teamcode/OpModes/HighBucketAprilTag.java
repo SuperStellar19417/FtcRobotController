@@ -39,7 +39,7 @@ public class HighBucketAprilTag extends LinearOpMode {
     // We can transfer this from last autonomous op mode if needed,
     // but most the time we don't need to.
   //  private final Pose2d startPose = new Pose2d(-59.7, 11.16,  Math.toRadians(0));
-    private final Pose2d startPose = getPose();
+    private Pose2d startPose; //ab -2, -60
     private final Vector2d dropPose = new Vector2d(-60, -52); //132
   //  private final Vector2d dropPoseAdjust = new Vector2d(10, 33.5); //132
    // private final Vector2d dropPoseAdjust2 = new Vector2d(17, 30);
@@ -47,9 +47,9 @@ public class HighBucketAprilTag extends LinearOpMode {
     private final Vector2d cycle1 = new Vector2d(-60, -28); //50
     private final Vector2d cycle2 = new Vector2d(-68, -25); //40
     private final Vector2d midPoseSub = new Vector2d(-52, -45); //90
-    private final Vector2d parkPose = new Vector2d(-10, -16); //90
+    private final Vector2d parkPose = new Vector2d(-27, -13); //90
 
-    private Pose2d lastPose = new Pose2d(new Vector2d(-60, 12), 90);
+    //private Pose2d lastPose = new Pose2d(new Vector2d(-60, 12), 90);
 
     private AprilTagProcessor aprilTag;
 
@@ -123,7 +123,8 @@ public class HighBucketAprilTag extends LinearOpMode {
 
     //    arm.moveArmLowBasketPosition();
      //   slide.moveSlideMid();
-        TrajectoryActionBuilder toBasket = driveTrain.actionBuilder(lastPose)
+        startPose = getPose();
+        TrajectoryActionBuilder toBasket = driveTrain.actionBuilder(startPose)
                 .splineTo(dropPose, Math.toRadians(134));
       //  telemetry.addLine(getPose().toString());
      //   telemetry.update();
@@ -160,7 +161,7 @@ public class HighBucketAprilTag extends LinearOpMode {
         safeWaitSeconds(1);
         claw.wristMid();
         claw.intakeClawOpen();
-        safeWaitSeconds(1);
+        safeWaitSeconds(0.75);
         slide.moveSlideLow();
 
         TrajectoryActionBuilder midPose2 = driveTrain.actionBuilder(getPose())
