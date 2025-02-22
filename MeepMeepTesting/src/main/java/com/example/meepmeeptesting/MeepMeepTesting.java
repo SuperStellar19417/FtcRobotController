@@ -12,8 +12,10 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(300);
 
+
+        //RED BUCKET POSITIONS
         final Pose2d startPose = new Pose2d(new Vector2d(-2, 60), 90);
-         final Vector2d dropPose = new Vector2d(-55, -50); //132
+         final Vector2d dropPose = new Vector2d(-54, -49); //132
         //  private final Vector2d dropPoseAdjust = new Vector2d(10, 33.5); //132
         // private final Vector2d dropPoseAdjust2 = new Vector2d(17, 30);
        //  final Vector2d midPoseCycle = new Vector2d(-46, -50); //90
@@ -22,25 +24,36 @@ public class MeepMeepTesting {
          final Vector2d midPoseSub = new Vector2d(-52, -45); //90
          final Vector2d parkPose = new Vector2d(-27, -13); //90
 
+        //BLUE BUCKET SIGN CHANGE ONLY
+       /* final Pose2d startPose = new Pose2d(new Vector2d(2, 60), 90);
+        final Vector2d dropPose = new Vector2d(55, 50); //132
+        //  private final Vector2d dropPoseAdjust = new Vector2d(10, 33.5); //132
+        // private final Vector2d dropPoseAdjust2 = new Vector2d(17, 30);
+        //  final Vector2d midPoseCycle = new Vector2d(-46, -50); //90
+        final Vector2d cycle1 = new Vector2d(41, 39); //50
+        final Vector2d cycle2 = new Vector2d(53, 39); //40
+        final Vector2d midPoseSub = new Vector2d(52, 45); //90
+        final Vector2d parkPose = new Vector2d(27, 13); //90 */
+
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(0, -72, 90))
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-2, -70, 90))
                 .strafeTo(dropPose)
-                .turn(Math.toRadians(135))
+                .turn(Math.toRadians(130))
           //      .strafeTo(midPoseCycle)
-                .turn(Math.toRadians(-135))
+                .turn(Math.toRadians(-130))
                 .strafeTo(cycle1)
                 .turn(Math.toRadians(40))
                 .strafeTo(dropPose)
-                .turn(Math.toRadians(95))
+                .turn(Math.toRadians(90))
            //     .strafeTo(midPoseCycle)
                 .strafeTo(cycle2)
-                .turn(Math.toRadians(-135))
-                .turn(Math.toRadians(40))
+                .turn(Math.toRadians(-130))
+                .turn(Math.toRadians(50))
                 .strafeTo(dropPose)
                 .turn(Math.toRadians(95))
-                .turn(Math.toRadians(-55))
+                .turn(Math.toRadians(-60))
                 .strafeTo(midPoseSub)
                 .strafeTo(parkPose)
                       // .forward(30)
