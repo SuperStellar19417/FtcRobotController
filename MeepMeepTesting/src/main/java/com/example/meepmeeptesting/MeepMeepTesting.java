@@ -22,6 +22,18 @@ public class MeepMeepTesting {
          final Vector2d midPoseSub = new Vector2d(-52, -45); //90
          final Vector2d parkPose = new Vector2d(-27, -13); //90
 
+        final Vector2d hangPose = new Vector2d(0,-33);
+        final Vector2d midPoseSpike = new Vector2d(38,-33);
+        final Vector2d midPoseSpike2 = new Vector2d(45,-12);
+        final Vector2d spikeCycle1 = new Vector2d(45,-68);
+        final Vector2d spike2 = new Vector2d(58,-12);
+        final Vector2d spikeCycle2 = new Vector2d(58,-68);
+        final Vector2d midPoseObserv = new Vector2d(58,-40);
+
+
+
+
+
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
@@ -65,12 +77,26 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark() )
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(0, -72, 0))
-                        .strafeLeft(38)
-                        .turn(Math.toRadians(90) )
-                        .back(38)
-                        .strafeRight(30)
-                        .turn(Math.toRadians(-90))
-                        .back(30)
+                        .turn(Math.toRadians(90)) // adding to meepmeep so virtual robot is forward
+                        .strafeTo(hangPose)
+                        .strafeTo(midPoseSpike)
+                        .strafeTo(midPoseSpike2)
+                        .strafeTo(spikeCycle1)
+                        .strafeTo(midPoseSpike2)
+                        .strafeTo(spike2)
+                        .strafeTo(spikeCycle2)
+                        .strafeTo(midPoseObserv)
+                        .turn(Math.toRadians(180))
+                        .strafeTo(spikeCycle2)
+                        .strafeTo(hangPose)
+                        .turn(Math.toRadians(180))
+                        .strafeTo(midPoseObserv)
+                        .turn(Math.toRadians(180))
+                        .strafeTo(spikeCycle2)
+                        .strafeTo(hangPose)
+                        .turn(Math.toRadians(180))
+                        .strafeTo(spikeCycle2)
+
                         .build());
 
 
