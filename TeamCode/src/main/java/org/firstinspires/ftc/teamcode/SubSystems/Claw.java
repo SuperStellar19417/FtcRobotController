@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 public class Claw {
     //private static final float COLOR_SENSOR_GAIN = 2.0f;
     private Servo clawServo;
@@ -140,6 +142,10 @@ public class Claw {
         clawServoState = CLAW_SERVO_STATE.CLAW_CLOSE;
         lights.headlightOn();
         return action;
+    }
+
+    public double getDistance() {
+        return distanceSensor.getDistance(DistanceUnit.CM);
     }
 }
 

@@ -5,9 +5,13 @@ import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ClawClose;
 
 
 /**
@@ -19,6 +23,11 @@ public class GamepadController {
     public enum DriveType {
         ROBOT_CENTRIC,
         FIELD_CENTRIC,
+    }
+
+    public enum intakeHapticState{
+        VIBRATED,
+        WAITING
     }
 
     public DriveType driveType = DriveType.ROBOT_CENTRIC;
@@ -44,11 +53,11 @@ public class GamepadController {
     double joyconPosition = 0;
 
     Gamepad.RumbleEffect hapticFeedback = new Gamepad.RumbleEffect.Builder()
-            .addStep(1.0, 1.0, 500)  //  Rumble right motor 100% for 500 mSec
-            .addStep(0.0, 0.0, 250)  //  Pause for 300 mSec
-            .addStep(1.0, 1.0, 250)  //  Rumble left motor 100% for 250 mSec
-            .addStep(0.0, 0.0, 250)  //  Pause for 250 mSec
-            .addStep(1.0, 1.0, 250)  //  Rumble left motor 100% for 250 mSec
+            .addStep(1.0, 1.0, 200)  //  Rumble right motor 100% for 500 mSec
+            .addStep(0.0, 0.0, 50)  //  Pause for 300 mSec
+            .addStep(1.0, 1.0, 150)  //  Rumble left motor 100% for 250 mSec
+            .addStep(0.0, 0.0, 50)  //  Pause for 250 mSec
+            .addStep(1.0, 1.0, 150)  //  Rumble left motor 100% for 250 mSec
             .build();
 
     /**
@@ -118,7 +127,6 @@ public class GamepadController {
         }
 
         if (gp2GetButtonYPress()) {
-
             arm.moveArmHighRungPosition();
         } else if (gp2GetButtonAPress()) {
 
@@ -146,6 +154,7 @@ public class GamepadController {
             claw.intakeClawOpen();
         } else if (gp2GetLeftTriggerPress()){
             arm.moveArmHighRungPosition();
+            slide.extendSlide();
         }
    }
 
@@ -211,6 +220,21 @@ public class GamepadController {
             } else {
                 claw.wristUp();
             }
+        }
+        // for specimen hanging
+        if(sampleColorLight.getDetectedColor()!= SampleColorLight.DETECTED_COLOR.UNKNOWN
+                && claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_CLOSE
+                && (claw.distanceSensor.getDistance(DistanceUnit.CM) < 16.5 && claw.distanceSensor.getDistance(DistanceUnit.MM) > 17.5 )) {
+            gamepad1.runRumbleEffect(hapticFeedback);
+
+        }
+
+        // for side specimen intake
+        if((sampleColorLight.getDistance() > 2.5 && sampleColorLight.getDistance() < 4)
+                && (claw.distanceSensor.getDistance(DistanceUnit.CM) > 6 && claw.distanceSensor.getDistance(DistanceUnit.CM) < 7)
+                && claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_OPEN) {
+            gamepad1.runRumbleEffect(hapticFeedback);
+            gamepad2.runRumbleEffect(hapticFeedback);
         }
     }
 

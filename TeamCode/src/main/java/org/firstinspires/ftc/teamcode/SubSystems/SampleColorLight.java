@@ -85,6 +85,9 @@ public class SampleColorLight {
                 detectedColor = DETECTED_COLOR.BLUE;
             }
         }
+        // IF DETECTED COLOR IS NOT UNKNOWN AND CLAW IS CLOSED AND THE DISTANCE IS LESS THAN LIKE IDK 20.
+
+
 ////        // Based on the ratio (or you can use the raw values) of the colors, determine the detected color
 //        if (colors.red > colors.blue && colors.red > colors.green) {
 //            detectedColor = DETECTED_COLOR.RED;
@@ -119,7 +122,7 @@ public class SampleColorLight {
 
     public void outputTelemetry() {
         opMode.telemetry.addData("Detected Color", detectedColor);
-        opMode.telemetry.addData("Distance (cm)", distance);
+        opMode.telemetry.addData("Distance (cm) claw sensor", distance);
        // opMode.telemetry.addData("RGB", "%.2f : %.2f : %.2f", colors.red, colors.green, colors.blue);
        // opMode.telemetry.addData("HSV", "%.2f : %.2f : %.2f", hsvValues[0],  hsvValues[1] , hsvValues[2]);
     }

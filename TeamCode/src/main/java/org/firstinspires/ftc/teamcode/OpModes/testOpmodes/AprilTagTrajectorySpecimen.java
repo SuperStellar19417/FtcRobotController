@@ -12,6 +12,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
@@ -21,9 +22,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.OpModes.NormalTeleOp;
+import org.firstinspires.ftc.teamcode.SubSystems.Arm;
+import org.firstinspires.ftc.teamcode.SubSystems.Claw;
+import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.opencv.core.Mat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-@Autonomous(name = "AprilTag Trajectory Specimen", group = "01-Test")
+@Autonomous(name = "ACTUAL AprilTag Trajectory Specimen", group = "01-Test")
 public class AprilTagTrajectorySpecimen extends LinearOpMode {
 
     /**
@@ -78,6 +84,9 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
 
     // Declare subsystems here
     private MecanumDrive driveTrain;
+    private Arm arm;
+    private IntakeSlide slides;
+    private Claw claw;
 
     private boolean gp1ButtonALast = false;
 
@@ -121,34 +130,132 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
         // Create a trajectory to first waypoint (somewhere we can see tag # 16)
         // Move forward 5 inches and turn 90 degrees CCW (heading 180 in RR coordinates)
         Action trajectoryAction = driveTrain.actionBuilder(startPose)
-                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y + 20))
+                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y + 23))
                 .build();
 
+        arm.moveArmHighRungPosition();
+        slides.extendSlide();
+        safeWaitSeconds(1.25);
+
         Actions.runBlocking(new SequentialAction(trajectoryAction));
-        
+
+        claw.wristMid();
+        safeWaitSeconds(0.5);
+
 
         Pose2d tempPose = new Pose2d(new Vector2d(startPose.position.x, startPose.position.y + 20), Math.toRadians(90));
-
         Action moveBack = driveTrain.actionBuilder(tempPose)
-                .lineToY(startPose.position.y + 10)
+                .lineToY(startPose.position.y + 5)
+                .build();
+
+
+
+        Actions.runBlocking(new SequentialAction(moveBack));
+        claw.intakeClawOpen();
+        claw.wristUp();
+
+
+        Action moveBackPosition = driveTrain.actionBuilder(tempPose)
+                .lineToY(startPose.position.y + 13)
                 .turnTo(Math.toRadians(0))
                 .build();
 
-        Actions.runBlocking(new SequentialAction(moveBack));
-        tempPose = new Pose2d(new Vector2d(12, -53), Math.toRadians(0));
+        slides.runSlideMotorAllTheWayDown();
+        arm.moveArmIntakePosition();
+        safeWaitSeconds(1);
+
+        Actions.runBlocking(new SequentialAction(moveBackPosition));
+
+     //   tempPose = new Pose2d(new Vector2d(12, -53), Math.toRadians(0));
 
         startPose = getFieldPosition(11);
 
-        telemetry.addData("DriveTrain Initialized with Pose x y h (inch/deg)",
-                "%.2f %.2f %.2f", startPose.position.x, startPose.position.y,
-                Math.toDegrees(startPose.heading.toDouble()));
-        telemetry.update();
-        Action fillerName = driveTrain.actionBuilder(startPose)
-                .turnTo(Math.toRadians(180))
-                .strafeTo(new Vector2d(startPose.position.x - 23, startPose.position.y))
-                .strafeTo(new Vector2d(startPose.position.x - 23, startPose.position.y - 25))
-                .strafeTo(new Vector2d(startPose.position.x - 25, startPose.position.y - 25))
-                .strafeTo(new Vector2d(startPose.position.x - 25, startPose.position.y - 5))
+
+        Action toShieldPreload = driveTrain.actionBuilder(startPose)
+                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y + 5))
+                .strafeTo(new Vector2d(startPose.position.x - 40, startPose.position.y + 5))
+                .build();
+
+        Action forwardToShield = driveTrain.actionBuilder(startPose)
+                .strafeTo(new Vector2d(startPose.position.x - 42, startPose.position.y + 5))
+                .build();
+
+        claw.intakeClawOpen();
+
+        Actions.runBlocking(new SequentialAction(toShieldPreload));
+        safeWaitSeconds(1);
+        Actions.runBlocking(new SequentialAction(forwardToShield));
+        claw.intakeClawClose();
+        safeWaitSeconds(0.2);
+        arm.moveArmHighRungPosition();
+        safeWaitSeconds(0.75);
+
+
+        Pose2d newPose;
+        newPose = new Pose2d(new Vector2d(startPose.position.x - 38, startPose.position.y + 8), Math.toRadians(0));
+
+        Action pullBack = driveTrain.actionBuilder(newPose)
+                .strafeTo(new Vector2d(newPose.position.x - 38, newPose.position.y + 7))
+                .build();
+
+
+        Action midPoseToSub = driveTrain.actionBuilder(startPose)
+                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y))
+                .build();
+
+        Actions.runBlocking(new SequentialAction(pullBack));
+
+        startPose = getFieldPosition(11);
+
+        safeWaitSeconds(0.5);
+
+        Action toSubOne = driveTrain.actionBuilder(startPose)
+                .turnTo(Math.toRadians(270))
+                .strafeTo(new Vector2d(startPose.position.x + 3, startPose.position.y - 13))
+                .build();
+
+        Actions.runBlocking(new SequentialAction(toSubOne));
+        safeWaitSeconds(0.5);
+        slides.extendSlide();
+        safeWaitSeconds(1.25);
+        claw.wristMid();
+        safeWaitSeconds(0.5);
+
+
+
+        startPose = new Pose2d(new Vector2d(startPose.position.x, startPose.position.y - 13), 90);
+
+        Action midPoseSecond = driveTrain.actionBuilder(startPose)
+                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y - 5))
+                .build();
+
+
+        Actions.runBlocking(new SequentialAction(midPoseSecond));
+
+        claw.intakeClawOpen();
+        safeWaitSeconds(0.3);
+        claw.wristUp();
+
+        Action pullMoreBack = driveTrain.actionBuilder(startPose)
+                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y - 15))
+                .turn(Math.toRadians(-90))
+                .build();
+
+        Actions.runBlocking(new SequentialAction(pullMoreBack));
+
+
+      /*  Action midPose = driveTrain.actionBuilder(startPose)
+                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y))
+                .build(); */
+
+        startPose = getFieldPosition(11);
+
+        // ALL THIS HAPPENS AFTER THE PRELOADS
+        Action pushFieldSample = driveTrain.actionBuilder(startPose)
+                .strafeTo(new Vector2d(startPose.position.x - 25, startPose.position.y))
+                .strafeTo(new Vector2d(startPose.position.x - 26, startPose.position.y - 25))
+                .strafeTo(new Vector2d(startPose.position.x - 26, startPose.position.y - 25))
+                .strafeTo(new Vector2d(startPose.position.x - 26, startPose.position.y ))
               //  .strafeToLinearHeading(new Vector2d(-48,-48), Math.toRadians(225))
              //   .strafeToLinearHeading(new Vector2d(-46,-36), Math.toRadians(180))
                // .lineToY(startPose.position.y + 5)
@@ -157,35 +264,26 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
               //  .lineToYConstantHeading(startPose.position.y + 5)
                 .build();
 
-        Actions.runBlocking(new SequentialAction(fillerName));
-        tempPose =  new Pose2d(new Vector2d(42,-28), Math.toRadians(180));
+        Actions.runBlocking(new SequentialAction(pushFieldSample));
 
-        Action nextAction = driveTrain.actionBuilder(tempPose)
-                        .strafeTo(new Vector2d(tempPose.position.x, tempPose.position.y -40))
-                        .strafeTo(new Vector2d(tempPose.position.x, tempPose.position.y -30))
-                        .build();
 
-        startPose = getFieldPosition(16);
+
+
+
+
+
+  //      startPose = getFieldPosition(16);
         telemetry.addData("DriveTrain Initialized with Pose x y h (inch/deg)",
                 "%.2f %.2f %.2f", startPose.position.x, startPose.position.y,
                 Math.toDegrees(startPose.heading.toDouble()));
         telemetry.update();
 
 
-        Pose2d spikePose = new Pose2d(new Vector2d(-44, -53), Math.toRadians(90));
-        Action toBucket1 = driveTrain.actionBuilder(new Pose2d(new Vector2d(-44, -53), Math.toRadians(90)))
-                .lineToY(spikePose.position.y - 6)
-                .turnTo(Math.toRadians(225))
-                .build();
 
-        Pose2d spikePose2 = new Pose2d(new Vector2d(-44, -59), Math.toRadians(225));
-        Action secondSpike = driveTrain.actionBuilder(spikePose2)
-                .turnTo(Math.toRadians(90))
-                .strafeTo(new Vector2d(spikePose2.position.x - 10, spikePose2.position.y))
-                .strafeTo(new Vector2d(spikePose2.position.x - 10, spikePose2.position.y + 6))
-                .build();
 
-        Pose2d moveToBucket = new Pose2d(new Vector2d(-54, -53), Math.toRadians(90));
+
+
+      /*  Pose2d moveToBucket = new Pose2d(new Vector2d(-54, -53), Math.toRadians(90));
 
         Action toBucket2 = driveTrain.actionBuilder(moveToBucket)
                 .strafeTo(new Vector2d(moveToBucket.position.x - 10, moveToBucket.position.y - 4))
@@ -201,7 +299,7 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
         Action toPark = driveTrain.actionBuilder(startPose)
                 .strafeTo(new Vector2d(startPose.position.x, startPose.position.y + 20))
                 .strafeTo(new Vector2d(startPose.position.x + 20, startPose.position.y + 30))
-                .build();
+                .build(); */
 
 
         // Run to waypoint
@@ -252,6 +350,9 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
         // Initialization code here
 
         driveTrain = new MecanumDrive(hardwareMap, startPose);
+        arm = new Arm(this);
+        slides = new IntakeSlide(this);
+        claw = new Claw(this);
         telemetry.addData("DriveTrain Initialized with Pose x y h (inch/deg)",
                 "%.2f %.2f %.2f", startPose.position.x, startPose.position.y,
                 Math.toDegrees(startPose.heading.toDouble()));
@@ -327,6 +428,10 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
     Manually set the camera gain and exposure.
     This can only be called AFTER calling initAprilTag(), and only works for Webcams;
    */
+
+
+
+
     private void    setManualExposure(int exposureMS, int gain) {
         // Wait for the camera to be open, then use the controls
 

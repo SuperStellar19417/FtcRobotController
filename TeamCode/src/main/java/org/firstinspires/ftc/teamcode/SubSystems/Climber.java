@@ -9,7 +9,8 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class Climber {
-    public DcMotorEx climberMotor;
+    public DcMotorEx climberMotorLeft;
+    public DcMotorEx climberMotorRight;
     public TouchSensor climberLimitSwitch;
 
     public final int CLIMBER_POSITION_MIN = 10;
@@ -28,17 +29,22 @@ public class Climber {
 
 
     public Climber(LinearOpMode opMode) {
-        climberMotor = opMode.hardwareMap.get(DcMotorEx.class, HardwareConstant.ClimberMotor);
+        climberMotorLeft = opMode.hardwareMap.get(DcMotorEx.class, HardwareConstant.ClimberMotor);
         climberLimitSwitch = opMode.hardwareMap.get(TouchSensor.class, HardwareConstant.ClimberLimitSwitch);
         initClimber();
     }
 
     public void initClimber() {
 
-        climberMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        climberMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        climberMotorLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        climberMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        climberMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        climberMotorLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        climberMotorRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        climberMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        climberMotorRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         // Calculate PIDF values for velocity control
         double kF = 32767/MAX_VELOCITY;
@@ -46,18 +52,25 @@ public class Climber {
         double kI = 0.1 * kP;
         double kD = 0.0;
 
-        climberMotor.setVelocityPIDFCoefficients(kP, kI, kD, kF);
-        climberMotor.setPositionPIDFCoefficients(5.0);
+        climberMotorLeft.setVelocityPIDFCoefficients(kP, kI, kD, kF);
+        climberMotorLeft.setPositionPIDFCoefficients(5.0);
+
+        climberMotorRight.setVelocityPIDFCoefficients(kP, kI, kD, kF);
+        climberMotorRight.setPositionPIDFCoefficients(5.0);
         resetClimber();
     }
 
     public void resetClimber() {
-        climberMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        climberMotorLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        climberMotorRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     private void stopMotors() {
-        climberMotor.setPower(POWER_LEVEL_STOP);
-        climberMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        climberMotorLeft.setPower(POWER_LEVEL_STOP);
+        climberMotorLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        climberMotorRight.setPower(POWER_LEVEL_STOP);
+        climberMotorRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void runClimberToLevel() {
@@ -110,25 +123,25 @@ public class Climber {
         }
 
         // otherwise, keep moving the motor down by delta
-        int position = climberMotor.getCurrentPosition();
+        int position = climberMotorLeft.getCurrentPosition();
         position -= OVERRIDE_CLIMBER_POSITION_DELTA;
-        climberMotor.setTargetPosition(position);
-        climberMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        climberMotor.setPower(POWER_LEVEL_RUN);
+        climberMotorLeft.setTargetPosition(position);
+        climberMotorLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        climberMotorLeft.setPower(POWER_LEVEL_RUN);
 
         // return true to indicate that we have not hit the limit switch
         return true;
     }
 
     public void runMotorToPosition(int position) {
-        climberMotor.setTargetPosition(position);
-        climberMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        climberMotor.setVelocity(MAX_VELOCITY);
+        climberMotorLeft.setTargetPosition(position);
+        climberMotorLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        climberMotorLeft.setVelocity(MAX_VELOCITY);
     }
 
     private void stopMotor() {
-        climberMotor.setPower(POWER_LEVEL_STOP);
-        climberMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        climberMotorLeft.setPower(POWER_LEVEL_STOP);
+        climberMotorLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void moveClimberUp() {
@@ -143,8 +156,8 @@ public class Climber {
 
     public void stopClimberMotor() {
         // TODO:  reading as pressing in gamepadcontroller so add a boolean thing to toggle pressed ONCE god bless
-        climberMotor.setPower(0);
-        climberMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        climberMotorLeft.setPower(0);
+        climberMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
 
@@ -153,6 +166,6 @@ public class Climber {
     }
 
     public int getClimberMotorPosition() {
-        return climberMotor.getCurrentPosition();
+        return climberMotorLeft.getCurrentPosition();
     }
 }

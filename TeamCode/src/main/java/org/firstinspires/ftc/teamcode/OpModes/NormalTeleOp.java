@@ -5,6 +5,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
@@ -150,6 +151,7 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addData("Slides Motor Position: ", slide.getMotorPosition());
         telemetry.addData("Arm Motor Position: ", arm.getCurrentArmPosition());
         telemetry.addData("Arm Motor Encoder: ", arm.getCurrentArmEncoderValue());
+        telemetry.addData("Distance Sensor (cm): ", claw.distanceSensor.getDistance(DistanceUnit.CM));
         sampleColorLight.outputTelemetry();
 
         telemetry.update();
