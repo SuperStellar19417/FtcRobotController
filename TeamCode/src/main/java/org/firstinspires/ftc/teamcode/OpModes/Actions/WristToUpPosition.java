@@ -22,6 +22,6 @@ public class WristToUpPosition implements Action {
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
         claw.wristUp();
         telemetry.addLine("Wrist moved to up pos");
-        return true;
+        return false;
     }
 }

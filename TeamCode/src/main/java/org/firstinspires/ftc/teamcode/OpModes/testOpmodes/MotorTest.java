@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.SubSystems.Climber;
 import org.firstinspires.ftc.teamcode.SubSystems.GamepadController;
 
 @TeleOp(name = "Motor Test", group = "00-Teleop")
-@Disabled
 public class MotorTest extends LinearOpMode {
 
     private GamepadController gamepad;
@@ -20,7 +19,7 @@ public class MotorTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         //arm = new Arm(this);
         climber = new Climber(this);
-        gamepad = new GamepadController(gamepad1, gamepad2, null, this, null, arm, null, null, null, null);
+        gamepad = new GamepadController(gamepad1, gamepad2, null, this, null, null, null, climber, null, null);
 
         waitForStart();
         while(!isStopRequested()) {
@@ -28,10 +27,10 @@ public class MotorTest extends LinearOpMode {
             while(opModeIsActive()) {
                 if (gamepad.gp2GetDpad_upPress()) {
                     climber.moveClimberSlightlyUp();
-                    telemetry.addLine(arm.getCurrentArmPosition() + " ");
+                    telemetry.addLine(climber.getClimberLeftMotorPosition() + " ");
                 } else if (gamepad.gp2GetDpad_downPress()) {
                     climber.moveClimberSlightlyDown(true);
-                    telemetry.addLine(arm.getCurrentArmPosition() + " ");
+                    telemetry.addLine(climber.getClimberLeftMotorPosition() + " ");
                 }
 
               /*  if(gamepad.gp2GetButtonAPress()) {

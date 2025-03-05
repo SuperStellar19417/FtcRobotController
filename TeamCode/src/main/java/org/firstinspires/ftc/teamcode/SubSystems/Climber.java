@@ -13,12 +13,12 @@ public class Climber {
     public DcMotorEx climberMotorRight;
     public TouchSensor climberLimitSwitch;
 
-    public final int CLIMBER_POSITION_MIN = 10;
-    public final int CLIMBER_POSITION_MAX = 11000;
+    public final int CLIMBER_POSITION_MIN = 0;
+    public final int CLIMBER_POSITION_MAX = 4200;
 
     public final int CLIMBER_POSITION_UP = CLIMBER_POSITION_MAX; // 2024-11-09 calibrated value
     public final int CLIMBER_POSITION_DOWN = 0;
-    private final int CLIMBER_POSITION_DELTA = 2750;  // 2024-11-09  calibrated value
+    private final int CLIMBER_POSITION_DELTA = 1000;  // 2024-11-09  calibrated value
     private final int OVERRIDE_CLIMBER_POSITION_DELTA = 500;
     private final double POWER_LEVEL_RUN = .9;
     private final double POWER_LEVEL_STOP = 0.0;
@@ -29,7 +29,8 @@ public class Climber {
 
 
     public Climber(LinearOpMode opMode) {
-        climberMotorLeft = opMode.hardwareMap.get(DcMotorEx.class, HardwareConstant.ClimberMotor);
+        climberMotorLeft = opMode.hardwareMap.get(DcMotorEx.class, HardwareConstant.ClimberMotorLeft);
+        climberMotorRight = opMode.hardwareMap.get(DcMotorEx.class, HardwareConstant.ClimberMotorRight);
         climberLimitSwitch = opMode.hardwareMap.get(TouchSensor.class, HardwareConstant.ClimberLimitSwitch);
         initClimber();
     }
@@ -37,12 +38,12 @@ public class Climber {
     public void initClimber() {
 
         climberMotorLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        climberMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        climberMotorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         climberMotorLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         climberMotorRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        climberMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        climberMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         climberMotorRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
@@ -129,6 +130,10 @@ public class Climber {
         climberMotorLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         climberMotorLeft.setPower(POWER_LEVEL_RUN);
 
+        climberMotorRight.setTargetPosition(position);
+        climberMotorRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        climberMotorRight.setPower(POWER_LEVEL_RUN);
+
         // return true to indicate that we have not hit the limit switch
         return true;
     }
@@ -137,11 +142,17 @@ public class Climber {
         climberMotorLeft.setTargetPosition(position);
         climberMotorLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         climberMotorLeft.setVelocity(MAX_VELOCITY);
+
+        climberMotorRight.setTargetPosition(position);
+        climberMotorRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        climberMotorRight.setVelocity(MAX_VELOCITY);
     }
 
     private void stopMotor() {
         climberMotorLeft.setPower(POWER_LEVEL_STOP);
         climberMotorLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        climberMotorRight.setPower(POWER_LEVEL_STOP);
+        climberMotorRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void moveClimberUp() {
@@ -159,13 +170,20 @@ public class Climber {
         climberMotorLeft.setPower(0);
         climberMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        climberMotorRight.setPower(0);
+        climberMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
     }
 
     public int getClimberTargetPosition() {
         return climberMotorPosition;
     }
 
-    public int getClimberMotorPosition() {
+    public int getClimberLeftMotorPosition() {
         return climberMotorLeft.getCurrentPosition();
+    }
+
+    public int getClimberRightMotorPosition() {
+        return climberMotorRight.getCurrentPosition();
     }
 }

@@ -101,6 +101,7 @@ public class GamepadController {
         runArm();
         runSlides();
         runFlag();
+        runClimber();
     }
 
     public void runFlag() throws InterruptedException {
@@ -183,10 +184,10 @@ public class GamepadController {
 
         // react to gamepad inputs
         if (wantsToGoUp) {
-            climber.moveClimberUp();
+            climber.moveClimberSlightlyUp();
         }
         // If we have to move down, use encoder to move down
-        else if (wantsToGoDown && !isLimitSwitchPressed) {
+       else if (wantsToGoDown && !isLimitSwitchPressed) {
             climber.runMotorAllTheWayDown();
         }
     }

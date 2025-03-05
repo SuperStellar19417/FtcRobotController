@@ -15,7 +15,7 @@ public class IntakeSlide {
     public final int SLIDE_POSITION_MIN = 0;
     public final int SLIDE_POSITION_AUTO_SAMPLE_INTAKE = 250;
     public final int SLIDE_POSITION_MID = 1050;
-    public final int SLIDE_POSITION_MAX = 1670;
+    public final int SLIDE_POSITION_MAX = 1550;
     public final int SLIDE_POSITION_DELTA = 310;
     public final double MAX_VELOCITY = 2720*0.9;
 

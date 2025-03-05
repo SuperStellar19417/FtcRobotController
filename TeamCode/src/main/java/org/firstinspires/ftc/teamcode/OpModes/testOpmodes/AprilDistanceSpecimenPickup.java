@@ -211,7 +211,7 @@ public class AprilDistanceSpecimenPickup extends LinearOpMode {
 //        }
 
         // Move backwards to specimen drop off location using april tag
-        moveJoyceBackdUsingAprilTag(DESIRED_TAG_ID, DROP_OFF_DISTANCE_FROM_TAG);
+        moveJoyceBackUsingAprilTag(DESIRED_TAG_ID, DROP_OFF_DISTANCE_FROM_TAG);
 
         // Turn to place the specimen
         // Use distance sensor movement to position close to chamber
@@ -488,7 +488,7 @@ public class AprilDistanceSpecimenPickup extends LinearOpMode {
         visionPortal.setProcessorEnabled(aprilTag, false);
     }
 
-    private void moveJoyceBackdUsingAprilTag(int tagId, double offset) {
+    private void moveJoyceBackUsingAprilTag(int tagId, double offset) {
         double  drive           = 0;        // Desired forward power/speed (-1 to +1)
         double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
         double  turn            = 0;        // Desired turning power/speed (-1 to +1)

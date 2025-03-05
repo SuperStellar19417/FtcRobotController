@@ -33,7 +33,7 @@ public class ArmMoveToRestingPosition implements Action {
         telemetry.addData("Arm pos:", pos);
         telemetry.update();
 
-        if (pos >= arm.ARM_POSITION_TICKS_INTAKE + 20) {
+        if (pos >= arm.ARM_POSITION_TICKS_INTAKE + 150) {
             // true causes the action to rerun
             return true;
         } else {

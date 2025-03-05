@@ -19,7 +19,9 @@ public class HardwareConstant {
     public static String WristServo = "wristServo"; // expansion hub servo port 3
     public static String ClawColorSensor = "clawColorSensor"; // control hub i2c bus 1
     public static String ArmMotor = "armMotor";  // expansion hub motor port 2
-    public static String ClimberMotor = "climberMotor"; // expansion hub motor port 3
+    public static String ClimberMotorLeft = "climberMotorLeft"; // expansion hub motor port 3
+    public static String ClimberMotorRight = "climberMotorRight"; // control hub motor port 3
+
     public static String SlidesLimitSwitch = "slidesLimitSwitch"; // expansion hub digital port 3
     public static String ClimberLimitSwitch = "climberLimitSwitch"; // expansion hub digital port 7
     public static String DistanceSensor = "distanceSensor"; //control hub ic port 3

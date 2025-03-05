@@ -96,7 +96,6 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addData("DriveTrain Initialized with Pose:", Utils.toStringPose2d(startPose));
         telemetry.update();
 
-        // claw = new Claw(hardwareMap, telemetry);
         arm = new Arm(this);
         climber = new Climber(this);
         slide = new IntakeSlide(this);
@@ -152,6 +151,8 @@ public class NormalTeleOp extends LinearOpMode {
         telemetry.addData("Arm Motor Position: ", arm.getCurrentArmPosition());
         telemetry.addData("Arm Motor Encoder: ", arm.getCurrentArmEncoderValue());
         telemetry.addData("Distance Sensor (cm): ", claw.distanceSensor.getDistance(DistanceUnit.CM));
+        telemetry.addData("Climber Left Motor Position", climber.getClimberLeftMotorPosition());
+        telemetry.addData("Climber Right Motor Position", climber.getClimberRightMotorPosition());
         sampleColorLight.outputTelemetry();
 
         telemetry.update();

@@ -6,45 +6,47 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 
-public class ArmMoveToLowBasket implements Action {
-
-    private Arm arm;
+public class SlidesExtendToHighBasket implements Action {
+    private IntakeSlide intakeSlide;
     private boolean initialized = false;
     private Telemetry telemetry;
 
-    public ArmMoveToLowBasket(Arm arm, Telemetry telemetry){
-        this.arm = arm;
+    private int slideMax = 1550;
+
+    public SlidesExtendToHighBasket(IntakeSlide intakeSlide, Telemetry telemetry){
+        this.intakeSlide = intakeSlide;
         this.telemetry = telemetry;
     }
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
         // powers on motor, if it is not on
         if (!initialized) {
-            arm.moveArmLowBasketPosition();
+            intakeSlide.moveSlideHigh();
             initialized = true;
         }
 
         // checks arm and slide current position
-        double pos = arm.armMotor.getCurrentPosition();
-        telemetry.addData("Arm pos:", pos);
+        double pos = intakeSlide.slideMotor.getCurrentPosition();
+
+        telemetry.addData("Slide pos:", pos);
         telemetry.update();
 
-        if (pos < arm.ARM_POSITION_TICKS_LOW_BASKET-50) {
+        // giving some buffer here for ticks
+        if (pos < slideMax - 200) {
             // true causes the action to rerun
             return true;
         } else {
-            telemetry.addLine("ARM reached Low Basket");
+            telemetry.addLine("Slides reached MAX");
             telemetry.update();
             // false stops action rerun
+            intakeSlide.slideMotor.setVelocity(intakeSlide.MAX_VELOCITY*0.8);
             return false;
         }
-        // overall, the action powers the arm until it surpasses
-        // ARM_POSITION_TICKS_LOW_BASKET encoder ticks, then powers it off
+        // overall, the action powers the slides until it surpasses
+        // SLIDE_POSITION_MAX encoder ticks, then powers it off
 
     }
 }

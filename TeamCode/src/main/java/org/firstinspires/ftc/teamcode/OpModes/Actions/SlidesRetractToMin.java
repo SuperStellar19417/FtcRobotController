@@ -32,7 +32,9 @@ public class SlidesRetractToMin implements Action {
         telemetry.addData("Slide pos:", pos);
         telemetry.update();
 
-        if (pos > intakeSlide.SLIDE_POSITION_MIN + 50) {
+        if (pos > intakeSlide.SLIDE_POSITION_MIN + 200) {
+            telemetry.addData("Slide pos:", pos);
+            telemetry.update();
             // true causes the action to rerun
             return true;
         } else {

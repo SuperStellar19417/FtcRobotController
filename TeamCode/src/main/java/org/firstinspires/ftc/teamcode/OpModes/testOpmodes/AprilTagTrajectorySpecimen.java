@@ -6,6 +6,7 @@ import android.util.Size;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -81,6 +82,23 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
      * The variable to store our instance of the vision portal.
      */
     private VisionPortal visionPortal;
+
+    final double SPEED_GAIN  =  0.02  ;   //  Forward Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    final double STRAFE_GAIN =  0.015 ;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
+    final double TURN_GAIN   =  0.01  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+
+    final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
+    final double MAX_AUTO_STRAFE= 0.5;   //  Clip the strafing speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
+
+    // Adjust these numbers to suit your robot.
+    final double DESIRED_DISTANCE_FROM_TAG = 12.0; //  this is how close the camera should get to the target (inches) (forward/back)
+    final double MOVE_DISTANCE_LR = -14.0; //  How much left or right to move -ve is right, +ve is left from robot perspective
+    final double MOVE_DISTANCE_FORWARD = 4.0; //  How much forward to move -ve is back, +ve is forward from robot perspective
+    final double SAMPLE_PICKUP_DS_THRESHOLD = 3; //  How close to wall to get using distance sensor in inches
+    final double DROP_OFF_DISTANCE_FROM_TAG = 24.0; //  this is how much backwards to move from the tag to drop off the specimen
+
+    private static final int DESIRED_TAG_ID = 11;
 
     // Declare subsystems here
     private MecanumDrive driveTrain;
@@ -548,5 +566,184 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
         while (!isStopRequested() && timer.time() < time) {
             //don't even worry about it
         }
+    }
+
+    private void moveRobot(double x, double y, double yaw) {
+        // Implement your robot movement here
+        driveTrain.setDrivePowers(new PoseVelocity2d(
+                new Vector2d( x, y),
+                yaw
+        ));
+
+        driveTrain.updatePoseEstimate();
+    }
+
+    private AprilTagDetection getAprilTagDetection(int tagId) {
+        AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
+
+        // Step through the list of detected tags and look for a matching tag
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        for (AprilTagDetection detection : currentDetections) {
+            // Look to see if we have size info on this tag.
+            if (detection.metadata != null) {
+                //  Check to see if we want to track towards this tag.
+                if ((tagId < 0) || (detection.id == tagId)) {
+                    // Yes, we want to use this tag.
+                    desiredTag = detection;
+                    break;  // don't look any further.
+                }
+            }
+        }
+
+        return desiredTag;
+    }
+
+    private void moveJoyceForwardUsingAprilTag(int tagId, double offset) {
+        // See https://ftc-docs.firstinspires.org/en/latest/apriltag/understanding_apriltag_detection_values/understanding-apriltag-detection-values.html#understanding-apriltag-detection-values
+        // for how to interpret the values in the AprilTagDetection object.
+
+        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
+        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
+        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
+
+        boolean done = false;               // Set to true when we are done with this task.
+
+        visionPortal.setProcessorEnabled(aprilTag, true);
+        while(opModeIsActive() && !isStopRequested() && !done)
+        {
+            AprilTagDetection desiredTag = getAprilTagDetection(tagId);
+            if (desiredTag != null) {
+                // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+                double  rangeError      = (desiredTag.ftcPose.range - offset);
+                double  headingError    = desiredTag.ftcPose.bearing;
+                double  yawError        = desiredTag.ftcPose.yaw;
+
+                // Use the speed and turn "gains" to calculate how we want the robot to move.
+                drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+                turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
+                strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+
+                telemetry.addData("Postion","Range Err %5.2f, Heading Err %5.2f, Yaw Err %5.2f ", rangeError, headingError, yawError);
+                telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+
+                // Apply desired axes motions to the drivetrain.
+                moveRobot(drive, strafe, turn);
+
+                // Check to see if we are close enough to the target.
+                if (Math.abs(drive) <= 0.1 && Math.abs(strafe) <= 0.1 && Math.abs(turn) <= 0.1) {
+                    done = true;
+                }
+            }
+
+            telemetry.update();
+            sleep(10);
+        }
+
+        moveRobot(0,0,0);
+        visionPortal.setProcessorEnabled(aprilTag, false);
+    }
+
+    private void moveJoyceBackUsingAprilTag(int tagId, double offset) {
+        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
+        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
+        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
+        double targetPosition   = 0;
+        boolean done = false;               // Set to true when we are done with this task.
+
+        visionPortal.setProcessorEnabled(aprilTag, true);
+        AprilTagDetection desiredTag = getAprilTagDetection(tagId);
+        if (desiredTag != null) {
+            targetPosition = desiredTag.ftcPose.range + offset;
+        }
+        else {
+            telemetry.addData("Error", "No April Tag detected");
+            return;
+        }
+
+        telemetry.setAutoClear(true);
+        while(opModeIsActive() && !isStopRequested() && !done)
+        {
+            desiredTag = getAprilTagDetection(tagId);
+            if (desiredTag != null) {
+                // Determine heading, range and Yaw (tag image rotation) error so we can use them to
+                // control the robot automatically.
+
+                // Since we are moving back, we need to reverse the range error
+                double  rangeError      = (desiredTag.ftcPose.range - targetPosition);
+                double  headingError    = desiredTag.ftcPose.bearing;
+                double  yawError        = desiredTag.ftcPose.yaw;
+
+                // Use the speed and turn "gains" to calculate how we want the robot to move.
+                drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+                // drive = -drive; // Move backwards
+
+                turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
+                strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+
+                telemetry.addData("Offset Range", "%5.2f %5.2f inches", offset, desiredTag.ftcPose.range);
+                telemetry.addData("Postion","Range Err %5.2f, Heading Err %5.2f, Yaw Err %5.2f ", rangeError, headingError, yawError);
+                telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+
+                // Apply desired axes motions to the drivetrain.
+                moveRobot(drive, strafe, turn);
+
+                // Check to see if we are close enough to the target.
+                if (Math.abs(drive) <= 0.1 && Math.abs(strafe) <= 0.1 && Math.abs(turn) <= 0.1) {
+                    //telemetry.addData("Error", "Done");
+                    done = true;
+                }
+            }
+            telemetry.update();
+            sleep(10);
+        }
+
+        visionPortal.setProcessorEnabled(aprilTag, false);
+        moveRobot(0,0,0);
+    }
+
+    private void moveJoyceForwardUsingDistanceSensor(double offset) {
+        boolean done  = false;    // Set to true when we are done with this task.
+        double drivePower = 0.3;        // Desired forward power/speed (-1 to +1)
+
+        while(opModeIsActive() && !isStopRequested() && !done)
+        {
+            double distance = claw.distanceSensor.getDistance(DistanceUnit.INCH);
+            telemetry.addData("Offset Distance", "%5.2f %5.2f inches", offset, distance);
+
+            // Apply desired axes motions to the drivetrain.
+            moveRobot(drivePower, 0, 0);
+
+            // Check to see if we are close enough to the target.
+            if ( distance <= offset) {
+                done = true;
+            }
+            telemetry.update();
+            sleep(10);
+        }
+
+        moveRobot(0, 0, 0);
+    }
+
+    private void moveJoyceBackUsingDistanceSensor(double offset) {
+        boolean done = false;    // Set to true when we are done with this task.
+        double drivePower = -0.3;        // Desired forward power/speed (-1 to +1)
+
+        while(opModeIsActive() && !isStopRequested() && !done)
+        {
+            double distance = claw.distanceSensor.getDistance(DistanceUnit.INCH);
+            telemetry.addData("Offset Distance", "%5.2f %5.2f inches", offset, distance);
+
+            // Apply desired axes motions to the drivetrain.
+            moveRobot(drivePower, 0, 0);
+
+            // Check to see if we are close enough to the target.
+            if ( distance >= offset) {
+                done = true;
+            }
+            telemetry.update();
+            sleep(10);
+        }
+
+        moveRobot(0, 0, 0);
     }
 }

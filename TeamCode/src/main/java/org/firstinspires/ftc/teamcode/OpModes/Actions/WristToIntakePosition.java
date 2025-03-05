@@ -21,6 +21,6 @@ public class WristToIntakePosition implements Action {
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
         claw.wristMid();
         telemetry.addLine("Wrist moved to mid pos");
-        return true;
+        return false;
     }
 }
