@@ -134,7 +134,7 @@ public class GamepadController {
             arm.moveArmLowBasketPosition();
             slide.moveSlideMid();
         } else if (gp2GetButtonBPress()) {
-            arm.moveArmHighBasketPosition();
+            arm.moveArmHighBasketPosition(false);
             slide.moveSlideHigh();
             claw.wristUp();
            // arm.move();
@@ -150,7 +150,7 @@ public class GamepadController {
 
             arm.moveArmHangingPosition();
         } else if(gp2GetRightTriggerPress()) {
-            arm.moveArmSpecimenIntakePosition();;
+            slide.extendSlideToSpecIntake();
             claw.wristUp();
             claw.intakeClawOpen();
         } else if (gp2GetLeftTriggerPress()){

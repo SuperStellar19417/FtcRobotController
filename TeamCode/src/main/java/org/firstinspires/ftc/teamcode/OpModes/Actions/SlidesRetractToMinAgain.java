@@ -6,43 +6,42 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.SubSystems.Arm;
+import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 
-public class ArmMoveToRestingPosition implements Action {
+public class SlidesRetractToMinAgain implements Action {
 
-    private Arm arm;
+    private IntakeSlide intakeSlide;
     private boolean initialized = false;
     private Telemetry telemetry;
 
-    public ArmMoveToRestingPosition(Arm arm, Telemetry telemetry){
-        this.arm = arm;
+    public SlidesRetractToMinAgain(IntakeSlide intakeSlide, Telemetry telemetry){
+        this.intakeSlide = intakeSlide;
         this.telemetry = telemetry;
     }
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
 
-        // powers on motor, if it is not on
         if (!initialized) {
-            arm.moveArmIntakePosition();
+            intakeSlide.moveSlideLow();
             initialized = true;
         }
 
         // checks arm and slide current position
-        double pos = arm.armMotor.getCurrentPosition();
-        telemetry.addData("Arm pos:", pos);
+        double pos = intakeSlide.slideMotor.getCurrentPosition();
+        telemetry.addData("Slide pos:", pos);
         telemetry.update();
 
-        if (pos >= arm.ARM_POSITION_TICKS_INTAKE + 200) {
+        if (pos > intakeSlide.SLIDE_POSITION_MIN + 200) {
+            telemetry.addData("Slide pos:", pos);
+            telemetry.update();
             // true causes the action to rerun
             return true;
         } else {
-            // false stops action rerun
-            telemetry.addLine("ARM reached resting position");
+            telemetry.addLine("Slides are down");
             telemetry.update();
-            arm.stopMotors();
+            // false stops action rerun
             return false;
         }
-
     }
 }

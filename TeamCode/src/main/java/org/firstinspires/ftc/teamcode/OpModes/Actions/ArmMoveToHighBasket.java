@@ -26,7 +26,7 @@ public class ArmMoveToHighBasket implements Action {
 
         // powers on motor, if it is not on
         if (!initialized) {
-            arm.moveArmHighBasketPosition();
+            arm.moveArmHighBasketPosition(true);
             initialized = true;
         }
 

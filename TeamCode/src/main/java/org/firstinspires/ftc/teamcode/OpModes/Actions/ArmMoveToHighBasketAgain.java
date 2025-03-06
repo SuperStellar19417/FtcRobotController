@@ -8,13 +8,15 @@ import com.acmerobotics.roadrunner.Action;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 
-public class ArmMoveToRestingPosition implements Action {
+public class ArmMoveToHighBasketAgain implements Action {
 
     private Arm arm;
     private boolean initialized = false;
+
+    private static int armMaxForAuto = 1200;
     private Telemetry telemetry;
 
-    public ArmMoveToRestingPosition(Arm arm, Telemetry telemetry){
+    public ArmMoveToHighBasketAgain(Arm arm, Telemetry telemetry){
         this.arm = arm;
         this.telemetry = telemetry;
     }
@@ -24,7 +26,7 @@ public class ArmMoveToRestingPosition implements Action {
 
         // powers on motor, if it is not on
         if (!initialized) {
-            arm.moveArmIntakePosition();
+            arm.moveArmHighBasketPosition(true);
             initialized = true;
         }
 
@@ -33,16 +35,17 @@ public class ArmMoveToRestingPosition implements Action {
         telemetry.addData("Arm pos:", pos);
         telemetry.update();
 
-        if (pos >= arm.ARM_POSITION_TICKS_INTAKE + 200) {
+        if (pos < armMaxForAuto-75) {
             // true causes the action to rerun
             return true;
         } else {
-            // false stops action rerun
-            telemetry.addLine("ARM reached resting position");
+            telemetry.addLine("ARM reached Low Basket");
             telemetry.update();
-            arm.stopMotors();
+            // false stops action rerun
             return false;
         }
+        // overall, the action powers the arm until it surpasses
+        // ARM_POSITION_TICKS_LOW_BASKET encoder ticks, then powers it off
 
     }
 }

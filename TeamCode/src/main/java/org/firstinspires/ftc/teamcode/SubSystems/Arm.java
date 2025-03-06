@@ -112,9 +112,13 @@ public class Arm {
         runMotors();
     }
 
-    public void moveArmHighBasketPosition() {
+    public void moveArmHighBasketPosition(boolean auto) {
+        if(auto) {
+            armPositionTicks = 1150;
+        } else {
+            armPositionTicks = ARM_POSITION_TICKS_HIGH_BASKET;
 
-        armPositionTicks = ARM_POSITION_TICKS_HIGH_BASKET;
+        }
         armMotor.setTargetPosition(armPositionTicks);
         currentArmPosition = ARM_POSITION.ARM_POSITION_HIGH_BASKET;
         runMotors();

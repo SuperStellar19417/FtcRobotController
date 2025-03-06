@@ -8,13 +8,13 @@ import com.acmerobotics.roadrunner.Action;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 
-public class ArmMoveToRestingPosition implements Action {
+public class ArmMoveToRestingPositionAgain implements Action {
 
     private Arm arm;
     private boolean initialized = false;
     private Telemetry telemetry;
 
-    public ArmMoveToRestingPosition(Arm arm, Telemetry telemetry){
+    public ArmMoveToRestingPositionAgain(Arm arm, Telemetry telemetry){
         this.arm = arm;
         this.telemetry = telemetry;
     }
@@ -33,7 +33,7 @@ public class ArmMoveToRestingPosition implements Action {
         telemetry.addData("Arm pos:", pos);
         telemetry.update();
 
-        if (pos >= arm.ARM_POSITION_TICKS_INTAKE + 200) {
+        if (pos >= arm.ARM_POSITION_TICKS_INTAKE + 150) {
             // true causes the action to rerun
             return true;
         } else {

@@ -4,11 +4,17 @@ import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 
 import android.util.Size;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Arclength;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Pose2dDual;
+import com.acmerobotics.roadrunner.PosePath;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -23,11 +29,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToHighBasket;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToHighBasketAgain;
 import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToRestingPosition;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToRestingPositionAgain;
 import org.firstinspires.ftc.teamcode.OpModes.Actions.ClawClose;
 import org.firstinspires.ftc.teamcode.OpModes.Actions.ClawOpen;
 import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesExtendToHighBasket;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesExtendToHighBasketAgain;
 import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesRetractToMin;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesRetractToMinAgain;
 import org.firstinspires.ftc.teamcode.OpModes.Actions.WristToIntakePosition;
 import org.firstinspires.ftc.teamcode.OpModes.Actions.WristToUpPosition;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
@@ -102,9 +112,13 @@ public class AprilTagTrajectoryTesterBlue extends LinearOpMode {
     private ClawClose closeClaw;
    private ClawOpen openClaw;
     private SlidesExtendToHighBasket slidesHigh;
+    private SlidesExtendToHighBasketAgain slidesHighAgain;
     private SlidesRetractToMin slidesLow;
+    private SlidesRetractToMinAgain slidesLowAgain;
     private ArmMoveToHighBasket armToHighBasket;
+    private ArmMoveToHighBasketAgain armToHighBasketAgain;
     private ArmMoveToRestingPosition armToIntake;
+    private ArmMoveToRestingPositionAgain armToIntakeAgain;
 
     private WristToIntakePosition wristIntake;
     private WristToUpPosition wristUp;
@@ -128,13 +142,14 @@ public class AprilTagTrajectoryTesterBlue extends LinearOpMode {
         telemetry.addData(">", "Touch START to start OpMode");
         telemetry.update();
 
+
+        Pose2d startPose = new Pose2d(new Vector2d(36,63), Math.toRadians(0));
+        initSubsystems(startPose);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // Get current field position based on AprilTag detection
         // Init drive train with the start position detected
-        Pose2d startPose = new Pose2d(new Vector2d(12,63), Math.toRadians(0));
-        initSubsystems(startPose);
 
         // If Stop is pressed, exit OpMode
         if (isStopRequested()) return;
@@ -147,61 +162,79 @@ public class AprilTagTrajectoryTesterBlue extends LinearOpMode {
         // Move forward 5 inches and turn 90 degrees CCW (heading 180 in RR coordinates)
         //ACTUAL TRAJECTORY
         Action trajectoryAction = driveTrain.actionBuilder(startPose)
-                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y - 5))
+                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y - 10))
                 .build();
+        //36,53
 
-        Actions.runBlocking(new ParallelAction(trajectoryAction, armToHighBasket));
+        Actions.runBlocking(new ParallelAction(trajectoryAction, closeClaw));
 
         startPose = getFieldPosition(13);
+        driveTrain.updatePoseEstimate();
         Action fillerName = driveTrain.actionBuilder(startPose)
-                .strafeTo(new Vector2d(startPose.position.x + 46.5, startPose.position.y + 8))
-                .turnTo(Math.toRadians(50))
+                .strafeTo(new Vector2d(startPose.position.x + 11, startPose.position.y))
+                .turnTo(Math.toRadians(45))
+                .strafeTo(new Vector2d(startPose.position.x + 21.5, startPose.position.y))
                 .build();
+        //57.5,53
 
-        Actions.runBlocking(new SequentialAction(fillerName, slidesHigh, wristIntake, openClaw));
+        Action moveCloseToBasket = driveTrain.actionBuilder(new Pose2d(new Vector2d(startPose.position.x + 21.5, startPose.position.y), Math.toRadians(45)))
+                        .strafeTo(new Vector2d(startPose.position.x + 24, startPose.position.y + 4.5))
+                        .build();
+
+        Actions.runBlocking(new SequentialAction(fillerName, armToHighBasket, slidesHigh, wristIntake, moveCloseToBasket, openClaw));
        safeWaitSeconds(0.7);
+       Actions.runBlocking(wristUp);
 
-        Pose2d tempPose =  new Pose2d(new Vector2d(52,63), Math.toRadians(50));
+        Pose2d tempPose =  new Pose2d(new Vector2d(58,57.5), Math.toRadians(45));
 
 
         Action nextAction = driveTrain.actionBuilder(tempPose)
                 .turnTo(Math.toRadians(0))
                 .waitSeconds(0.3)
-                .strafeTo(new Vector2d(tempPose.position.x - 25, tempPose.position.y - 15))
+                .strafeTo(new Vector2d(tempPose.position.x - 15, tempPose.position.y - 12))
                 .build();
-        Actions.runBlocking(new SequentialAction(nextAction, slidesLow, wristUp, armToIntake));
+        Actions.runBlocking(new SequentialAction(nextAction));
+        arm.moveArmIntakePosition();
+        slides.moveSlideLow();
+        safeWaitSeconds(1.5);
 
         startPose = getFieldPosition(13);
+        driveTrain.updatePoseEstimate();
 
         Action firstSpike = driveTrain.actionBuilder(startPose)
                 .turnTo(Math.toRadians(270))
                 .setTangent(Math.toRadians(0))
-                .lineToX(startPose.position.x + 21)
+                .lineToX(startPose.position.x + 3)
                 .setTangent(Math.toRadians(90))
-                .lineToY(startPose.position.y - 14)
+                .lineToY(startPose.position.y - 5.5)
                 .build();
 
         Actions.runBlocking(new SequentialAction(firstSpike, wristIntake));
-        safeWaitSeconds(0.5);
+        safeWaitSeconds(0.75);
         Actions.runBlocking(new SequentialAction(closeClaw));
         safeWaitSeconds(0.5);
-        /*Actions.runBlocking(new SequentialAction(wristUp));
-        Action turnBetweenSpike = driveTrain.actionBuilder(new Pose2d(new Vector2d(startPose.position.x - 2, startPose.position.y - 8), Math.toRadians(270)))
-                .lineToY(startPose.position.y - 4)
-                .turnTo(Math.toRadians(0))
-                .build();
+        Actions.runBlocking(new SequentialAction(wristUp));
 
-        Actions.runBlocking(new SequentialAction(turnBetweenSpike));
-        safeWaitSeconds(0.25);
-        Pose2d spikePose = getFieldPosition(13);
-        arm.stopMotors();
+
+        Pose2d spikePose = new Pose2d(new Vector2d(startPose.position.x + 21, startPose.position.y - 13), Math.toRadians(270));
         Action toBucket1 = driveTrain.actionBuilder(spikePose)
-                .strafeTo(new Vector2d(spikePose.position.x + 7, spikePose.position.y + 13))
+                .strafeTo(new Vector2d(spikePose.position.x + 8, spikePose.position.y + 13))
                 .turnTo(Math.toRadians(45))
                 .build();
-        Actions.runBlocking(new SequentialAction(new ParallelAction(toBucket1, armToHighBasket), slidesHigh));
 
+        Action moveCloseToBasket2 = driveTrain.actionBuilder(new Pose2d(new Vector2d(spikePose.position.x + 8, spikePose.position.y + 13), Math.toRadians(45)))
+                .strafeTo(new Vector2d(spikePose.position.x + 14, spikePose.position.y + 17))
+                .build();
 
+        Action moveAwayFromBasket = driveTrain.actionBuilder(new Pose2d(new Vector2d(spikePose.position.x + 14, spikePose.position.y + 17), Math.toRadians(45)))
+                .strafeTo(new Vector2d(spikePose.position.x + 8, spikePose.position.y + 13))
+                .build();
+
+        Actions.runBlocking(new SequentialAction(toBucket1, armToHighBasketAgain, slidesHighAgain, wristIntake, moveCloseToBasket2, openClaw));
+        safeWaitSeconds(0.25);
+        Actions.runBlocking(new SequentialAction(new ParallelAction(moveAwayFromBasket, wristUp), new ParallelAction(slidesLow, armToIntakeAgain)));
+
+    /*
         Pose2d spikePose2 = new Pose2d(new Vector2d(44, 59), Math.toRadians(45));
         Action secondSpike = driveTrain.actionBuilder(spikePose2)
                 .turnTo(Math.toRadians(270))
@@ -286,6 +319,7 @@ public class AprilTagTrajectoryTesterBlue extends LinearOpMode {
         driveTrain = new MecanumDrive(hardwareMap, startPose);
         arm = new Arm(this);
         claw = new Claw(this);
+        claw.intakeClawClose();
         slides = new IntakeSlide(this);
         climber = new Climber(this);
         telemetry.addData("DriveTrain Initialized with Pose x y h (inch/deg)",
@@ -299,6 +333,9 @@ public class AprilTagTrajectoryTesterBlue extends LinearOpMode {
          armToIntake = new ArmMoveToRestingPosition(arm, telemetry);
          wristIntake = new WristToIntakePosition(claw, telemetry);
          wristUp = new WristToUpPosition(claw, telemetry);
+        slidesHighAgain = new SlidesExtendToHighBasketAgain(slides, telemetry);
+        armToHighBasketAgain = new ArmMoveToHighBasketAgain(arm, telemetry);
+        armToIntakeAgain = new ArmMoveToRestingPositionAgain(arm, telemetry);
 
     }
 

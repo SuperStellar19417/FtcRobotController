@@ -24,6 +24,7 @@ public class SlidesExtendToHighBasket implements Action {
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
         // powers on motor, if it is not on
         if (!initialized) {
+          //  intakeSlide.moveSlideHigh();
             intakeSlide.moveSlideHigh();
             initialized = true;
         }
@@ -35,14 +36,14 @@ public class SlidesExtendToHighBasket implements Action {
         telemetry.update();
 
         // giving some buffer here for ticks
-        if (pos < slideMax - 200) {
+        if (pos < slideMax - 260) {
             // true causes the action to rerun
             return true;
         } else {
             telemetry.addLine("Slides reached MAX");
             telemetry.update();
+
             // false stops action rerun
-            intakeSlide.slideMotor.setVelocity(intakeSlide.MAX_VELOCITY*0.8);
             return false;
         }
         // overall, the action powers the slides until it surpasses
