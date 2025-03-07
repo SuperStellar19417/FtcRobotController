@@ -31,8 +31,8 @@ public class Arm {
     public static int ARM_MAX_POSITION_COUNT = 1250;
 //    public static int ARM_MIN_POSITION_COUNT = 0;
 
-    private final int ARM_DELTA_TICKS_NORMAL = 100;
-    private final int ARM_DELTA_TICKS_END_GAME = 400;
+    public final int ARM_DELTA_TICKS_NORMAL = 100;
+    public final int ARM_DELTA_TICKS_END_GAME = 400;
 
     public final double POWER_LEVEL_STOP = 0.0;
     public final double POWER_LEVEL_RUN = 0.7;
@@ -101,6 +101,12 @@ public class Arm {
         armPositionTicks = ARM_POSITION_TICKS_HANGING;
         armMotor.setTargetPosition(armPositionTicks);
         currentArmPosition = ARM_POSITION.ARM_POSITION_HANGING;
+        runMotors();
+    }
+
+    public void moveArmMidwayPosition() {
+        armPositionTicks = 600;
+        armMotor.setTargetPosition(armPositionTicks);
         runMotors();
     }
 

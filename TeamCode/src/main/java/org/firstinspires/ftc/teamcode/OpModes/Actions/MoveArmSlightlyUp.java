@@ -4,18 +4,17 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 
-public class MoveArmHighRung implements Action {
+public class MoveArmSlightlyUp implements Action {
 
     private Arm arm;
     private boolean initialized = false;
     private Telemetry telemetry;
 
-    public MoveArmHighRung(Arm arm, Telemetry telemetry){
+    public MoveArmSlightlyUp(Arm arm, Telemetry telemetry){
         this.arm = arm;
         this.telemetry = telemetry;
     }
@@ -25,7 +24,7 @@ public class MoveArmHighRung implements Action {
 
         // powers on motor, if it is not on
         if (!initialized) {
-            arm.moveArmHighRungPosition();
+            arm.moveArmSlightlyUp();
             initialized = true;
         }
 
@@ -34,12 +33,12 @@ public class MoveArmHighRung implements Action {
         telemetry.addData("Arm pos:", pos);
         telemetry.update();
 
-        if (pos < arm.ARM_POSITION_TICKS_HIGH_RUNG - 50) {
+        if (pos < arm.ARM_DELTA_TICKS_NORMAL - 25) {
             // true causes the action to rerun
             return true;
         } else {
             // false stops action rerun
-            telemetry.addLine("ARM reached high rung position");
+            telemetry.addLine("ARM reached slightly up position");
             telemetry.update();
             return false;
         }

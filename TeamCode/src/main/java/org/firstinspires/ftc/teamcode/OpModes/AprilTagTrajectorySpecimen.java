@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode.OpModes.testOpmodes;
+package org.firstinspires.ftc.teamcode.OpModes;
 
 import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 
 import android.util.Size;
 
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -23,14 +24,32 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.OpModes.NormalTeleOp;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToHighBasket;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToHighBasketAgain;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToRestingPosition;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToRestingPositionAgain;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ClawClose;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ClawOpen;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.MoveArmHighRung;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.MoveArmHighRungAgain;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.MoveArmMidway;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.MoveArmSlightlyUp;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesExtendToHighBasket;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesExtendToHighBasketAgain;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesExtendToSpecimenIntake;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesRetractFromSpecimenIntake;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesRetractToMin;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesRetractToMinAgain;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesSlightlyExtend;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesSlightlyRetract;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.WristToIntakePosition;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.WristToUpPosition;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-import org.opencv.core.Mat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-@Autonomous(name = "ACTUAL AprilTag Trajectory Specimen", group = "01-Test")
+@Autonomous(name = "Blue Specimen Autonomous", group = "01-Test")
 public class AprilTagTrajectorySpecimen extends LinearOpMode {
 
     /**
@@ -106,6 +125,29 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
     private IntakeSlide slides;
     private Claw claw;
 
+    private ClawClose closeClaw;
+    private ClawOpen openClaw;
+    private SlidesExtendToHighBasket slidesHigh;
+    private SlidesExtendToHighBasketAgain slidesHighAgain;
+    private SlidesRetractToMin slidesLow;
+    private SlidesRetractToMinAgain slidesLowAgain;
+    private MoveArmSlightlyUp armSlightlyUp;
+    private ArmMoveToRestingPosition armToIntake;
+    private ArmMoveToRestingPositionAgain armToIntakeAgain;
+    private SlidesSlightlyRetract retractSlides;
+    private MoveArmMidway armMidway;
+
+
+    private MoveArmHighRung armToHighRung;
+    private MoveArmHighRungAgain armToHighRungAgain;
+    private WristToIntakePosition wristIntake;
+    private WristToUpPosition wristUp;
+    private SlidesSlightlyExtend extendSlides;
+
+    private SlidesExtendToSpecimenIntake slidesToSpecimenIntake;
+
+    private SlidesRetractFromSpecimenIntake slidesRetractFromSpecimenIntake;
+
     private boolean gp1ButtonALast = false;
 
     public AprilTagTrajectorySpecimen() {
@@ -136,51 +178,40 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
         // If Stop is pressed, exit OpMode
         if (isStopRequested()) return;
 
-        telemetry.addLine("Press A for next step.");
-        telemetry.update();
-
-        while(!gp1GetButtonAPress() && opModeIsActive() && !isStopRequested()) {
-            sleep(20);
-        }
-        telemetry.addLine("BUTTON CLICKED");
         telemetry.update();
 
         // Create a trajectory to first waypoint (somewhere we can see tag # 16)
         // Move forward 5 inches and turn 90 degrees CCW (heading 180 in RR coordinates)
         Action trajectoryAction = driveTrain.actionBuilder(startPose)
-                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y + 23))
+                .lineToY(startPose.position.y + 27)
                 .build();
 
-        arm.moveArmHighRungPosition();
-        slides.extendSlide();
-        safeWaitSeconds(1.25);
 
-        Actions.runBlocking(new SequentialAction(trajectoryAction));
-
-        claw.wristMid();
+        Actions.runBlocking(new ParallelAction(trajectoryAction, armToHighRung, closeClaw));
+        Actions.runBlocking(new SequentialAction(wristIntake));
         safeWaitSeconds(0.5);
 
 
         Pose2d tempPose = new Pose2d(new Vector2d(startPose.position.x, startPose.position.y + 20), Math.toRadians(90));
         Action moveBack = driveTrain.actionBuilder(tempPose)
-                .lineToY(startPose.position.y + 5)
+                .lineToY(startPose.position.y + 4)
                 .build();
 
-
-
         Actions.runBlocking(new SequentialAction(moveBack));
-        claw.intakeClawOpen();
-        claw.wristUp();
+        safeWaitSeconds(0.25);
+        Actions.runBlocking(new SequentialAction(openClaw, new ParallelAction(armToIntake, wristUp)));
+
+        slides.runSlideMotorAllTheWayDown();
+        safeWaitSeconds(0.75);
+
+     //   Actions.runBlocking(new ParallelAction(moveBack, slidesLow, armToIntake, openClaw, wristUp));
 
 
         Action moveBackPosition = driveTrain.actionBuilder(tempPose)
-                .lineToY(startPose.position.y + 13)
+                .lineToY(startPose.position.y + 11)
                 .turnTo(Math.toRadians(0))
                 .build();
 
-        slides.runSlideMotorAllTheWayDown();
-        arm.moveArmIntakePosition();
-        safeWaitSeconds(1);
 
         Actions.runBlocking(new SequentialAction(moveBackPosition));
 
@@ -190,30 +221,40 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
 
 
         Action toShieldPreload = driveTrain.actionBuilder(startPose)
-                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y + 5))
-                .strafeTo(new Vector2d(startPose.position.x - 40, startPose.position.y + 5))
+                .setTangent(Math.toRadians(180))
+                .lineToX(startPose.position.x - 28)
                 .build();
 
-        Action forwardToShield = driveTrain.actionBuilder(startPose)
-                .strafeTo(new Vector2d(startPose.position.x - 42, startPose.position.y + 5))
+        Action precisionShield = driveTrain.actionBuilder(startPose)
+                .setTangent(Math.toRadians(90))
+                .lineToY(startPose.position.y + 8)
+                .setTangent(Math.toRadians(180))
+                .lineToX(startPose.position.x - 30)
                 .build();
 
-        claw.intakeClawOpen();
+        Action backFromShield = driveTrain.actionBuilder(startPose)
+                .strafeTo(new Vector2d(startPose.position.x + 10, startPose.position.y + 5))
+                .build();
 
-        Actions.runBlocking(new SequentialAction(toShieldPreload));
-        safeWaitSeconds(1);
-        Actions.runBlocking(new SequentialAction(forwardToShield));
+
+        Actions.runBlocking(new ParallelAction(slidesToSpecimenIntake, toShieldPreload, openClaw));
+        safeWaitSeconds(0.5);
+        Actions.runBlocking(new SequentialAction(precisionShield));
+
         claw.intakeClawClose();
         safeWaitSeconds(0.2);
-        arm.moveArmHighRungPosition();
+        Actions.runBlocking(new SequentialAction(armSlightlyUp));
+        slides.runSlideMotorAllTheWayDown();
         safeWaitSeconds(0.75);
+        Actions.runBlocking(new SequentialAction(backFromShield, armToHighRungAgain));
+        Actions.runBlocking(new ParallelAction(wristUp));
 
 
         Pose2d newPose;
-        newPose = new Pose2d(new Vector2d(startPose.position.x - 38, startPose.position.y + 8), Math.toRadians(0));
+        newPose = new Pose2d(new Vector2d(startPose.position.x - 32, startPose.position.y + 7.5), Math.toRadians(0));
 
         Action pullBack = driveTrain.actionBuilder(newPose)
-                .strafeTo(new Vector2d(newPose.position.x - 38, newPose.position.y + 7))
+                .strafeTo(new Vector2d(newPose.position.x - 38, newPose.position.y + 11))
                 .build();
 
 
@@ -221,7 +262,8 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
                 .strafeTo(new Vector2d(startPose.position.x, startPose.position.y))
                 .build();
 
-        Actions.runBlocking(new SequentialAction(pullBack));
+        Actions.runBlocking(pullBack);
+
 
         startPose = getFieldPosition(11);
 
@@ -229,15 +271,22 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
 
         Action toSubOne = driveTrain.actionBuilder(startPose)
                 .turnTo(Math.toRadians(270))
-                .strafeTo(new Vector2d(startPose.position.x + 3, startPose.position.y - 13))
+                .strafeTo(new Vector2d(startPose.position.x - 7, startPose.position.y - 18))
                 .build();
 
         Actions.runBlocking(new SequentialAction(toSubOne));
+
+        Actions.runBlocking(new SequentialAction(wristIntake));
         safeWaitSeconds(0.5);
-        slides.extendSlide();
-        safeWaitSeconds(1.25);
-        claw.wristMid();
-        safeWaitSeconds(0.5);
+
+        startPose = new Pose2d(new Vector2d(0, 0), Math.toRadians(90));
+        Action moveBackFromSub = driveTrain.actionBuilder(startPose)
+                .strafeTo(new Vector2d(0, -4))
+                .build();
+
+        Actions.runBlocking(new SequentialAction(armMidway));
+        safeWaitSeconds(0.75);
+        Actions.runBlocking(new SequentialAction(moveBackFromSub, openClaw, wristUp, armToIntakeAgain));
 
 
 
@@ -248,7 +297,7 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
                 .build();
 
 
-        Actions.runBlocking(new SequentialAction(midPoseSecond));
+    /*    Actions.runBlocking(new SequentialAction(midPoseSecond));
 
         claw.intakeClawOpen();
         safeWaitSeconds(0.3);
@@ -269,7 +318,7 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
         startPose = getFieldPosition(11);
 
         // ALL THIS HAPPENS AFTER THE PRELOADS
-        Action pushFieldSample = driveTrain.actionBuilder(startPose)
+    /*    Action pushFieldSample = driveTrain.actionBuilder(startPose)
                 .strafeTo(new Vector2d(startPose.position.x - 25, startPose.position.y))
                 .strafeTo(new Vector2d(startPose.position.x - 26, startPose.position.y - 25))
                 .strafeTo(new Vector2d(startPose.position.x - 26, startPose.position.y - 25))
@@ -282,7 +331,7 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
               //  .lineToYConstantHeading(startPose.position.y + 5)
                 .build();
 
-        Actions.runBlocking(new SequentialAction(pushFieldSample));
+        Actions.runBlocking(new SequentialAction(pushFieldSample)); */
 
 
 
@@ -374,6 +423,24 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
         telemetry.addData("DriveTrain Initialized with Pose x y h (inch/deg)",
                 "%.2f %.2f %.2f", startPose.position.x, startPose.position.y,
                 Math.toDegrees(startPose.heading.toDouble()));
+
+        closeClaw = new ClawClose(claw, telemetry);
+        openClaw = new ClawOpen(claw, telemetry);
+        slidesHigh = new SlidesExtendToHighBasket(slides, telemetry);
+        slidesLow = new SlidesRetractToMin(slides, telemetry);
+        armToIntake = new ArmMoveToRestingPosition(arm, telemetry);
+        wristIntake = new WristToIntakePosition(claw, telemetry);
+        wristUp = new WristToUpPosition(claw, telemetry);
+        slidesHighAgain = new SlidesExtendToHighBasketAgain(slides, telemetry);
+        armToIntakeAgain = new ArmMoveToRestingPositionAgain(arm, telemetry);
+        slidesToSpecimenIntake = new SlidesExtendToSpecimenIntake(slides, telemetry);
+        slidesRetractFromSpecimenIntake = new SlidesRetractFromSpecimenIntake(slides, telemetry);
+        armToHighRung = new MoveArmHighRung(arm, telemetry);
+        armToHighRungAgain = new MoveArmHighRungAgain(arm, telemetry);
+        extendSlides = new SlidesSlightlyExtend(slides, telemetry);
+        retractSlides = new SlidesSlightlyRetract(slides, telemetry);
+        armSlightlyUp = new MoveArmSlightlyUp(arm, telemetry);
+        armMidway = new MoveArmMidway(arm, telemetry);
     }
 
     /**

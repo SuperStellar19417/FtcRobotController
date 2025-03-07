@@ -14,6 +14,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToHighBasket;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToHighBasketAgain;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToRestingPosition;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToRestingPositionAgain;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ClawClose;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.ClawOpen;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesExtendToHighBasket;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesExtendToHighBasketAgain;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesRetractToMin;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.SlidesRetractToMinAgain;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.WristToIntakePosition;
+import org.firstinspires.ftc.teamcode.OpModes.Actions.WristToUpPosition;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 import org.firstinspires.ftc.teamcode.SubSystems.Claw;
 import org.firstinspires.ftc.teamcode.SubSystems.Flag;
@@ -66,6 +78,20 @@ public class SpecimenAprilTag extends LinearOpMode {
     //private Climber climber;
     private Flag flag;
     private SampleColorLight sampleColorLight;
+
+    private ClawClose closeClaw;
+    private ClawOpen openClaw;
+    private SlidesExtendToHighBasket slidesHigh;
+    private SlidesExtendToHighBasketAgain slidesHighAgain;
+    private SlidesRetractToMin slidesLow;
+    private SlidesRetractToMinAgain slidesLowAgain;
+    private ArmMoveToHighBasket armToHighBasket;
+    private ArmMoveToHighBasketAgain armToHighBasketAgain;
+    private ArmMoveToRestingPosition armToIntake;
+    private ArmMoveToRestingPositionAgain armToIntakeAgain;
+
+    private WristToIntakePosition wristIntake;
+    private WristToUpPosition wristUp;
 
     @Override
     public void runOpMode() {
@@ -206,7 +232,7 @@ public class SpecimenAprilTag extends LinearOpMode {
     }
 
     private void cycleToBasket() {
-        claw.wristMid();
+        Actions.runBlocking(wristIntake);
         safeWaitSeconds(1);
         claw.intakeClawOpen();
         safeWaitSeconds(0.5);
@@ -234,6 +260,18 @@ public class SpecimenAprilTag extends LinearOpMode {
    //     climber = new Climber(this);
         slide = new IntakeSlide(this);
         flag = new Flag(this);
+
+        closeClaw = new ClawClose(claw, telemetry);
+        openClaw = new ClawOpen(claw, telemetry);
+        slidesHigh = new SlidesExtendToHighBasket(slide, telemetry);
+        slidesLow = new SlidesRetractToMin(slide, telemetry);
+        armToHighBasket = new ArmMoveToHighBasket(arm, telemetry);
+        armToIntake = new ArmMoveToRestingPosition(arm, telemetry);
+        wristIntake = new WristToIntakePosition(claw, telemetry);
+        wristUp = new WristToUpPosition(claw, telemetry);
+        slidesHighAgain = new SlidesExtendToHighBasketAgain(slide, telemetry);
+        armToHighBasketAgain = new ArmMoveToHighBasketAgain(arm, telemetry);
+        armToIntakeAgain = new ArmMoveToRestingPositionAgain(arm, telemetry);
         aprilTag = AprilTagProcessor.easyCreateWithDefaults();
         visionPortal = VisionPortal.easyCreateWithDefaults(
                 hardwareMap.get(WebcamName.class, "Webcam 1"), aprilTag);

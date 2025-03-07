@@ -34,7 +34,7 @@ public class SlidesExtendToSpecimenIntake implements Action {
         telemetry.update();
 
         // giving some buffer here for ticks
-        if (pos < intakeSlide.SLIDE_SPEC_INTAKE_DELTA - 50) {
+        if (pos < intakeSlide.SLIDE_SPEC_INTAKE_DELTA - 80) {
             // true causes the action to rerun
             return true;
         } else {

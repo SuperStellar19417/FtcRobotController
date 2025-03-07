@@ -4,18 +4,17 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.SubSystems.Arm;
 
-public class MoveArmHighRung implements Action {
+public class MoveArmHighRungAgain implements Action {
 
     private Arm arm;
     private boolean initialized = false;
     private Telemetry telemetry;
 
-    public MoveArmHighRung(Arm arm, Telemetry telemetry){
+    public MoveArmHighRungAgain(Arm arm, Telemetry telemetry){
         this.arm = arm;
         this.telemetry = telemetry;
     }

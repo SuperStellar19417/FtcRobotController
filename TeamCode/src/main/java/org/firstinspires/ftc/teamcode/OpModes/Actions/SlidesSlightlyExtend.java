@@ -4,45 +4,50 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.SubSystems.Arm;
+import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 
-public class MoveArmHighRung implements Action {
-
-    private Arm arm;
+public class SlidesSlightlyExtend implements Action {
+    private IntakeSlide intakeSlide;
     private boolean initialized = false;
     private Telemetry telemetry;
 
-    public MoveArmHighRung(Arm arm, Telemetry telemetry){
-        this.arm = arm;
+    private int slideMax = 400;
+
+    public SlidesSlightlyExtend(IntakeSlide intakeSlide, Telemetry telemetry){
+        this.intakeSlide = intakeSlide;
         this.telemetry = telemetry;
     }
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
         // powers on motor, if it is not on
         if (!initialized) {
-            arm.moveArmHighRungPosition();
+            //  intakeSlide.moveSlideHigh();
+            intakeSlide.extendSlide();
             initialized = true;
         }
 
         // checks arm and slide current position
-        double pos = arm.armMotor.getCurrentPosition();
-        telemetry.addData("Arm pos:", pos);
+        double pos = intakeSlide.slideMotor.getCurrentPosition();
+
+        telemetry.addData("Slide pos:", pos);
         telemetry.update();
 
-        if (pos < arm.ARM_POSITION_TICKS_HIGH_RUNG - 50) {
+        // giving some buffer here for ticks
+        if (pos < slideMax - 100) {
             // true causes the action to rerun
             return true;
         } else {
-            // false stops action rerun
-            telemetry.addLine("ARM reached high rung position");
+            telemetry.addLine("Slides extended");
             telemetry.update();
+
+            // false stops action rerun
             return false;
         }
+        // overall, the action powers the slides until it surpasses
+        // SLIDE_POSITION_MAX encoder ticks, then powers it off
 
     }
 }
