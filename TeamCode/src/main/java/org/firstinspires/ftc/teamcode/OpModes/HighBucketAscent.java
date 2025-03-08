@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.SampleColorLight;
 import org.firstinspires.ftc.teamcode.Utils;
 
 
+@Disabled
 @Autonomous(name = "High Bucket Ascent", group = "01-Test")
 public class HighBucketAscent extends LinearOpMode {
 

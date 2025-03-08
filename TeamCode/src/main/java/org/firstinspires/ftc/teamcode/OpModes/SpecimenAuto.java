@@ -86,7 +86,7 @@ public class SpecimenAuto extends LinearOpMode {
             //telemetry.setAutoClear(true);
 
             // Get close to submersible
-            arm.moveArmHighRungPosition();
+            arm.moveArmHighRungPosition(true);
             intakeSlide.moveSlideHigh();
             intakeSlide.retractSlide(false);
 

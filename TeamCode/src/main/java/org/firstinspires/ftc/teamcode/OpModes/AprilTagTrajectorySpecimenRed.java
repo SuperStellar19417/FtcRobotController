@@ -24,8 +24,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToHighBasket;
-import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToHighBasketAgain;
 import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToRestingPosition;
 import org.firstinspires.ftc.teamcode.OpModes.Actions.ArmMoveToRestingPositionAgain;
 import org.firstinspires.ftc.teamcode.OpModes.Actions.ClawClose;
@@ -57,8 +55,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-@Autonomous(name = "Blue Specimen Autonomous", group = "01-Test")
-public class AprilTagTrajectorySpecimen extends LinearOpMode {
+@Autonomous(name = "Red Specimen Autonomous", group = "01-Test")
+public class AprilTagTrajectorySpecimenRed extends LinearOpMode {
 
     /**
      * Variables to store the position and orientation of the camera on the robot. Setting these
@@ -150,7 +148,7 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
 
     private boolean gp1ButtonALast = false;
 
-    public AprilTagTrajectorySpecimen() {
+    public AprilTagTrajectorySpecimenRed() {
         // Initialize tag locations
         initTagLocation();
     }
@@ -172,7 +170,7 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
 
         // Get current field position based on AprilTag detection
         // Init drive train with the start position detected
-        Pose2d startPose = new Pose2d(new Vector2d(12,-63), Math.toRadians(90));
+        Pose2d startPose = new Pose2d(new Vector2d(-12,63), Math.toRadians(270));
         initSubsystems(startPose);
 
         // If Stop is pressed, exit OpMode
@@ -183,7 +181,7 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
         // Create a trajectory to first waypoint (somewhere we can see tag # 16)
         // Move forward 5 inches and turn 90 degrees CCW (heading 180 in RR coordinates)
         Action trajectoryAction = driveTrain.actionBuilder(startPose)
-                .lineToY(startPose.position.y + 27)
+                .lineToY(startPose.position.y - 28.5)
                 .build();
 
 
@@ -192,9 +190,9 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
         safeWaitSeconds(0.5);
 
 
-        Pose2d tempPose = new Pose2d(new Vector2d(startPose.position.x, startPose.position.y + 20), Math.toRadians(90));
+        Pose2d tempPose = new Pose2d(new Vector2d(startPose.position.x, startPose.position.y - 20), Math.toRadians(270));
         Action moveBack = driveTrain.actionBuilder(tempPose)
-                .lineToY(startPose.position.y + 4)
+                .lineToY(startPose.position.y - 4)
                 .build();
 
         Actions.runBlocking(new SequentialAction(moveBack));
@@ -208,8 +206,8 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
 
 
         Action moveBackPosition = driveTrain.actionBuilder(tempPose)
-                .lineToY(startPose.position.y + 11)
-                .turnTo(Math.toRadians(0))
+                .lineToY(startPose.position.y - 11)
+                .turnTo(Math.toRadians(180))
                 .build();
 
 
@@ -217,23 +215,23 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
 
      //   tempPose = new Pose2d(new Vector2d(12, -53), Math.toRadians(0));
 
-        startPose = getFieldPosition(11);
+        startPose = getFieldPosition(14);
 
 
         Action toShieldPreload = driveTrain.actionBuilder(startPose)
-                .setTangent(Math.toRadians(0))
-                .lineToX(startPose.position.x - 26.5)
+                .setTangent(Math.toRadians(180))
+                .lineToX(startPose.position.x + 28)
                 .build();
 
         Action precisionShield = driveTrain.actionBuilder(startPose)
-                .setTangent(Math.toRadians(90))
-                .lineToY(startPose.position.y + 10.5)
-                .setTangent(Math.toRadians(180))
-                .lineToX(startPose.position.x - 27.5)
+                .setTangent(Math.toRadians(270))
+                .lineToY(startPose.position.y - 11.5)
+                .setTangent(Math.toRadians(0))
+                .lineToX(startPose.position.x + 29)
                 .build();
 
         Action backFromShield = driveTrain.actionBuilder(startPose)
-                .strafeTo(new Vector2d(startPose.position.x + 10, startPose.position.y + 4))
+                .strafeTo(new Vector2d(startPose.position.x - 10, startPose.position.y - 4))
                 .build();
 
 
@@ -251,10 +249,10 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
 
 
         Pose2d newPose;
-        newPose = new Pose2d(new Vector2d(startPose.position.x - 32, startPose.position.y + 4), Math.toRadians(0));
+        newPose = new Pose2d(new Vector2d(startPose.position.x + 32, startPose.position.y - 4), Math.toRadians(180));
 
         Action pullBack = driveTrain.actionBuilder(newPose)
-                .strafeTo(new Vector2d(newPose.position.x - 35, newPose.position.y + 11))
+                .strafeTo(new Vector2d(newPose.position.x + 35, newPose.position.y - 11))
                 .build();
 
 
@@ -265,28 +263,43 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
         Actions.runBlocking(pullBack);
 
 
-        startPose = getFieldPosition(11);
+        startPose = getFieldPosition(14);
 
-        safeWaitSeconds(0.25);
+        safeWaitSeconds(0.2);
+
+        Action faceSub = driveTrain.actionBuilder(startPose)
+                .turnTo(Math.toRadians(90))
+                .build();
+        startPose = new Pose2d(new Vector2d(startPose.position.x, startPose.position.y), Math.toRadians(90));
 
         Action toSubOne = driveTrain.actionBuilder(startPose)
-                .turnTo(Math.toRadians(270))
-                .strafeTo(new Vector2d(startPose.position.x + 3, startPose.position.y + 20))
+                .strafeTo(new Vector2d(startPose.position.x + 7, startPose.position.y + 21))
                 .build();
 
-        Actions.runBlocking(new SequentialAction(toSubOne));
+        Actions.runBlocking(new SequentialAction(faceSub));
+        safeWaitSeconds(0.4);
+        Actions.runBlocking(toSubOne);
 
         Actions.runBlocking(new SequentialAction(wristIntake));
         safeWaitSeconds(0.75);
 
-        startPose = new Pose2d(new Vector2d(0, 0), Math.toRadians(90));
+        startPose = new Pose2d(new Vector2d(0, 0), Math.toRadians(270));
         Action moveBackFromSub = driveTrain.actionBuilder(startPose)
-                .strafeTo(new Vector2d(0, -6))
+                .strafeTo(new Vector2d(0, 6))
                 .build();
-        //  Actions.runBlocking(new SequentialAction(armMidway));
-        //  safeWaitSeconds(0.75);
+
+      //  Actions.runBlocking(new SequentialAction(armMidway));
+      //  safeWaitSeconds(0.75);
 
         Actions.runBlocking(new SequentialAction(moveBackFromSub, openClaw, wristUp, armToIntake));
+
+
+
+        startPose = new Pose2d(new Vector2d(startPose.position.x, startPose.position.y + 13), 270);
+
+        Action midPoseSecond = driveTrain.actionBuilder(startPose)
+                .strafeTo(new Vector2d(startPose.position.x, startPose.position.y + 5))
+                .build();
 
 
     /*    Actions.runBlocking(new SequentialAction(midPoseSecond));
@@ -307,7 +320,7 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
                 .strafeTo(new Vector2d(startPose.position.x, startPose.position.y))
                 .build(); */
 
-        startPose = getFieldPosition(11);
+        startPose = getFieldPosition(14);
 
         // ALL THIS HAPPENS AFTER THE PRELOADS
     /*    Action pushFieldSample = driveTrain.actionBuilder(startPose)

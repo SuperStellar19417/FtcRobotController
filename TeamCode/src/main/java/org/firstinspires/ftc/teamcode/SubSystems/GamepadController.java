@@ -128,7 +128,7 @@ public class GamepadController {
         }
 
         if (gp2GetButtonYPress()) {
-            arm.moveArmHighRungPosition();
+            arm.moveArmHighRungPosition(false);
         } else if (gp2GetButtonAPress()) {
 
             arm.moveArmLowBasketPosition();
@@ -154,8 +154,7 @@ public class GamepadController {
             claw.wristUp();
             claw.intakeClawOpen();
         } else if (gp2GetLeftTriggerPress()){
-            arm.moveArmHighRungPosition();
-            slide.extendSlide();
+            arm.moveArmHighRungPosition(false);
         }
    }
 
@@ -225,7 +224,7 @@ public class GamepadController {
         // for specimen hanging
         if(sampleColorLight.getDetectedColor()!= SampleColorLight.DETECTED_COLOR.UNKNOWN
                 && claw.clawServoState == Claw.CLAW_SERVO_STATE.CLAW_CLOSE
-                && (claw.distanceSensor.getDistance(DistanceUnit.CM) < 16.5 && claw.distanceSensor.getDistance(DistanceUnit.MM) > 17.5 )) {
+                && (claw.distanceSensor.getDistance(DistanceUnit.CM) < 33 && claw.distanceSensor.getDistance(DistanceUnit.CM) > 31 )) {
             gamepad1.runRumbleEffect(hapticFeedback);
 
         }

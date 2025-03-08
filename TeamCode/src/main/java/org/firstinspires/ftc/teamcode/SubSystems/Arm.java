@@ -23,7 +23,7 @@ public class Arm {
     public final int ARM_POSITION_TICKS_LOW_BASKET = 1000;
     public final int ARM_POSITION_TICKS_HIGH_BASKET = 1250;
     public final int ARM_POSITION_TICKS_LOW_RUNG = 1600;
-    public final int ARM_POSITION_TICKS_HIGH_RUNG = 850;
+    public final int ARM_POSITION_TICKS_HIGH_RUNG = 750;
     public final int ARM_POSITION_TICKS_HANGING = 3000;
     //someone ass here
 
@@ -148,8 +148,12 @@ public class Arm {
         runMotors();
     }
 
-    public void moveArmHighRungPosition()  {
-        armPositionTicks = ARM_POSITION_TICKS_HIGH_RUNG;
+    public void moveArmHighRungPosition(boolean isAuto)  {
+        if(isAuto) {
+            armPositionTicks = 900;
+        } else {
+            armPositionTicks = ARM_POSITION_TICKS_HIGH_RUNG;
+        }
         armMotor.setTargetPosition(armPositionTicks);
 
         currentArmPosition = ARM_POSITION.ARM_POSITION_HIGH_RUNG;

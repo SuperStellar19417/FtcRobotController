@@ -25,7 +25,7 @@ public class MoveArmHighRung implements Action {
 
         // powers on motor, if it is not on
         if (!initialized) {
-            arm.moveArmHighRungPosition();
+            arm.moveArmHighRungPosition(true);
             initialized = true;
         }
 
