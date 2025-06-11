@@ -5,10 +5,14 @@ import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.OpModes.Actions.ClawClose;
@@ -182,12 +186,19 @@ public class GamepadController {
         }
 
         // react to gamepad inputs
-        if (wantsToGoUp) {
-            climber.moveClimberSlightlyUp();
+        if (gp1GetDpad_up()) {
+            climber.moveClimberReverse();
         }
-        // If we have to move down, use encoder to move down
-       else if (wantsToGoDown && !isLimitSwitchPressed) {
-            climber.runMotorAllTheWayDown();
+        else if (gp1GetDpad_down()) {
+            climber.moveClimberForward();
+        } else {
+            climber.climberMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            climber.climberMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            climber.climberMotorLeft.setPower(0);
+            climber.climberMotorRight.setPower(0);
+
+
+
         }
     }
 
@@ -269,6 +280,19 @@ public class GamepadController {
         // If we have to move down, use encoder to move down
         else if (wantsToGoDown && !isLimitSwitchPressed) {
             slide.retractSlide(false);
+        }
+
+        if(gp2GetButtonXPress()) {
+            opMode.telemetry.addData("direction", slide.slideMotor.getDirection());
+            opMode.telemetry.update();
+            while(!slide.slideLimitSwitch.isPressed()) {
+                slide.slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+                slide.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                slide.slideMotor.setPower(0.7);
+                opMode.telemetry.addData("direction", slide.slideMotor.getDirection());
+            }
+            slide.slideMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            slide.stopIntakeMotor();
         }
 
     }

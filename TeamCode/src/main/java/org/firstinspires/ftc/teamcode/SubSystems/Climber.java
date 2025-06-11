@@ -148,6 +148,24 @@ public class Climber {
         climberMotorRight.setVelocity(MAX_VELOCITY);
     }
 
+    public void moveClimberForward() {
+        climberMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        climberMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        climberMotorRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        climberMotorLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        climberMotorLeft.setPower(0.7);
+        climberMotorRight.setPower(0.7);
+
+    }
+    public void moveClimberReverse() {
+        climberMotorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        climberMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        climberMotorRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        climberMotorLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        climberMotorLeft.setPower(0.7);
+        climberMotorRight.setPower(0.7);
+    }
+
     private void stopMotor() {
         climberMotorLeft.setPower(POWER_LEVEL_STOP);
         climberMotorLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -172,6 +190,13 @@ public class Climber {
 
         climberMotorRight.setPower(0);
         climberMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+    }
+    public void PauseClimberMotor() {
+        // TODO:  reading as pressing in gamepadcontroller so add a boolean thing to toggle pressed ONCE god bless
+        climberMotorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        climberMotorLeft.setPower(0);
+        climberMotorRight.setPower(0);
 
     }
 
