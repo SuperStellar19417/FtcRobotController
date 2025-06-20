@@ -192,11 +192,15 @@ public class GamepadController {
         else if (gp1GetDpad_down()) {
             climber.moveClimberForward();
         } else {
-            climber.climberMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            climber.climberMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            climber.climberMotorLeft.setPower(0);
-            climber.climberMotorRight.setPower(0);
-
+            double leftVal = climber.climberMotorLeft.getCurrentPosition();
+            double rightVal = climber.climberMotorRight.getCurrentPosition();
+            int avg = (int) ((leftVal + rightVal)/2);
+            climber.climberMotorLeft.setTargetPosition((int) leftVal);
+            climber.climberMotorRight.setTargetPosition((int) rightVal);
+            climber.climberMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            climber.climberMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            climber.climberMotorLeft.setPower(0.8);
+            climber.climberMotorRight.setPower(0.8);
 
 
         }
