@@ -24,6 +24,6 @@ public class HardwareConstant {
 
     public static String SlidesLimitSwitch = "slidesLimitSwitch"; // expansion hub digital port 3
     public static String ClimberLimitSwitch = "climberLimitSwitch"; // expansion hub digital port 7
-    public static String DistanceSensor = "distanceSensor"; //control hub ic port 3
+    public static String DistanceSensor = "distanceSensor"; //expansion hub ic port 1
     public static String FlagServo = "flagServo"; // control hub servo port 0
 }
