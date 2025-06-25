@@ -254,7 +254,7 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
         newPose = new Pose2d(new Vector2d(startPose.position.x - 32, startPose.position.y + 4), Math.toRadians(0));
 
         Action pullBack = driveTrain.actionBuilder(newPose)
-                .strafeTo(new Vector2d(newPose.position.x - 35, newPose.position.y + 11))
+                .strafeTo(new Vector2d(newPose.position.x - 35, newPose.position.y + 9))
                 .build();
 
 
@@ -269,12 +269,18 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
 
         safeWaitSeconds(0.25);
 
+
         Action toSubOne = driveTrain.actionBuilder(startPose)
-                .turnTo(Math.toRadians(270))
-                .strafeTo(new Vector2d(startPose.position.x + 3, startPose.position.y + 20))
+                .turnTo(Math.toRadians(250))
+            //    .setTangent(Math.toRadians(270))
+            //    .strafeTo(new Vector2d(startPose.position.x + 3, startPose.position.y + 15))
                 .build();
 
-        Actions.runBlocking(new SequentialAction(toSubOne));
+        Action toSubTwo = driveTrain.actionBuilder(new Pose2d(new Vector2d(0,0), 0))
+                .lineToX(23)
+                .build();
+
+        Actions.runBlocking(new SequentialAction(toSubOne, toSubTwo));
 
         Actions.runBlocking(new SequentialAction(wristIntake));
         safeWaitSeconds(0.75);

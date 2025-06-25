@@ -136,6 +136,7 @@ public class IntakeSlide {
         slideMotor.setPower(POWER_LEVEL_STOP);
         slidePosition = SLIDE_POSITION_MIN;
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        runMotors();
     }
 
     public int getTargetPosition() {
