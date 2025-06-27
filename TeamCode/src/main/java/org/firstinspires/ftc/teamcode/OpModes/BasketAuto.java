@@ -11,6 +11,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -23,6 +24,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.IntakeSlide;
 import org.firstinspires.ftc.teamcode.SubSystems.SampleColorLight;
 import org.firstinspires.ftc.teamcode.Utils;
 
+@Disabled
 @Autonomous(name = "Auto - Basket", group = "01-Auto", preselectTeleOp = "Normal TeleOp")
 public class BasketAuto extends LinearOpMode {
     private GamepadController gamepadController;

@@ -271,13 +271,13 @@ public class AprilTagTrajectorySpecimen extends LinearOpMode {
 
 
         Action toSubOne = driveTrain.actionBuilder(startPose)
-                .turnTo(Math.toRadians(250))
+                .turnTo(Math.toRadians(270))
             //    .setTangent(Math.toRadians(270))
             //    .strafeTo(new Vector2d(startPose.position.x + 3, startPose.position.y + 15))
                 .build();
 
         Action toSubTwo = driveTrain.actionBuilder(new Pose2d(new Vector2d(0,0), 0))
-                .lineToX(23)
+                .lineToX(20)
                 .build();
 
         Actions.runBlocking(new SequentialAction(toSubOne, toSubTwo));

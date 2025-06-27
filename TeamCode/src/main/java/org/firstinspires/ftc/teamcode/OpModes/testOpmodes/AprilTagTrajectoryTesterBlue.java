@@ -173,7 +173,7 @@ public class AprilTagTrajectoryTesterBlue extends LinearOpMode {
         Action fillerName = driveTrain.actionBuilder(startPose)
                 .strafeTo(new Vector2d(startPose.position.x + 11, startPose.position.y))
                 .turnTo(Math.toRadians(45))
-                .strafeTo(new Vector2d(startPose.position.x + 21.5, startPose.position.y))
+                .strafeTo(new Vector2d(startPose.position.x + 22, startPose.position.y))
                 .build();
         //57.5,53
 
@@ -191,7 +191,7 @@ public class AprilTagTrajectoryTesterBlue extends LinearOpMode {
         Action nextAction = driveTrain.actionBuilder(tempPose)
                 .turnTo(Math.toRadians(0))
                 .waitSeconds(0.3)
-                .strafeTo(new Vector2d(tempPose.position.x - 15, tempPose.position.y - 12))
+                .strafeTo(new Vector2d(tempPose.position.x - 17, tempPose.position.y - 12))
                 .build();
         Actions.runBlocking(new SequentialAction(nextAction));
         arm.moveArmIntakePosition();
@@ -206,7 +206,7 @@ public class AprilTagTrajectoryTesterBlue extends LinearOpMode {
                 .setTangent(Math.toRadians(0))
                 .lineToX(startPose.position.x + 3)
                 .setTangent(Math.toRadians(90))
-                .lineToY(startPose.position.y - 5.5)
+                .lineToY(startPose.position.y - 3 )
                 .build();
 
         Actions.runBlocking(new SequentialAction(firstSpike, wristIntake));
@@ -227,7 +227,7 @@ public class AprilTagTrajectoryTesterBlue extends LinearOpMode {
                 .build();
 
         Action moveAwayFromBasket = driveTrain.actionBuilder(new Pose2d(new Vector2d(spikePose.position.x + 14, spikePose.position.y + 17), Math.toRadians(45)))
-                .strafeTo(new Vector2d(spikePose.position.x + 8, spikePose.position.y + 13))
+                .strafeTo(new Vector2d(spikePose.position.x + 6, spikePose.position.y + 11))
                 .build();
 
         Actions.runBlocking(new SequentialAction(toBucket1, armToHighBasketAgain, slidesHighAgain, wristIntake, moveCloseToBasket2, openClaw));

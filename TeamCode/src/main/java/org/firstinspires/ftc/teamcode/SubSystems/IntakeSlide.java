@@ -12,7 +12,7 @@ public class IntakeSlide {
     public final double POWER_LEVEL_RUN = 0.9;
     public final double POWER_LEVEL_STOP = 0.0;
 
-    public final int SLIDE_POSITION_MIN = 0;
+    public final int SLIDE_POSITION_MIN = 10;
     public final int SLIDE_POSITION_AUTO_SAMPLE_INTAKE = 250;
     public final int SLIDE_POSITION_MID = 1050;
     public final int SLIDE_POSITION_MAX = 1550;
@@ -60,7 +60,7 @@ public class IntakeSlide {
 
         slideMotor.setTargetPosition(slidePosition);
         slideMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        slideMotor.setVelocity(MAX_VELOCITY);
+        slideMotor.setPower(0.7);
 
 
     }
